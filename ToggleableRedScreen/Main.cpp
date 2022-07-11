@@ -49,7 +49,7 @@ class CDrawPortPatch : public CDrawPort {
   public:
     void P_BlendScreen(void)
     {
-      if (*_bRedScreen != 0) {
+      if (*_bRedScreen == 0) {
         BOOL bReset = FALSE;
 
         // Reset blending altogether if no world glaring available
