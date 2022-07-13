@@ -85,5 +85,5 @@ MODULE_API void Module_Startup(void) {
   NewPatch(pBlendScreen, &CDrawPortPatch::P_BlendScreen, "CDrawPort::BlendScreen()");
 
   // Custom symbols
-  GetPluginAPI()->RegisterSymbol("persistent user INDEX %s;", "sam_bRedScreenOnDamage", &_bRedScreen);
+  GetPluginAPI()->RegisterSymbol(SSF_PERSISTENT | SSF_USER, "INDEX", "sam_bRedScreenOnDamage", "1", "", "", _bRedScreen);
 };

@@ -131,8 +131,8 @@ MODULE_API void Module_Startup(void) {
   HookSymbolAPI();
 
   // Custom symbols
-  GetPluginAPI()->RegisterMethod("user void %s(void);",  "cht_WallWalking",  &WallWalking);
-  GetPluginAPI()->RegisterMethod("user void %s(void);",  "cht_Noclip",       &Noclip);
-  GetPluginAPI()->RegisterMethod("user void %s(INDEX);", "cht_SetHealth",    &SetHealth);
-  GetPluginAPI()->RegisterMethod("user void %s(INDEX);", "cht_CreateWeapon", &CreateWeapon);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_WallWalking",  "void",  &WallWalking);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_Noclip",       "void",  &Noclip);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_SetHealth",    "INDEX", &SetHealth);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateWeapon", "INDEX", &CreateWeapon);
 };
