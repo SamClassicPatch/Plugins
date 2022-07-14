@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/World/WorldFunctions.h>
+#include <CoreLib/Interfaces/WorldFunctions.h>
 
 // Patcher
 #include <CoreLib/FuncPatching.h>
