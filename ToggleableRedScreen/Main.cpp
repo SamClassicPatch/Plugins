@@ -39,7 +39,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
 };
 
 // Toggle red screen on damage
-static INDEX *_bRedScreen = NULL;
+static CPluginSymbol _psRedScreen(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 // Original function pointer
 static void (CDrawPort::*pBlendScreen)(void) = NULL;
@@ -49,7 +49,7 @@ class CDrawPortPatch : public CDrawPort {
   public:
     void P_BlendScreen(void)
     {
-      if (*_bRedScreen == 0) {
+      if (!_psRedScreen.GetIndex()) {
         BOOL bReset = FALSE;
 
         // Reset blending altogether if no world glaring available
@@ -85,5 +85,5 @@ MODULE_API void Module_Startup(void) {
   NewPatch(pBlendScreen, &CDrawPortPatch::P_BlendScreen, "CDrawPort::BlendScreen()");
 
   // Custom symbols
-  GetPluginAPI()->RegisterSymbol(SSF_PERSISTENT | SSF_USER, "INDEX", "sam_bRedScreenOnDamage", "1", "", "", _bRedScreen);
+  _psRedScreen.Register("sam_bRedScreenOnDamage", "", "");
 };
