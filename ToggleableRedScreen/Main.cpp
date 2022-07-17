@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <CoreLib/Interfaces/WorldFunctions.h>
 
 // Patcher
-#include <CoreLib/FuncPatching.h>
+#include <CoreLib/Patcher/FuncPatching.h>
 
 bool CPatch::_bDebugOutput = false;
 
