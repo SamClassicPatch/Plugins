@@ -89,7 +89,7 @@
     <GenerateManifest>true</GenerateManifest>
     <EmbedManifest>true</EmbedManifest>
     <OutDir>$(BinDir)Plugins\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+    <IntDir>$(ObjDir)</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_TSE107|Win32'">
@@ -99,7 +99,7 @@
     <GenerateManifest>true</GenerateManifest>
     <EmbedManifest>true</EmbedManifest>
     <OutDir>$(BinDir)Plugins\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+    <IntDir>$(ObjDir)</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_TSE105|Win32'">
@@ -109,7 +109,7 @@
     <GenerateManifest>true</GenerateManifest>
     <EmbedManifest>true</EmbedManifest>
     <OutDir>$(BinDir)Plugins\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+    <IntDir>$(ObjDir)</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_TFE105|Win32'">
@@ -119,7 +119,7 @@
     <GenerateManifest>true</GenerateManifest>
     <EmbedManifest>true</EmbedManifest>
     <OutDir>$(BinDir)Plugins\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\</IntDir>
+    <IntDir>$(ObjDir)</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_TSE107|Win32'">
