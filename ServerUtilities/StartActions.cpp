@@ -15,13 +15,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+// Notify about not being able to retrieve some entity property
+static void ReportPropError(CEntity *pen, const char *strPropertyName) {
+  CPrintF(TRANS("'%s' (%u) : Cannot retrieve '%s' property!\n"), pen->GetName(), pen->en_ulID, strPropertyName);
+};
+
 // Affect weapon item at the beginning of the game
 void AffectWeaponItem(CEntity *pen) {
   // Retrieve CWeaponItem::m_EwitType
   CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x322 << 8) + 1);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CWeaponItem::m_EwitType property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CWeaponItem::m_EwitType");
     return;
   }
 
@@ -50,7 +55,7 @@ void AffectHealthItem(CEntity *pen) {
   CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x321 << 8) + 1);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CHealthItem::m_EhitType property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CHealthItem::m_EhitType");
     return;
   }
 
@@ -69,7 +74,7 @@ void AffectArmorItem(CEntity *pen) {
   CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x324 << 8) + 1);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CArmorItem::m_EaitType property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CArmorItem::m_EaitType");
     return;
   }
 
@@ -88,7 +93,7 @@ void AffectPowerUpItem(CEntity *pen) {
   CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x328 << 8) + 1);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CPowerUpItem::m_puitType property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CPowerUpItem::m_puitType");
     return;
   }
 
@@ -112,7 +117,7 @@ void AffectPlayerMarker(CEntity *pen) {
   CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_INDEX, "Give Weapons", (0x194 << 8) + 3);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CPlayerMarker::m_iGiveWeapons property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CPlayerMarker::m_iGiveWeapons");
 
   } else {
     // Give out specific weapons
@@ -135,7 +140,7 @@ void AffectPlayerMarker(CEntity *pen) {
   pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Max ammo ratio", (0x194 << 8) + 9);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CPlayerMarker::m_fMaxAmmoRatio property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CPlayerMarker::m_fMaxAmmoRatio");
 
   // Set maximum ammo
   } else if (_psMaxAmmo.GetIndex() != 0) {
@@ -146,7 +151,7 @@ void AffectPlayerMarker(CEntity *pen) {
   pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Health", (0x194 << 8) + 1);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CPlayerMarker::m_fHealth property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CPlayerMarker::m_fHealth");
 
   // Set custom health
   } else if (_psStartHP.GetFloat() != 100.0f) {
@@ -157,7 +162,7 @@ void AffectPlayerMarker(CEntity *pen) {
   pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Shield", (0x194 << 8) + 2);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CPlayerMarker::m_fShield property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CPlayerMarker::m_fShield");
 
   // Set custom armor
   } else if (_psStartAR.GetFloat() != 0.0f) {
@@ -173,7 +178,7 @@ void AffectEnemySpawner(CEntity *pen) {
   CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_INDEX, "Count total", (0x130 << 8) + 8);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CEnemySpawner::m_ctTotal property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CEnemySpawner::m_ctTotal");
 
   // Multiply total amount
   } else if (fEnemyMul > 0.0f) {
@@ -185,7 +190,7 @@ void AffectEnemySpawner(CEntity *pen) {
   pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_INDEX, "Count group", (0x130 << 8) + 17);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CEnemySpawner::m_ctGroupSize property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CEnemySpawner::m_ctGroupSize");
 
   // Multiply group size
   } else if (fEnemyMul > 0.0f) {
@@ -197,7 +202,7 @@ void AffectEnemySpawner(CEntity *pen) {
   pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Delay single", (0x130 << 8) + 16);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CEnemySpawner::m_tmSingleWait property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CEnemySpawner::m_tmSingleWait");
 
   // Decrease delay between single enemies
   } else if (fEnemyMul > 0.0f) {
@@ -209,7 +214,7 @@ void AffectEnemySpawner(CEntity *pen) {
   pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Delay group", (0x130 << 8) + 5);
 
   if (pep == NULL) {
-    CPrintF("'%s' (%u) : Cannot retieve CEnemySpawner::m_tmGroupWait property!\n", pen->GetName(), pen->en_ulID);
+    ReportPropError(pen, "CEnemySpawner::m_tmGroupWait");
 
   // Decrease delay between groups of enemies
   } else if (fEnemyMul > 0.0f) {
