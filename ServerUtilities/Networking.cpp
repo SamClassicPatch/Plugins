@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdH.h"
 
 #include "StartActions.h"
+#include "Sandbox.h"
 
 BOOL INetworkEvents::OnServerPacket(CNetworkMessage &nmMessage, const ULONG ulType)
 {
@@ -53,6 +54,21 @@ void INetworkEvents::OnGameStart(void)
     } else if (IsOfClass(pen, "Enemy Spawner")) {
       AffectEnemySpawner(pen);
     }
+  }
+
+  // Execute all scheduled commands
+  CStaticStackArray<CTString> &astrCommands = IServerSandbox::astrScheduled;
+
+  if (astrCommands.Count() > 0) {
+    CPrintF(TRANS("Executing scheduled sandbox commands...\n"));
+
+    CTString strExecute = "";
+
+    for (INDEX iCommand = 0; iCommand < astrCommands.Count(); iCommand++) {
+      strExecute += astrCommands[iCommand];
+    }
+
+    _pShell->Execute(strExecute);
   }
 };
 

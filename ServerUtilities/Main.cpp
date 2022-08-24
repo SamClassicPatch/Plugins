@@ -15,6 +15,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#include "Sandbox.h"
+
 // Define own pointer to the API
 CCoreAPI *_pCoreAPI = NULL;
 
@@ -111,5 +113,16 @@ MODULE_API void Module_Startup(void) {
     _psReplaceWeapons.Register("sutl_iReplaceWeapons");
     _psReplaceHealth.Register("sutl_iReplaceHealth");
     _psReplaceArmor.Register("sutl_iReplaceArmor");
+
+    // Server sandbox commands
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_ListScheduledCommands",  "void", &IServerSandbox::ListScheduledCommands);
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_ClearScheduledCommands", "void", &IServerSandbox::ClearScheduledCommands);
+
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_DeleteEntity",      "INDEX",                      &IServerSandbox::DeleteEntity);
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_InitEntity",        "INDEX",                      &IServerSandbox::InitEntity);
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_SetEntityPosition", "INDEX, FLOAT, FLOAT, FLOAT", &IServerSandbox::SetEntityPosition);
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_SetEntityRotation", "INDEX, FLOAT, FLOAT, FLOAT", &IServerSandbox::SetEntityRotation);
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_SetEntityProperty", "INDEX, CTString, CTString",  &IServerSandbox::SetEntityProperty);
+    GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_ParentEntity",      "INDEX, INDEX",               &IServerSandbox::ParentEntity);
   }
 };
