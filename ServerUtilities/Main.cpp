@@ -36,8 +36,8 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 0);
 };
 
-// Bool switch symbol
-#define BSS(_DefaultState) CPluginSymbol(0, INDEX(_DefaultState))
+// Mode switch symbol (-100 = ignore)
+#define MSS CPluginSymbol(0, INDEX(-100))
 
 // Difficulty settings
 CPluginSymbol _psStartHP(SSF_PERSISTENT | SSF_USER, 100.0f);
@@ -47,32 +47,34 @@ CPluginSymbol _psEnemyMul(SSF_PERSISTENT | SSF_USER, 1.0f);
 // Weapon settings
 CPluginSymbol _psMaxAmmo(SSF_PERSISTENT | SSF_USER, INDEX(FALSE));
 
+// 0 = take away; 1 = give
 CPluginSymbol _apsGiveWeapons[CT_WEAPONS] = {
-  BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), // Knife, Colt, DColt, SShotgun, DShotgun, Tommygun, Minigun
-  BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), // RLauncher, GLauncher, Chainsaw, Flamer, Laser, Sniper, Cannon
-  BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0),
-  BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0), BSS(0),
-  BSS(0), BSS(0), BSS(0),
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // Knife, Colt, DColt, SShotgun, DShotgun, Tommygun, Minigun
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // RLauncher, GLauncher, Chainsaw, Flamer, Laser, Sniper, Cannon
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS,
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS,
+  MSS, MSS, MSS,
 };
 
-// Item settings
+// 0+ = specific type
 CPluginSymbol _apsWeaponItems[CT_WEAPONS] = {
-  BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), // <none>, Colt, SShotgun, DShotgun, Tommygun, Minigun, RLauncher
-  BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), // GLauncher, Sniper, Flamer, Laser, Chainsaw, Cannon, Ghostbuster
-  BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1),
-  BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), BSS(1),
-  BSS(1), BSS(1), BSS(1),
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // <none>, Colt, SShotgun, DShotgun, Tommygun, Minigun, RLauncher
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // GLauncher, Sniper, Flamer, Laser, Chainsaw, Cannon, Ghostbuster
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS,
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS,
+  MSS, MSS, MSS,
 };
 
+// 0+ = specific type
 CPluginSymbol _apsPowerUpItems[CT_POWERUPS] = {
-  BSS(1), BSS(1), BSS(1), BSS(1), BSS(1), // Invisibility, Invulnerability, Serious Damage, Serious Speed, Serious Bomb
-  BSS(1), BSS(1), BSS(1), BSS(1), BSS(1),
+  MSS, MSS, MSS, MSS, MSS, // Invisibility, Invulnerability, Serious Damage, Serious Speed, Serious Bomb
+  MSS, MSS, MSS, MSS, MSS,
 };
 
-// -1 : leave as is; 0 - 30 : item index
+// -1 = leave as is; 0+ = item index
 CPluginSymbol _psReplaceWeapons(SSF_PERSISTENT | SSF_USER, INDEX(-1));
-CPluginSymbol _psReplaceHealth(SSF_PERSISTENT | SSF_USER, INDEX(-1));
-CPluginSymbol _psReplaceArmor(SSF_PERSISTENT | SSF_USER, INDEX(-1));
+CPluginSymbol _psReplaceHealth (SSF_PERSISTENT | SSF_USER, INDEX(-1));
+CPluginSymbol _psReplaceArmor  (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 
 // Module entry point
 MODULE_API void Module_Startup(void) {
@@ -96,17 +98,17 @@ MODULE_API void Module_Startup(void) {
 
     for (INDEX iWeapon = 0; iWeapon < CT_WEAPONS; iWeapon++)
     {
-      strCommand.PrintF("sutl_bGiveWeapon%d", iWeapon + 1);
+      strCommand.PrintF("sutl_iGiveWeapon%d", iWeapon);
       _apsGiveWeapons[iWeapon].Register(strCommand);
 
-      strCommand.PrintF("sutl_bWeaponItem%d", iWeapon + 1);
+      strCommand.PrintF("sutl_iWeaponType%d", iWeapon);
       _apsWeaponItems[iWeapon].Register(strCommand);
     }
 
     // Item settings
     for (INDEX iPowerup = 0; iPowerup < CT_POWERUPS; iPowerup++)
     {
-      strCommand.PrintF("sutl_bPowerUpItem%d", iPowerup + 1);
+      strCommand.PrintF("sutl_iPowerUpType%d", iPowerup);
       _apsPowerUpItems[iPowerup].Register(strCommand);
     }
 

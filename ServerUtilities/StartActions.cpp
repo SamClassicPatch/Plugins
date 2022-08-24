@@ -26,10 +26,16 @@ void AffectWeaponItem(CEntity *pen) {
   }
 
   INDEX &iWeaponType = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX iSetType = _apsWeaponItems[iWeaponType].GetIndex();
 
   // Remove weapon item
-  if (_apsWeaponItems[iWeaponType].GetIndex() == 0) {
+  if (iSetType == -1) {
     pen->Destroy();
+
+  // Set specific type
+  } else if (iSetType >= 0) {
+    iWeaponType = iSetType;
+    pen->Reinitialize();
 
   // Replace with another weapon
   } else if (_psReplaceWeapons.GetIndex() >= 0) {
@@ -87,10 +93,16 @@ void AffectPowerUpItem(CEntity *pen) {
   }
 
   INDEX &iPowerUp = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX iSetType = _apsPowerUpItems[iPowerUp].GetIndex();
 
   // Remove power up
-  if (_apsPowerUpItems[iPowerUp].GetIndex() == 0) {
+  if (iSetType == -1) {
     pen->Destroy();
+
+  // Set specific type
+  } else if (iSetType >= 0) {
+    iPowerUp = iSetType;
+    pen->Reinitialize();
   }
 };
 
@@ -106,8 +118,15 @@ void AffectPlayerMarker(CEntity *pen) {
     // Give out specific weapons
     for (INDEX iWeapon = 0; iWeapon < CT_WEAPONS; iWeapon++)
     {
-      if (_apsGiveWeapons[iWeapon].GetIndex() != 0) {
+      INDEX iGive = _apsGiveWeapons[iWeapon].GetIndex();
+
+      // Give weapon
+      if (iGive == 1) {
         ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX) |= (1 << iWeapon);
+
+      // Take away the weapon
+      } else if (iGive == 0) {
+        ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX) &= ~(1 << iWeapon);
       }
     }
   }
