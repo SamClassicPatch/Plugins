@@ -103,7 +103,7 @@ static void CreateWeapon(INDEX iWeapon) {
     CEntity *penWeapon = IWorld::GetWorld()->CreateEntity_t(pen->GetPlacement(), CTFILENAME("Classes\\WeaponItem.ecl"));
 
     // CWeaponItem::m_EwitType
-    CEntityProperty *pep = IWorld::FindProperty(penWeapon, (0x322 << 8) + 1, 0x3AC, CEntityProperty::EPT_ENUM);
+    CEntityProperty *pep = IWorld::PropertyForIdOrOffset(penWeapon, CEntityProperty::EPT_ENUM, (0x322 << 8) + 1, 0x3AC);
     CTString strWeapon = "";
 
     // Property found
