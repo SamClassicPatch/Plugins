@@ -66,8 +66,23 @@ CPluginSymbol _apsWeaponItems[CT_WEAPONS] = {
 };
 
 // 0+ = specific type
-CPluginSymbol _apsPowerUpItems[CT_POWERUPS] = {
+CPluginSymbol _apsHealthItems[CT_ITEMS] = {
+  MSS, MSS, MSS, MSS, MSS, // Pill +1, Small +10, Medium +25, Large +50, Super +100
+  MSS, MSS, MSS, MSS, MSS,
+  MSS, MSS, MSS, MSS, MSS,
+};
+
+// 0+ = specific type
+CPluginSymbol _apsArmorItems[CT_ITEMS] = {
+  MSS, MSS, MSS, MSS, MSS, // Shard +1, Small +25, Medium +50, Strong +100, Super +200
+  MSS, MSS, MSS, MSS, MSS, // Helm +5
+  MSS, MSS, MSS, MSS, MSS,
+};
+
+// 0+ = specific type
+CPluginSymbol _apsPowerUpItems[CT_ITEMS] = {
   MSS, MSS, MSS, MSS, MSS, // Invisibility, Invulnerability, Serious Damage, Serious Speed, Serious Bomb
+  MSS, MSS, MSS, MSS, MSS,
   MSS, MSS, MSS, MSS, MSS,
 };
 
@@ -106,10 +121,16 @@ MODULE_API void Module_Startup(void) {
     }
 
     // Item settings
-    for (INDEX iPowerup = 0; iPowerup < CT_POWERUPS; iPowerup++)
+    for (INDEX iItemType = 0; iItemType < CT_ITEMS; iItemType++)
     {
-      strCommand.PrintF("sutl_iPowerUpType%d", iPowerup);
-      _apsPowerUpItems[iPowerup].Register(strCommand);
+      strCommand.PrintF("sutl_iHealthType%d", iItemType);
+      _apsHealthItems[iItemType].Register(strCommand);
+
+      strCommand.PrintF("sutl_iArmorType%d", iItemType);
+      _apsArmorItems[iItemType].Register(strCommand);
+
+      strCommand.PrintF("sutl_iPowerUpType%d", iItemType);
+      _apsPowerUpItems[iItemType].Register(strCommand);
     }
 
     _psReplaceWeapons.Register("sutl_iReplaceWeapons");

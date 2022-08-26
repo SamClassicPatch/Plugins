@@ -60,9 +60,19 @@ void AffectHealthItem(CEntity *pen) {
   }
 
   INDEX &iHealthType = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX iSetType = _apsHealthItems[iHealthType].GetIndex();
+
+  // Remove health item
+  if (iSetType == -1) {
+    pen->Destroy();
+
+  // Set specific type
+  } else if (iSetType >= 0) {
+    iHealthType = iSetType;
+    pen->Reinitialize();
 
   // Replace with another health item
-  if (_psReplaceHealth.GetIndex() >= 0) {
+  } else if (_psReplaceHealth.GetIndex() >= 0) {
     iHealthType = _psReplaceHealth.GetIndex();
     pen->Reinitialize();
   }
@@ -79,9 +89,19 @@ void AffectArmorItem(CEntity *pen) {
   }
 
   INDEX &iArmorType = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX iSetType = _apsArmorItems[iArmorType].GetIndex();
+
+  // Remove armor item
+  if (iSetType == -1) {
+    pen->Destroy();
+
+  // Set specific type
+  } else if (iSetType >= 0) {
+    iArmorType = iSetType;
+    pen->Reinitialize();
 
   // Replace with another armor item
-  if (_psReplaceArmor.GetIndex() >= 0) {
+  } else if (_psReplaceArmor.GetIndex() >= 0) {
     iArmorType = _psReplaceArmor.GetIndex();
     pen->Reinitialize();
   }

@@ -16,8 +16,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Maximum amount of weapons in the game
 #define CT_WEAPONS INDEX(31)
 
-// Maximum amount of powerups in the game
-#define CT_POWERUPS INDEX(10)
+// Maximum amount of items in the game
+#define CT_ITEMS INDEX(15)
 
 // Difficulty settings
 extern CPluginSymbol _psStartHP;
@@ -30,7 +30,9 @@ extern CPluginSymbol _apsGiveWeapons[CT_WEAPONS];
 
 // Item settings
 extern CPluginSymbol _apsWeaponItems[CT_WEAPONS];
-extern CPluginSymbol _apsPowerUpItems[CT_POWERUPS];
+extern CPluginSymbol _apsHealthItems[CT_ITEMS];
+extern CPluginSymbol _apsArmorItems[CT_ITEMS];
+extern CPluginSymbol _apsPowerUpItems[CT_ITEMS];
 extern CPluginSymbol _psReplaceWeapons;
 extern CPluginSymbol _psReplaceHealth;
 extern CPluginSymbol _psReplaceArmor;
