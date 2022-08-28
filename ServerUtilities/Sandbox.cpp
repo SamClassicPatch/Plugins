@@ -175,10 +175,6 @@ void IServerSandbox::SetEntityRotation(INDEX iEntityID, FLOAT fH, FLOAT fP, FLOA
 
 // Set new value to some property by its name of an entity
 void IServerSandbox::SetEntityProperty(INDEX iEntityID, CTString &strProperty, CTString &strValue) {
-  /*INDEX iEntityID = NEXT_ARG(INDEX);
-  CTString strProperty = *NEXT_ARG(CTString *);
-  CTString strValue = *NEXT_ARG(CTString *);*/
-
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
