@@ -33,9 +33,9 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
 
   // Metadata
   pInfo->strAuthor = "Dreamy Cecil";
-  pInfo->strName = "Toggleable Red Screen";
-  pInfo->strDescription = "A new console command that allows toggling of red screen on damage.";
-  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 1);
+  pInfo->strName = "Accessibility";
+  pInfo->strDescription = "Various toggleable options for enhanced accessibility.";
+  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 0);
 };
 
 // Toggle red screen on damage
@@ -85,5 +85,5 @@ MODULE_API void Module_Startup(void) {
   NewPatch(pBlendScreen, &CDrawPortPatch::P_BlendScreen, "CDrawPort::BlendScreen()");
 
   // Custom symbols
-  _psRedScreen.Register("sam_bRedScreenOnDamage");
+  _psRedScreen.Register("axs_bRedScreenOnDamage");
 };
