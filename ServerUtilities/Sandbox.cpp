@@ -23,7 +23,7 @@ CStaticStackArray<CTString> IServerSandbox::astrScheduled;
 
 // Schedule one command
 void IServerSandbox::ScheduleCommand(const CTString &strCommand) {
-  CPrintF(TRANS("Scheduled command for the server:\n"));
+  CPutString(TRANS("Scheduled command for the server:\n"));
   CPrintF("  %s\n", strCommand);
 
   astrScheduled.Push() = strCommand;
@@ -32,11 +32,11 @@ void IServerSandbox::ScheduleCommand(const CTString &strCommand) {
 // List all scheduled commands in order
 void IServerSandbox::ListScheduledCommands(void) {
   if (astrScheduled.Count() == 0) {
-    CPrintF(TRANS("No commands have been scheduled\n"));
+    CPutString(TRANS("No commands have been scheduled\n"));
     return;
   }
 
-  CPrintF(TRANS("Scheduled commands for the next server start:\n"));
+  CPutString(TRANS("Scheduled commands for the next server start:\n"));
 
   for (INDEX iCommand = 0; iCommand < astrScheduled.Count(); iCommand++) {
     CPrintF("  %s\n", astrScheduled[iCommand]);
