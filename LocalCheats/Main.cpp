@@ -55,7 +55,7 @@ static void WallWalking(void) {
       pen->SetPhysicsFlags(pen->GetPhysicsFlags() | EPF_STICKYFEET);
     }
 
-    CPrintF("%s^r - wall walking: %s\n", pen->GetName(), (bDisable ? "^cff0000OFF" : "^c00ff00ON"));
+    CPrintF(TRANS("%s^r - wall walking: %s\n"), pen->GetName(), (bDisable ? "^cff0000OFF" : "^c00ff00ON"));
   }
 };
 
@@ -80,7 +80,7 @@ static void Noclip(void) {
       pen->en_plViewpoint.pl_OrientationAngle = ANGLE3D(0.0f, 0.0f, 0.0f);
     }
 
-    CPrintF("%s^r - noclip: %s\n", pen->GetName(), (bDisable ? "^cff0000OFF" : "^c00ff00ON"));
+    CPrintF(TRANS("%s^r - noclip: %s\n"), pen->GetName(), (bDisable ? "^cff0000OFF" : "^c00ff00ON"));
   }
 };
 
@@ -90,38 +90,75 @@ static void SetHealth(INDEX iHealth) {
     CPlayerEntity *pen = iten;
 
     pen->SetHealth(iHealth);
-    CPrintF("Set %s^r health to %d\n", pen->GetName(), iHealth);
+    CPrintF(TRANS("Set %s^r health to %d\n"), pen->GetName(), iHealth);
   }
 };
 
+// Create specific item of a specific type
+static void CreateItem(CEntity *penPlayer, const CTString &strClass,
+                       const CTString &strPropName, INDEX iPropID, INDEX iType) {
+  // Create weapon item
+  CEntity *penWeapon = IWorld::GetWorld()->CreateEntity_t(penPlayer->GetPlacement(), strClass);
+
+  // Retrieve type property
+  CEntityProperty *pep = IWorld::PropertyForNameOrId(penWeapon, CEntityProperty::EPT_ENUM, strPropName, iPropID);
+  CTString strItem = "";
+
+  // Property found
+  if (pep != NULL) {
+    strItem = pep->ep_pepetEnumType->NameForValue(iType);
+  }
+    
+  // Unknown item type
+  if (strItem == "") {
+    strItem = TRANS("<unknown>");
+    iType = 1; // Default valid type
+  }
+
+  // Initialize the item
+  ENTITYPROPERTY(penWeapon, pep->ep_slOffset, INDEX) = iType;
+  penWeapon->Initialize();
+
+  CPrintF(TRANS("%s^r created '%s' item (%u)\n"), penPlayer->GetName(), strItem, penWeapon->en_ulID);
+};
+
 // Create weapon entity
-static void CreateWeapon(INDEX iWeapon) {
+static void CreateWeapon(INDEX iType) {
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
+    CreateItem(pen, "Classes\\WeaponItem.ecl", "Type", (0x322 << 8) + 1, iType);
+  }
+};
 
-    // Create weapon item
-    CEntity *penWeapon = IWorld::GetWorld()->CreateEntity_t(pen->GetPlacement(), CTFILENAME("Classes\\WeaponItem.ecl"));
+// Create ammo entity
+static void CreateAmmo(INDEX iType) {
+  FOREACHPLAYER(iten) {
+    CPlayerEntity *pen = iten;
+    CreateItem(pen, "Classes\\AmmoItem.ecl", "Type", (0x323 << 8) + 1, iType);
+  }
+};
 
-    // CWeaponItem::m_EwitType
-    CEntityProperty *pep = IWorld::PropertyForIdOrOffset(penWeapon, CEntityProperty::EPT_ENUM, (0x322 << 8) + 1, 0x3AC);
-    CTString strWeapon = "";
+// Create health entity
+static void CreateHealth(INDEX iType) {
+  FOREACHPLAYER(iten) {
+    CPlayerEntity *pen = iten;
+    CreateItem(pen, "Classes\\HealthItem.ecl", "Type", (0x321 << 8) + 1, iType);
+  }
+};
 
-    // Property found
-    if (pep != NULL) {
-      strWeapon = pep->ep_pepetEnumType->NameForValue(iWeapon);
-    }
-    
-    // Unknown weapon
-    if (strWeapon == "") {
-      strWeapon = "<unknown>";
-      iWeapon = 1;
-    }
+// Create armor entity
+static void CreateArmor(INDEX iType) {
+  FOREACHPLAYER(iten) {
+    CPlayerEntity *pen = iten;
+    CreateItem(pen, "Classes\\ArmorItem.ecl", "Type", (0x324 << 8) + 1, iType);
+  }
+};
 
-    // Initialize weapon item
-    ENTITYPROPERTY(penWeapon, pep->ep_slOffset, INDEX) = iWeapon;
-    penWeapon->Initialize();
-
-    CPrintF("%s^r created '%s' weapon item (%u)\n", pen->GetName(), strWeapon, penWeapon->en_ulID);
+// Create powerup entity
+static void CreatePowerUp(INDEX iType) {
+  FOREACHPLAYER(iten) {
+    CPlayerEntity *pen = iten;
+    CreateItem(pen, "Classes\\PowerUpItem.ecl", "Type", (0x328 << 8) + 1, iType);
   }
 };
 
@@ -134,5 +171,10 @@ MODULE_API void Module_Startup(void) {
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_WallWalking",  "void",  &WallWalking);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_Noclip",       "void",  &Noclip);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_SetHealth",    "INDEX", &SetHealth);
-  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateWeapon", "INDEX", &CreateWeapon);
+
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateWeapon",  "INDEX", &CreateWeapon);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateAmmo",    "INDEX", &CreateAmmo);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateHealth",  "INDEX", &CreateHealth);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateArmor",   "INDEX", &CreateArmor);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreatePowerUp", "INDEX", &CreatePowerUp);
 };
