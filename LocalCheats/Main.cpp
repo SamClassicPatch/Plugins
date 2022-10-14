@@ -15,10 +15,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/Interfaces/WorldFunctions.h>
-
 // Define own pointer to the API
 CCoreAPI *_pCoreAPI = NULL;
+
+static IProcessingEvents _evProcessing;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
@@ -33,8 +33,10 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 1);
 };
 
+CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));
+
 // Container of local player entities
-static CDynamicContainer<CPlayerEntity> _cenPlayers;
+CDynamicContainer<CPlayerEntity> _cenPlayers;
 
 // Iterate through each local player
 #define FOREACHPLAYER(_PlayerIter) \
@@ -167,7 +169,11 @@ MODULE_API void Module_Startup(void) {
   // Hook pointer to the API
   HookSymbolAPI();
 
+  _evProcessing.Register();
+
   // Custom symbols
+  _psAutoKill.Register("cht_iAutoKill");
+
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_WallWalking",  "void",  &WallWalking);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_Noclip",       "void",  &Noclip);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_SetHealth",    "INDEX", &SetHealth);
