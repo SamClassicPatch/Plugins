@@ -82,7 +82,7 @@ MODULE_API void Module_Startup(void) {
 
   // Patch screen blending function
   pBlendScreen = &CDrawPort::BlendScreen;
-  NewPatch(pBlendScreen, &CDrawPortPatch::P_BlendScreen, "CDrawPort::BlendScreen()");
+  GetPluginAPI()->NewPatch(pBlendScreen, &CDrawPortPatch::P_BlendScreen, "CDrawPort::BlendScreen()");
 
   // Custom symbols
   _psRedScreen.Register("axs_bRedScreenOnDamage");
