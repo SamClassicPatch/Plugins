@@ -184,3 +184,8 @@ MODULE_API void Module_Startup(void) {
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateArmor",   "INDEX", &CreateArmor);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreatePowerUp", "INDEX", &CreatePowerUp);
 };
+
+// Module cleanup
+MODULE_API void Module_Shutdown(void) {
+  _evProcessing.Unregister();
+};

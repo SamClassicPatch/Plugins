@@ -149,3 +149,8 @@ MODULE_API void Module_Startup(void) {
     GetPluginAPI()->RegisterMethod(TRUE, "void", "sutl_ParentEntity",      "INDEX, INDEX",               &IServerSandbox::ParentEntity);
   }
 };
+
+// Module cleanup
+MODULE_API void Module_Shutdown(void) {
+  _evNetwork.Unregister();
+};
