@@ -25,9 +25,8 @@ static INetworkEvents _evNetwork;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
-  // Used API and utility
-  pInfo->apiVer = CORE_API_VERSION;
-  pInfo->ulFlags = CPluginAPI::PF_GAME | CPluginAPI::PF_SERVER;
+  // Utility flags
+  pInfo->SetUtility(CPluginAPI::PF_GAME | CPluginAPI::PF_SERVER);
 
   // Metadata
   pInfo->strAuthor = "Dreamy Cecil";

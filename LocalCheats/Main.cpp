@@ -22,9 +22,8 @@ static IProcessingEvents _evProcessing;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
-  // Used API and utility
-  pInfo->apiVer = CORE_API_VERSION;
-  pInfo->ulFlags = CPluginAPI::PF_GAME | CPluginAPI::PF_EDITOR;
+  // Utility flags
+  pInfo->SetUtility(CPluginAPI::PF_GAME | CPluginAPI::PF_EDITOR);
 
   // Metadata
   pInfo->strAuthor = "Dreamy Cecil";
