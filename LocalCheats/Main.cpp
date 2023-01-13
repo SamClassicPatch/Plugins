@@ -33,6 +33,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
 };
 
 CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));
+CPluginSymbol _psAutoKillRange(SSF_PERSISTENT | SSF_USER, 256.0f);
 
 // Container of local player entities
 CDynamicContainer<CPlayerEntity> _cenPlayers;
@@ -172,6 +173,7 @@ MODULE_API void Module_Startup(void) {
 
   // Custom symbols
   _psAutoKill.Register("cht_iAutoKill");
+  _psAutoKillRange.Register("cht_fAutoKillRange");
 
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_WallWalking",  "void",  &WallWalking);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_Noclip",       "void",  &Noclip);

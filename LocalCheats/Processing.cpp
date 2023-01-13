@@ -38,6 +38,15 @@ void IProcessingEvents::OnStep(void)
         continue;
       }
 
+      // Too far from the killer
+      if (_psAutoKillRange.GetFloat() > 0.0f) {
+        FLOAT3D vDiff = (pen->GetPlacement().pl_PositionVector - penKiller->GetPlacement().pl_PositionVector);
+
+        if (vDiff.Length() > _psAutoKillRange.GetFloat()) {
+          continue;
+        }
+      }
+
       // CEnemyBase::m_bTemplate
       CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_BOOL, "Template", (0x136 << 8) + 86);
 
