@@ -60,7 +60,7 @@ void IProcessingEvents::OnStep(void)
       BOOL bKillEnemy = TRUE;
 
       // Kill enemies that target someone
-      if (iAutoKill > 1) {
+      if (iAutoKill == 1) {
         // CEnemyBase::m_penEnemy
         pep = IWorld::PropertyForIdOrOffset(pen, CEntityProperty::EPT_ENTITYPTR, (0x136 << 8) + 3, 0x30C);
 
