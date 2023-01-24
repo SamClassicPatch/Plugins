@@ -15,11 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/Interfaces/WorldFunctions.h>
-
-// Patcher
-#include <CoreLib/Patcher/FuncPatching.h>
-
 bool CPatch::_bDebugOutput = false;
 
 // Define own pointer to the API
@@ -37,52 +32,11 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 0);
 };
 
-// Toggle red screen on damage
-static CPluginSymbol _psRedScreen(SSF_PERSISTENT | SSF_USER, INDEX(1));
-
-// Original function pointer
-static void (CDrawPort::*pBlendScreen)(void) = NULL;
-
-// Patched function
-class CDrawPortPatch : public CDrawPort {
-  public:
-    void P_BlendScreen(void)
-    {
-      if (!_psRedScreen.GetIndex()) {
-        BOOL bReset = FALSE;
-
-        // Reset blending altogether if no world glaring available
-        if (IWorld::GetWSC(IWorld::GetWorld()) == NULL) {
-          bReset = TRUE;
-
-        // Reset red screen blending
-        } else if (dp_ulBlendingRA >  0 && dp_ulBlendingA  >  0
-                && dp_ulBlendingGA == 0 && dp_ulBlendingBA == 0) {
-          bReset = TRUE;
-        }
-
-        if (bReset) {
-          dp_ulBlendingRA = 0;
-          dp_ulBlendingGA = 0;
-          dp_ulBlendingBA = 0;
-          dp_ulBlendingA  = 0;
-        }
-      }
-
-      // Proceed to the original function
-      (this->*pBlendScreen)();
-    };
-};
-
 // Module entry point
 MODULE_API void Module_Startup(void) {
   // Hook pointer to the API
   HookSymbolAPI();
 
-  // Patch screen blending function
-  pBlendScreen = &CDrawPort::BlendScreen;
-  GetPluginAPI()->NewPatch(pBlendScreen, &CDrawPortPatch::P_BlendScreen, "CDrawPort::BlendScreen()");
-
-  // Custom symbols
-  _psRedScreen.Register("axs_bRedScreenOnDamage");
+  // Initialize accessibility modules
+  InitRedScreen();
 };

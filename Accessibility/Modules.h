@@ -13,10 +13,5 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. */
 
-// Utilize the API
-#include <CoreLib/API/CoreAPI.h>
-
-#include <CoreLib/Patcher/FuncPatching.h>
-#include <CoreLib/Interfaces/WorldFunctions.h>
-
-#include "Modules.h"
+// Red Screen
+void InitRedScreen(void);
