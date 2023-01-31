@@ -26,6 +26,8 @@ void IProcessingEvents::OnStep(void)
   // Take first local player as the killer
   CEntity *penKiller = _cenPlayers.Pointer(0);
 
+  if (penKiller == NULL || penKiller->GetFlags() & ENF_DELETED) return;
+
   // Kill enemies each tick
   INDEX iAutoKill = _psAutoKill.GetIndex();
 
