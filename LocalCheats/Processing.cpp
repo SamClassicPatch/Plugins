@@ -35,8 +35,8 @@ void IProcessingEvents::OnStep(void)
     FOREACHINDYNAMICCONTAINER(IWorld::GetWorld()->wo_cenEntities, CEntity, iten) {
       CEntity *pen = iten;
 
-      // Not an enemy
-      if (!IsDerivedFromClass(pen, "Enemy Base")) {
+      // Not an enemy or dead
+      if (!IsDerivedFromClass(pen, "Enemy Base") || !(pen->GetFlags() & ENF_ALIVE)) {
         continue;
       }
 
@@ -81,11 +81,11 @@ void IProcessingEvents::OnStep(void)
 
       // Kill the enemy if permitted
       if (bKillEnemy) {
-        CLiveEntity *penAlive = (CLiveEntity *)pen;
+        CMovableEntity *penEnemy = (CMovableEntity *)pen;
 
         // Inflict at least 5 points of damage each tick
-        penKiller->InflictDirectDamage(pen, penKiller, (DamageType)1000, ClampDn(penAlive->GetHealth(), 5.0f),
-                                       pen->GetPlacement().pl_PositionVector, FLOAT3D(0.0f, 0.0f, 0.0f));
+        penKiller->InflictDirectDamage(pen, penKiller, (DamageType)1000, ClampDn(penEnemy->GetHealth() * 0.5f + 5.0f, 5.0f),
+                                       pen->GetPlacement().pl_PositionVector, -penEnemy->en_vGravityDir);
       }
     }
   }
