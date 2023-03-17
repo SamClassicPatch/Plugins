@@ -15,6 +15,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#include <CoreLib/Objects/PropertyPtr.h>
+
 // Notify about not being able to retrieve some entity property
 static void ReportPropError(CEntity *pen, const char *strPropertyName) {
   CPrintF(TRANS("'%s' (%u) : Cannot retrieve '%s' property!\n"), pen->GetName(), pen->en_ulID, strPropertyName);
@@ -23,14 +25,14 @@ static void ReportPropError(CEntity *pen, const char *strPropertyName) {
 // Affect weapon item at the beginning of the game
 void AffectWeaponItem(CEntity *pen) {
   // Retrieve CWeaponItem::m_EwitType
-  CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x322 << 8) + 1);
+  static CPropertyPtr pptr(pen);
 
-  if (pep == NULL) {
+  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x322 << 8) + 1)) {
     ReportPropError(pen, "CWeaponItem::m_EwitType");
     return;
   }
 
-  INDEX &iWeaponType = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX &iWeaponType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
   INDEX iSetType = _apsWeaponItems[iWeaponType].GetIndex();
 
   // Remove weapon item
@@ -52,14 +54,14 @@ void AffectWeaponItem(CEntity *pen) {
 // Affect health item at the beginning of the game
 void AffectHealthItem(CEntity *pen) {
   // Retrieve CHealthItem::m_EhitType
-  CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x321 << 8) + 1);
+  static CPropertyPtr pptr(pen);
 
-  if (pep == NULL) {
+  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x321 << 8) + 1)) {
     ReportPropError(pen, "CHealthItem::m_EhitType");
     return;
   }
 
-  INDEX &iHealthType = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX &iHealthType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
   INDEX iSetType = _apsHealthItems[iHealthType].GetIndex();
 
   // Remove health item
@@ -81,14 +83,14 @@ void AffectHealthItem(CEntity *pen) {
 // Affect armor item at the beginning of the game
 void AffectArmorItem(CEntity *pen) {
   // Retrieve CArmorItem::m_EaitType
-  CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x324 << 8) + 1);
+  static CPropertyPtr pptr(pen);
 
-  if (pep == NULL) {
+  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x324 << 8) + 1)) {
     ReportPropError(pen, "CArmorItem::m_EaitType");
     return;
   }
 
-  INDEX &iArmorType = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX &iArmorType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
   INDEX iSetType = _apsArmorItems[iArmorType].GetIndex();
 
   // Remove armor item
@@ -110,14 +112,14 @@ void AffectArmorItem(CEntity *pen) {
 // Affect power up item at the beginning of the game
 void AffectPowerUpItem(CEntity *pen) {
   // Retrieve CPowerUpItem::m_puitType
-  CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_ENUM, "Type", (0x328 << 8) + 1);
+  static CPropertyPtr pptr(pen);
 
-  if (pep == NULL) {
+  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x328 << 8) + 1)) {
     ReportPropError(pen, "CPowerUpItem::m_puitType");
     return;
   }
 
-  INDEX &iPowerUp = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+  INDEX &iPowerUp = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
   INDEX iSetType = _apsPowerUpItems[iPowerUp].GetIndex();
 
   // Remove power up
@@ -134,9 +136,9 @@ void AffectPowerUpItem(CEntity *pen) {
 // Affect player start marker at the beginning of the game
 void AffectPlayerMarker(CEntity *pen) {
   // Retrieve CPlayerMarker::m_iGiveWeapons
-  CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_INDEX, "Give Weapons", (0x194 << 8) + 3);
+  static CPropertyPtr pptrGive(pen);
 
-  if (pep == NULL) {
+  if (!pptrGive.ByNameOrId(CEntityProperty::EPT_INDEX, "Give Weapons", (0x194 << 8) + 3)) {
     ReportPropError(pen, "CPlayerMarker::m_iGiveWeapons");
 
   } else {
@@ -147,46 +149,46 @@ void AffectPlayerMarker(CEntity *pen) {
 
       // Give weapon
       if (iGive == 1) {
-        ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX) |= (1 << iWeapon);
+        ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX) |= (1 << iWeapon);
 
       // Take away the weapon
       } else if (iGive == 0) {
-        ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX) &= ~(1 << iWeapon);
+        ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX) &= ~(1 << iWeapon);
       }
     }
   }
-  
-  // Retrieve CPlayerMarker::m_fMaxAmmoRatio
-  pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Max ammo ratio", (0x194 << 8) + 9);
 
-  if (pep == NULL) {
+  // Retrieve CPlayerMarker::m_fMaxAmmoRatio
+  static CPropertyPtr pptrMaxAmmo(pen);
+
+  if (!pptrMaxAmmo.ByNameOrId(CEntityProperty::EPT_FLOAT, "Max ammo ratio", (0x194 << 8) + 9)) {
     ReportPropError(pen, "CPlayerMarker::m_fMaxAmmoRatio");
 
   // Set maximum ammo
   } else if (_psMaxAmmo.GetIndex() != 0) {
-    ENTITYPROPERTY(pen, pep->ep_slOffset, FLOAT) = 1.0f;
+    ENTITYPROPERTY(pen, pptrMaxAmmo.Offset(), FLOAT) = 1.0f;
   }
-  
-  // Retrieve CPlayerMarker::m_fHealth
-  pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Health", (0x194 << 8) + 1);
 
-  if (pep == NULL) {
+  // Retrieve CPlayerMarker::m_fHealth
+  static CPropertyPtr pptrHealth(pen);
+
+  if (!pptrHealth.ByNameOrId(CEntityProperty::EPT_FLOAT, "Health", (0x194 << 8) + 1)) {
     ReportPropError(pen, "CPlayerMarker::m_fHealth");
 
   // Set custom health
   } else if (_psStartHP.GetFloat() != 100.0f) {
-    ENTITYPROPERTY(pen, pep->ep_slOffset, FLOAT) = _psStartHP.GetFloat();
+    ENTITYPROPERTY(pen, pptrHealth.Offset(), FLOAT) = _psStartHP.GetFloat();
   }
-  
-  // Retrieve CPlayerMarker::m_fShield
-  pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Shield", (0x194 << 8) + 2);
 
-  if (pep == NULL) {
+  // Retrieve CPlayerMarker::m_fShield
+  static CPropertyPtr pptrArmor(pen);
+
+  if (!pptrArmor.ByNameOrId(CEntityProperty::EPT_FLOAT, "Shield", (0x194 << 8) + 2)) {
     ReportPropError(pen, "CPlayerMarker::m_fShield");
 
   // Set custom armor
   } else if (_psStartAR.GetFloat() != 0.0f) {
-    ENTITYPROPERTY(pen, pep->ep_slOffset, FLOAT) = _psStartAR.GetFloat();
+    ENTITYPROPERTY(pen, pptrArmor.Offset(), FLOAT) = _psStartAR.GetFloat();
   }
 };
 
@@ -195,50 +197,50 @@ void AffectEnemySpawner(CEntity *pen) {
   const FLOAT fEnemyMul = _psEnemyMul.GetFloat();
 
   // Retrieve CEnemySpawner::m_ctTotal
-  CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_INDEX, "Count total", (0x130 << 8) + 8);
+  static CPropertyPtr pptrTotal(pen);
 
-  if (pep == NULL) {
+  if (!pptrTotal.ByNameOrId(CEntityProperty::EPT_INDEX, "Count total", (0x130 << 8) + 8)) {
     ReportPropError(pen, "CEnemySpawner::m_ctTotal");
 
   // Multiply total amount
   } else if (fEnemyMul > 0.0f) {
-    INDEX &iCount = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+    INDEX &iCount = ENTITYPROPERTY(pen, pptrTotal.Offset(), INDEX);
     iCount = ClampDn(INDEX(iCount * fEnemyMul), (INDEX)1);
   }
 
   // Retrieve CEnemySpawner::m_ctGroupSize
-  pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_INDEX, "Count group", (0x130 << 8) + 17);
+  static CPropertyPtr pptrGroup(pen);
 
-  if (pep == NULL) {
+  if (!pptrGroup.ByNameOrId(CEntityProperty::EPT_INDEX, "Count group", (0x130 << 8) + 17)) {
     ReportPropError(pen, "CEnemySpawner::m_ctGroupSize");
 
   // Multiply group size
   } else if (fEnemyMul > 0.0f) {
-    INDEX &iGroup = ENTITYPROPERTY(pen, pep->ep_slOffset, INDEX);
+    INDEX &iGroup = ENTITYPROPERTY(pen, pptrGroup.Offset(), INDEX);
     iGroup = ClampDn(INDEX(iGroup * fEnemyMul), (INDEX)1);
   }
 
   // Retrieve CEnemySpawner::m_tmSingleWait
-  pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Delay single", (0x130 << 8) + 16);
+  static CPropertyPtr pptrDelaySingle(pen);
 
-  if (pep == NULL) {
+  if (!pptrDelaySingle.ByNameOrId(CEntityProperty::EPT_FLOAT, "Delay single", (0x130 << 8) + 16)) {
     ReportPropError(pen, "CEnemySpawner::m_tmSingleWait");
 
   // Decrease delay between single enemies
   } else if (fEnemyMul > 0.0f) {
-    FLOAT &fTime = ENTITYPROPERTY(pen, pep->ep_slOffset, FLOAT);
+    FLOAT &fTime = ENTITYPROPERTY(pen, pptrDelaySingle.Offset(), FLOAT);
     fTime = ClampDn(fTime / fEnemyMul, 0.05f);
   }
 
   // Retrieve CEnemySpawner::m_tmGroupWait
-  pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_FLOAT, "Delay group", (0x130 << 8) + 5);
+  static CPropertyPtr pptrDelayGroup(pen);
 
-  if (pep == NULL) {
+  if (!pptrDelayGroup.ByNameOrId(CEntityProperty::EPT_FLOAT, "Delay group", (0x130 << 8) + 5)) {
     ReportPropError(pen, "CEnemySpawner::m_tmGroupWait");
 
   // Decrease delay between groups of enemies
   } else if (fEnemyMul > 0.0f) {
-    FLOAT &fTime = ENTITYPROPERTY(pen, pep->ep_slOffset, FLOAT);
+    FLOAT &fTime = ENTITYPROPERTY(pen, pptrDelayGroup.Offset(), FLOAT);
     fTime = ClampDn(fTime / fEnemyMul, 0.05f);
   }
 };

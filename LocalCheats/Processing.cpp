@@ -15,6 +15,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#include <CoreLib/Objects/PropertyPtr.h>
+
 void IProcessingEvents::OnStep(void)
 {
   _cenPlayers.Clear();
@@ -50,11 +52,11 @@ void IProcessingEvents::OnStep(void)
       }
 
       // CEnemyBase::m_bTemplate
-      CEntityProperty *pep = IWorld::PropertyForNameOrId(pen, CEntityProperty::EPT_BOOL, "Template", (0x136 << 8) + 86);
+      static CPropertyPtr pptrTemplate(pen);
 
       // Skip template enemies
-      if (pep != NULL) {
-        if (ENTITYPROPERTY(pen, pep->ep_slOffset, BOOL)) {
+      if (!pptrTemplate.ByNameOrId(CEntityProperty::EPT_BOOL, "Template", (0x136 << 8) + 86)) {
+        if (ENTITYPROPERTY(pen, pptrTemplate.Offset(), BOOL)) {
           continue;
         }
       }
@@ -64,14 +66,14 @@ void IProcessingEvents::OnStep(void)
       // Kill enemies that target someone
       if (iAutoKill == 1) {
         // CEnemyBase::m_penEnemy
-        pep = IWorld::PropertyForIdOrOffset(pen, CEntityProperty::EPT_ENTITYPTR, (0x136 << 8) + 3, 0x30C);
+        static CPropertyPtr pptrEnemy(pen);
 
         // No property
-        if (pep == NULL) {
+        if (!pptrEnemy.ByIdOrOffset(CEntityProperty::EPT_ENTITYPTR, (0x136 << 8) + 3, 0x30C)) {
           continue;
         }
 
-        CEntity *penEnemy = ENTITYPROPERTY(pen, pep->ep_slOffset, CEntityPointer);
+        CEntity *penEnemy = ENTITYPROPERTY(pen, pptrEnemy.Offset(), CEntityPointer);
 
         // No active enemy
         if (penEnemy == NULL) {
