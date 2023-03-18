@@ -21,7 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 CCoreAPI *_pCoreAPI = NULL;
 
 // Plugin event handlers
-static INetworkEvents _evNetwork;
+static IGameEvents _evGame;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
@@ -96,7 +96,7 @@ MODULE_API void Module_Startup(void) {
   HookSymbolAPI();
 
   // Register plugin events
-  _evNetwork.Register();
+  _evGame.Register();
 
   // Custom symbols
   {
@@ -151,5 +151,5 @@ MODULE_API void Module_Startup(void) {
 
 // Module cleanup
 MODULE_API void Module_Shutdown(void) {
-  _evNetwork.Unregister();
+  _evGame.Unregister();
 };

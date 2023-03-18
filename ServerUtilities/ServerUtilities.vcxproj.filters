@@ -35,7 +35,7 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Networking.cpp">
+    <ClCompile Include="GameLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StartActions.cpp">

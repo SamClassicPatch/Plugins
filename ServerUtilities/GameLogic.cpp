@@ -18,19 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StartActions.h"
 #include "Sandbox.h"
 
-BOOL INetworkEvents::OnServerPacket(CNetworkMessage &nmMessage, const ULONG ulType)
-{
-  // Don't handle packets
-  return FALSE;
-};
-
-BOOL INetworkEvents::OnClientPacket(CNetworkMessage &nmMessage, const ULONG ulType)
-{
-  // Don't handle packets
-  return FALSE;
-};
-
-void INetworkEvents::OnGameStart(void)
+void IGameEvents::OnGameStart(void)
 {
   // Affect entities at the beginning of the game
   FOREACHINDYNAMICCONTAINER(IWorld::GetWorld()->wo_cenEntities, CEntity, iten) {
@@ -72,6 +60,14 @@ void INetworkEvents::OnGameStart(void)
   }
 };
 
-void INetworkEvents::OnGameStop(void)
+void IGameEvents::OnGameStop(void)
+{
+};
+
+void IGameEvents::OnGameSave(const CTFileName &fnmSave)
+{
+};
+
+void IGameEvents::OnGameLoad(const CTFileName &fnmSave)
 {
 };
