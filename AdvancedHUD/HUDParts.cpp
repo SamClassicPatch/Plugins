@@ -489,7 +489,9 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         const PIX pixCharH = (_pfdDisplayFont->GetHeight() - 2) * fTextScale;
 
         #define PLAYER_INFO_X(Offset) (_vpixBR(1) * _vScaling(1) - Offset * pixCharW)
-        const PIX pixInfoY = (_vpixTL(2) + units.fNext) * _vScaling(2) + pixCharH * iPlayer;
+
+        const PIX pixOffsetY = _vpixTL(2) + (bShowMessages ? units.fNext : 5.0f);
+        const PIX pixInfoY = pixOffsetY * _vScaling(2) + pixCharH * iPlayer;
 
         if (eMode == E_GM_COOP) {
           _pdp->PutTextR(strName,   PLAYER_INFO_X(8), pixInfoY, colScore  | _ulAlphaHUD);
