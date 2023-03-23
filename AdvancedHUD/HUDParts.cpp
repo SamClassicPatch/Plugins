@@ -29,6 +29,11 @@ void CHud::RenderVitals(void) {
   FLOAT fValue = ClampDn(_penPlayer->GetHealth(), 0.0f);
   FLOAT fNormValue = fValue / TOP_HEALTH;
 
+  // [Cecil] Adjust border width based on which value is bigger
+  const FLOAT fArmor = _penPlayer->m_fArmor;
+  const FLOAT fMaxHealthArmor = Max(fValue, fArmor);
+  const FLOAT fBorderWidth = Clamp((FLOAT)floor(log10(fMaxHealthArmor) + 1.0f), 3.0f, 5.0f);
+
   CTString strValue;
   strValue.PrintF("%d", (SLONG)ceil(fValue));
 
@@ -43,17 +48,15 @@ void CHud::RenderVitals(void) {
   DrawBorder(fCol + fMoverX, fRow + fMoverY, units.fOne, units.fOne, _colBorder);
   DrawIcon(fCol + fMoverX, fRow + fMoverY, tex.toHealth, _colIconStd, fNormValue, TRUE);
 
-  fCol += units.fAdv + units.fChar * 1.5f - units.fHalf;
+  fCol += units.fAdv + units.fChar * (fBorderWidth * 0.5f) - units.fHalf;
 
-  DrawBorder(fCol, fRow, units.fChar * 3, units.fOne, _colBorder);
+  DrawBorder(fCol, fRow, units.fChar * fBorderWidth, units.fOne, _colBorder);
   DrawString(fCol, fRow, strValue, colDefault, fNormValue);
 
-  // Prepare and draw armor info
-  fValue = _penPlayer->m_fArmor;
+  // Don't display empty armor
+  if (fArmor <= 0.0f) return;
 
-  // No armor
-  if (fValue <= 0.0f) return;
-
+  fValue = fArmor;
   fNormValue = fValue / TOP_ARMOR;
   strValue.PrintF("%d", (SLONG)ceil(fValue));
 
@@ -87,8 +90,8 @@ void CHud::RenderVitals(void) {
   fCol -= fMoverX;
   fRow -= fMoverY;
 
-  fCol += units.fAdv + units.fChar * 1.5f - units.fHalf;
-  DrawBorder(fCol, fRow, units.fChar * 3, units.fOne, _colBorder);
+  fCol += units.fAdv + units.fChar * (fBorderWidth * 0.5f) - units.fHalf;
+  DrawBorder(fCol, fRow, units.fChar * fBorderWidth, units.fOne, _colBorder);
   DrawString(fCol, fRow, strValue, NONE, fNormValue);
 };
 
