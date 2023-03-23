@@ -37,7 +37,7 @@ void CHud::RenderVitals(void) {
   CTString strValue;
   strValue.PrintF("%d", (SLONG)ceil(fValue));
 
-  PrepareColorTransitions(_colMax, _colTop, _colMid, C_RED, 0.5f, 0.25f, FALSE);
+  PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
 
   FLOAT fMoverX, fMoverY;
   COLOR colDefault = AddShaker(5, fValue, _penLast->m_iLastHealth, _penLast->m_tmHealthChanged, fMoverX, fMoverY);
@@ -140,7 +140,7 @@ void CHud::RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **p
     CTString strValue;
     strValue.PrintF("%d", iValue);
 
-    PrepareColorTransitions(_colMax, _colTop, _colMid, C_RED, (_bTSEColors ? 0.30f : 0.5f), (_bTSEColors ? 0.15f : 0.25f), FALSE);
+    PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, (_bTSEColors ? 0.30f : 0.5f), (_bTSEColors ? 0.15f : 0.25f), FALSE);
     BOOL bDrawAmmoIcon = _fCustomScaling <= 1.0f;
 
     // draw ammo, value and weapon
@@ -170,7 +170,7 @@ void CHud::RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **p
 };
 
 void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
-  PrepareColorTransitions(_colMax, _colTop, _colMid, C_RED, 0.5f, 0.25f, FALSE);
+  PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
 
   // Prepare position and the weapon arsenal
   FLOAT fCol = _vpixBR(1) - units.fHalf;
@@ -197,13 +197,13 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
 
     COLOR colBombBorder = _colHUD;
     COLOR colBombIcon = _colIconStd;
-    COLOR colBombBar = (iBombCount == 1) ? C_RED : (_bTSEColors ? _colHUDText : _colHUD);
+    COLOR colBombBar = (iBombCount == 1) ? _colLow : _colTop;
 
     if (bBombFiring) {
       FLOAT fFactor = (_pTimer->GetLerpedCurrentTick() - _penPlayer->m_tmSeriousBombFired) / BOMB_FIRE_TIME;
-      colBombBorder = LerpColor(colBombBorder, C_RED, fFactor);
-      colBombIcon = LerpColor(colBombIcon, C_RED, fFactor);
-      colBombBar = LerpColor(colBombBar, C_RED, fFactor);
+      colBombBorder = LerpColor(colBombBorder, _colLow, fFactor);
+      colBombIcon = LerpColor(colBombIcon, _colLow, fFactor);
+      colBombBar = LerpColor(colBombBar, _colLow, fFactor);
     }
 
     DrawBorder(fCol, fRow, units.fOne, units.fOne, colBombBorder);
@@ -250,7 +250,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
 
 #if SE1_GAME != SS_TFE
   // Display active powerups
-  PrepareColorTransitions(_colMax, _colTop, _colMid, C_RED, 0.66f, 0.33f, FALSE);
+  PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.66f, 0.33f, FALSE);
 
   const FLOAT *ptmPowerups = &_penPlayer->m_tmInvisibility;
   const FLOAT *ptmPowerupsMax = &_penPlayer->m_tmInvisibilityMax;
@@ -297,7 +297,7 @@ void CHud::RenderBars(void) {
     FLOAT fRow = _vpixTL(2) + units.fOne + units.fNext;
     FLOAT fAdv = units.fAdv + units.fOne * 2 - units.fHalf;
 
-    PrepareColorTransitions( _colMax, _colTop, _colMid, C_RED, 0.5f, 0.25f, FALSE);
+    PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
 
     FLOAT fNormValue = ClampDn(fValue / 30.0f, 0.0f);
 
@@ -345,9 +345,9 @@ void CHud::RenderBars(void) {
 
     if (fNormValue > 0) {
       if (_bTSETheme) {
-        PrepareColorTransitions(_colMax, _colMax, _colTop, C_RED, 0.5f, 0.25f, FALSE);
+        PrepareColorTransitions(_colMax, _colMax, _colTop, _colLow, 0.5f, 0.25f, FALSE);
       } else {
-        PrepareColorTransitions(_colMax, _colTop, _colMid, C_RED, 0.5f, 0.25f, FALSE);
+        PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
       }
 
       FLOAT fCol = 184.0f;
@@ -671,10 +671,10 @@ void CHud::RenderCheats(void) {
 
   ULONG ulAlpha = sin(_tmNow * 16) * 96 + 128;
   PIX pixFontHeight = _pfdConsoleFont->fd_pixCharHeight;
-  const COLOR colCheat = (_bTSEColors ? _colHUDText : _colHUD) | ulAlpha;
+  const COLOR colCheat = _colTop | ulAlpha;
 
   _pdp->SetFont(_pfdConsoleFont);
-  _pdp->SetTextScaling( 1.0f);
+  _pdp->SetTextScaling(1.0f);
 
   static CSymbolPtr pbGod("cht_bGod");
   static CSymbolPtr pbFly("cht_bFly");

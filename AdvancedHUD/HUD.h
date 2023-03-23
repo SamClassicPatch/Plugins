@@ -69,12 +69,13 @@ class CHud {
 
     // Colors
     COLOR _colHUD;
-    COLOR _colHUDText;
+    COLOR _colBorder;
+    COLOR _colIconStd;
+
     COLOR _colMax;
     COLOR _colTop;
     COLOR _colMid;
-    COLOR _colIconStd;
-    COLOR _colBorder;
+    COLOR _colLow;
 
     // Other
     TIME _tmNow;
@@ -233,10 +234,15 @@ class CHud {
 
     // Base colors
     inline COLOR COL_Base(void);
+    inline COLOR COL_Icon(void);
     inline COLOR COL_SnoopingLight(void);
     inline COLOR COL_SnoopingDark(void);
-    inline COLOR COL_TextLight(void);
-    inline COLOR COL_TextOverTop(void);
+
+    // Value colors
+    inline COLOR COL_ValueOverTop(void);
+    inline COLOR COL_ValueTop(void);
+    inline COLOR COL_ValueMid(void);
+    inline COLOR COL_ValueLow(void);
 
     // Sniper scope
     inline COLOR COL_ScopeMask(void);

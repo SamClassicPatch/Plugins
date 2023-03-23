@@ -131,27 +131,14 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   _bTSETheme = FALSE;
 #endif
 
-  if (_bTSEColors) {
-    _colHUDText = COL_TextLight();
-  }
-
   _colHUD = COL_Base();
-  _colMax = _colHUD;
-  _colTop = _colHUD;
-  _colMid = _colHUD;
-  _colIconStd = _colHUD;
   _colBorder = _colHUD;
+  _colIconStd = COL_Icon();
 
-  // TSE colors
-  if (_bTSEColors) {
-    _colMax = COL_TextOverTop();
-    _colTop = COL_TextLight();
-    _colMid = LerpColor(_colTop, C_RED, 0.5f);
-
-    if (_bTSETheme) {
-      _colIconStd = C_WHITE;
-    }
-  }
+  _colMax = COL_ValueOverTop();
+  _colTop = COL_ValueTop();
+  _colMid = COL_ValueMid();
+  _colLow = COL_ValueLow();
 
   // Adjust border color during snooping
   if (bSnooping) {

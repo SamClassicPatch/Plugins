@@ -18,6 +18,10 @@ COLOR CHud::COL_Base(void) {
   return _bTSEColors ? 0x4C80BB00 : C_GREEN;
 };
 
+COLOR CHud::COL_Icon(void) {
+  return _bTSETheme ? C_WHITE : _colHUD;
+};
+
 COLOR CHud::COL_SnoopingLight(void) {
   if (_bTSEColors) return 0xEE9C0000;
 
@@ -31,12 +35,23 @@ COLOR CHud::COL_SnoopingDark(void) {
   return _bTSEColors ? 0x9B4B0000 : (_colBorder >> 1) & 0x7F7F7F00;
 };
 
-COLOR CHud::COL_TextLight(void) {
-  return _bTSEColors ? 0xFFD70000 : C_GREEN;
+// Value colors
+COLOR CHud::COL_ValueOverTop(void) {
+  return _bTSEColors ? 0x6CFF6C00 : _colHUD;
 };
 
-COLOR CHud::COL_TextOverTop(void) {
-  return _bTSEColors ? 0x6CFF6C00 : C_GREEN;
+COLOR CHud::COL_ValueTop(void) {
+  return _bTSEColors ? 0xFFD70000 : _colHUD;
+};
+
+COLOR CHud::COL_ValueMid(void) {
+  if (_bTSEColors) return LerpColor(COL_ValueTop(), COL_ValueLow(), 0.5f);
+
+  return _colHUD;
+};
+
+COLOR CHud::COL_ValueLow(void) {
+  return C_RED;
 };
 
 // Sniper scope
@@ -62,13 +77,13 @@ COLOR CHud::COL_WeaponBorder(void) {
 };
 
 COLOR CHud::COL_WeaponIcon(void) {
-  return _bTSEColors ? 0xCCDDFF00 : _colHUD;
+  return _bTSETheme ? 0xCCDDFF00 : _colHUD;
 };
 
 COLOR CHud::COL_WeaponNoAmmo(void) {
-  return _bTSEColors ? 0x22334400 : C_dGRAY;
+  return _bTSETheme ? 0x22334400 : C_dGRAY;
 };
 
 COLOR CHud::COL_WeaponWanted(void) {
-  return _bTSEColors ? 0xFFCC0000 : C_WHITE;
+  return _bTSETheme ? 0xFFCC0000 : C_WHITE;
 };
