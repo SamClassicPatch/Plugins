@@ -341,7 +341,7 @@ void CHud::DrawSniperMask(void) {
   const PIX pixDotSize = 2 * _vScaling(1);
   _pdp->Fill(fX - (pixDotSize >> 1), fY - (pixDotSize >> 1), pixDotSize, pixDotSize, C_BLACK | UBYTE(~ubScopeAlpha));
 
-  colMask = LerpColor(HUD_COL_MASK, C_WHITE, 0.25f);
+  colMask = LerpColor(COL_ScopeMask(), C_WHITE, 0.25f);
 
   FLOAT fScalingY = fH / 480.0f;
 
@@ -360,9 +360,9 @@ void CHud::DrawSniperMask(void) {
 
   // Blinking
   if (_penWeapons->m_tmLastSniperFire + 1.25f < _pTimer->GetLerpedCurrentTick()) {
-    colLED = 0x44FF22BB;
+    colLED = COL_ScopeLedIdle();
   } else {
-    colLED = 0xFF4422DD;
+    colLED = COL_ScopeLedFire();
   }
 
   // Reload indicator
@@ -399,7 +399,7 @@ void CHud::DrawSniperMask(void) {
       fRightYD = 6.0f;
     }
 
-    const COLOR colDetails = ((_psTheme.GetIndex() > 0) ? 0xFFCC3300 : C_GREEN) | 0x99;
+    const COLOR colDetails = COL_ScopeDetails() | 0x99;
 
     // Arrow + distance
     DrawCorrectTexture(&tex.toSniperArrow, fX - fLeftX * fScalingY,

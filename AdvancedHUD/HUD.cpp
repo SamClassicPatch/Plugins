@@ -132,10 +132,10 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 #endif
 
   if (_bTSEColors) {
-    _colHUDText = HUD_COL_LIGHT_TEXT;
+    _colHUDText = COL_TextLight();
   }
 
-  _colHUD = HUD_COL_MAIN;
+  _colHUD = COL_Base();
   _colMax = _colHUD;
   _colTop = _colHUD;
   _colMid = _colHUD;
@@ -144,8 +144,8 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   // TSE colors
   if (_bTSEColors) {
-    _colMax = HUD_COL_OVERTOP;
-    _colTop = HUD_COL_LIGHT_TEXT;
+    _colMax = COL_TextOverTop();
+    _colTop = COL_TextLight();
     _colMid = LerpColor(_colTop, C_RED, 0.5f);
 
     if (_bTSETheme) {
@@ -155,14 +155,11 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   // Adjust border color during snooping
   if (bSnooping) {
-    // Shift and swap color components
-    UBYTE ubR, ubG, ubB;
-    ColorToRGB(_colBorder, ubR, ubG, ubB);
-    _colBorder = RGBToColor(ubG, ubB, ubR);
+    _colBorder = COL_SnoopingLight();
 
     // Darken flash and scale
     if (ULONG(_tmNow * 5) & 1) {
-      _colBorder = (_bTSEColors ? HUD_COL_DARK_BORDER : (_colBorder >> 1) & 0x7F7F7F00);
+      _colBorder = COL_SnoopingDark();
       fHudScaling *= 0.933f;
     }
   }
@@ -216,37 +213,20 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
       }
 
       // Display weapon icon
-      if (_bTSETheme) {
-        COLOR _colBorder = _colHUD;
-        COLOR colIcon = 0xCCDDFF00;
+      COLOR colBorder = COL_WeaponBorder();
+      COLOR colIcon = COL_WeaponIcon();
 
-        // No ammo
-        if (wiInfo.paiAmmo != NULL && wiInfo.paiAmmo->iAmmo == 0) {
-          colIcon = 0x22334400;
-          _colBorder = 0x22334400;
+      // No ammo
+      if (wiInfo.paiAmmo != NULL && wiInfo.paiAmmo->iAmmo == 0) {
+        colBorder = colIcon = COL_WeaponNoAmmo();
 
-        // Selected weapon
-        } else if (ptoWantedWeapon == wiInfo.ptoWeapon) {
-          colIcon = 0xFFCC0000;
-          _colBorder = 0xFFCC0000;
-        }
-
-        DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
-        DrawIcon(fCol, fRow, *wiInfo.ptoWeapon, colIcon, 1.0f, FALSE);
-
-      } else {
-        COLOR colIcon = _colHUD;
-
-        if (ptoWantedWeapon == wiInfo.ptoWeapon) {
-          colIcon = C_WHITE;
-
-        } else if (wiInfo.paiAmmo != NULL && wiInfo.paiAmmo->iAmmo == 0) {
-          colIcon = C_dGRAY;
-        }
-
-        DrawBorder(fCol, fRow, units.fOne, units.fOne, colIcon);
-        DrawIcon(fCol, fRow, *wiInfo.ptoWeapon, colIcon, 1.0f, FALSE);
+      // Selected weapon
+      } else if (ptoWantedWeapon == wiInfo.ptoWeapon) {
+        colBorder = colIcon = COL_WeaponWanted();
       }
+
+      DrawBorder(fCol, fRow, units.fOne, units.fOne, colBorder);
+      DrawIcon(fCol, fRow, *wiInfo.ptoWeapon, colIcon, 1.0f, FALSE);
 
       // Advance to the next position
       fCol += units.fAdv;

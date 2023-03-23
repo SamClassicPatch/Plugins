@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colors.inl" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="StdH.h" />
     <ClInclude Include="TextureSet.h" />

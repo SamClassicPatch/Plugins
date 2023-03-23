@@ -227,16 +227,34 @@ class CHud {
     void RenderBars(void);
     void RenderGameModeInfo(EGameMode eMode);
     void RenderCheats(void);
+
+  // HUD colors
+  public:
+
+    // Base colors
+    inline COLOR COL_Base(void);
+    inline COLOR COL_SnoopingLight(void);
+    inline COLOR COL_SnoopingDark(void);
+    inline COLOR COL_TextLight(void);
+    inline COLOR COL_TextOverTop(void);
+
+    // Sniper scope
+    inline COLOR COL_ScopeMask(void);
+    inline COLOR COL_ScopeDetails(void);
+    inline COLOR COL_ScopeLedIdle(void);
+    inline COLOR COL_ScopeLedFire(void);
+
+    // Weapon selection list
+    inline COLOR COL_WeaponBorder(void);
+    inline COLOR COL_WeaponIcon(void);
+    inline COLOR COL_WeaponNoAmmo(void);
+    inline COLOR COL_WeaponWanted(void);
 };
 
 // Main HUD structure
 extern CHud _HUD;
 
-// Choose colors based on the selected color scheme
-#define HUD_COL_LIGHT_TEXT  (_bTSEColors ? 0xFFD70000 : C_GREEN)
-#define HUD_COL_DARK_BORDER (_bTSEColors ? 0x9B4B0000 : C_dGREEN)
-#define HUD_COL_MAIN        (_bTSEColors ? 0x4C80BB00 : C_GREEN)
-#define HUD_COL_MASK        (_bTSEColors ? 0x64B4FF00 : C_GREEN)
-#define HUD_COL_OVERTOP     (_bTSEColors ? 0x6CFF6C00 : C_GREEN)
+// Define color getting methods
+#include "Colors.inl"
 
 #endif
