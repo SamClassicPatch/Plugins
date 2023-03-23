@@ -433,6 +433,9 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
     SetAllPlayersStats(eKey);
 
+    // Show ping next to player names
+    const INDEX iShowPing = _psShowPlayerPing.GetIndex();
+
     // Go through all players
     INDEX iPlayer = 0;
 
@@ -448,13 +451,51 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       const INDEX iHealth = ClampDn((INDEX)ceil(penPlayer->GetHealth()), 0L);
       const INDEX iArmor = ClampDn((INDEX)ceil(penPlayer->m_fArmor), 0L);
 
-      CTString strScore, strMana, strFrags, strDeaths, strHealth, strArmor;
+      CTString strScore, strMana, strFrags, strDeaths, strHealth, strArmor, strPing;
       strScore.PrintF("%d", iScore);
       strMana.PrintF("%d", iMana);
       strFrags.PrintF("%d", iFrags);
       strDeaths.PrintF("%d", iDeaths);
       strHealth.PrintF("%d", iHealth);
       strArmor.PrintF("%d", iArmor);
+
+      // Display ping
+      if (iShowPing > 0) {
+        const INDEX iPing = ClampDn(INDEX(penPlayer->en_tmPing * 1000), (INDEX)0);
+
+        // Ping colors by level
+        static const CTString astrPingColors[] = {
+          "^c00FF00", "^cFFFF00", "^cCC7711", "^cAA3333",
+        };
+
+        // Pick color depending on current ping
+        INDEX iPingColor = 3; // Bad
+
+        if (iPing <= 75) {
+          iPingColor = 0; // Good
+        } else if (iPing <= 150) {
+          iPingColor = 1; // Okay
+        } else if (iPing <= 250) {
+          iPingColor = 2; // Mid
+        }
+
+        // Display signal strength
+        if (iShowPing > 1) {
+          // Pick signal strength and insert empty color in-between
+          static const char *astrPingSignals[] = {
+            "^b%s////", "^b%s///%s/", "^b%s//%s//", "^b%s/%s///",
+          };
+
+          strPing.PrintF(astrPingSignals[iPingColor], astrPingColors[iPingColor], "^caaaaaa");
+
+        // Display milliseconds
+        } else if (iPing > 999) {
+          strPing.PrintF("%s>999ms", astrPingColors[iPingColor]);
+
+        } else {
+          strPing.PrintF("%s%dms", astrPingColors[iPingColor], iPing);
+        }
+      }
 
       // Detemine corresponding colors
       colHealth = C_mlRED;
@@ -494,11 +535,23 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         const PIX pixCharW = (_pfdDisplayFont->GetWidth() - 2) * fTextScale;
         const PIX pixCharH = (_pfdDisplayFont->GetHeight() - 2) * fTextScale;
 
-        #define PLAYER_INFO_X(Offset) (_vpixBR(1) * _vScaling(1) - Offset * pixCharW)
-
+        // Vertical offset
         const PIX pixOffsetY = _vpixTL(2) + (bShowMessages ? units.fNext : 5.0f);
         const PIX pixInfoY = pixOffsetY * _vScaling(2) + pixCharH * iPlayer;
 
+        // Horizontal offset
+        PIX pixOffsetX = _vpixBR(1);
+
+        // Display player ping and make space for it
+        if (iShowPing > 0) {
+          _pdp->PutTextR(strPing, pixOffsetX * _vScaling(1), pixInfoY, C_WHITE | _ulAlphaHUD);
+
+          pixOffsetX -= (iShowPing > 1) ? 12 : 28;
+        }
+
+        #define PLAYER_INFO_X(Offset) (pixOffsetX * _vScaling(1) - Offset * pixCharW)
+
+        // Display player stats
         if (eMode == E_GM_COOP) {
           _pdp->PutTextR(strName,   PLAYER_INFO_X(8), pixInfoY, colScore  | _ulAlphaHUD);
           _pdp->PutTextC(strHealth, PLAYER_INFO_X(6), pixInfoY, colHealth | _ulAlphaHUD);

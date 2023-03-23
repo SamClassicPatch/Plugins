@@ -67,6 +67,8 @@ CPluginSymbol _psScreenEdgeY(SSF_PERSISTENT | SSF_USER, INDEX(5));
   CPluginSymbol _psScopeAlpha(SSF_PERSISTENT | SSF_USER, FLOAT(1.0f));
 #endif
 
+CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
+
 // Module entry point
 MODULE_API void Module_Startup(void) {
   // Hook pointer to the API
@@ -88,6 +90,8 @@ MODULE_API void Module_Startup(void) {
     // TSE specific
     _psScopeAlpha.Register("ahud_fScopeAlpha");
   #endif
+
+  _psShowPlayerPing.Register("ahud_iShowPlayerPing");
 
   // Initialize the HUD itself
   _HUD.Initialize();

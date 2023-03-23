@@ -253,7 +253,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     _pdp->SetTextCharSpacing(-2.0f * fTextScale);
 
     CTString strLatency;
-    strLatency.PrintF("%4.0fms", _penPlayer->m_tmLatency*1000.0f);
+    strLatency.PrintF("%4.0fms", _penPlayer->m_tmLatency * 1000.0f);
 
     PIX pixFontHeight = _pfdDisplayFont->GetHeight() * fTextScale + fTextScale + 1;
     _pdp->PutTextR(strLatency, _vpixScreen(1), _vpixScreen(2) - pixFontHeight, C_WHITE | CT_OPAQUE);

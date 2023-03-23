@@ -39,6 +39,8 @@ extern CPluginSymbol _psScopeAlpha;
   extern CPluginSymbol _psScopeAlpha;
 #endif
 
+extern CPluginSymbol _psShowPlayerPing;
+
 // Entities library dependency
 #ifdef _DEBUG
   #pragma comment(lib, "EntitiesVD.lib")
