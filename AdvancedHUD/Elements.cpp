@@ -316,11 +316,11 @@ void CHud::DrawCorrectTexture(CTextureObject *pto, FLOAT fX, FLOAT fY, FLOAT fWi
 // Draw sniper mask
 void CHud::DrawSniperMask(void) {
   // Determine location
-  const FLOAT fW = _vScreen(1);
-  const FLOAT fH = _vScreen(2);
-  const FLOAT fX = _vScreen(1) * 0.5f;
-  const FLOAT fY = _vScreen(2) * 0.5f;
-  const FLOAT fBorder = (_vScreen(1) - _vScreen(2)) / 2;
+  const FLOAT fW = _vpixScreen(1);
+  const FLOAT fH = _vpixScreen(2);
+  const FLOAT fX = _vpixScreen(1) * 0.5f;
+  const FLOAT fY = _vpixScreen(2) * 0.5f;
+  const FLOAT fBorder = (_vpixScreen(1) - _vpixScreen(2)) * 0.5f;
 
   const UBYTE ubScopeAlpha = NormFloatToByte(_psScopeAlpha.GetFloat());
   COLOR colMask = 0xFFFFFF00 | ubScopeAlpha;

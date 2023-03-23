@@ -99,7 +99,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   // Get drawport with its dimensions
   _pdp = pdpCurrent;
-  _vScreen = PIX2D(_pdp->GetWidth(), _pdp->GetHeight());
+  _vpixScreen = PIX2D(_pdp->GetWidth(), _pdp->GetHeight());
 
   _tmNow = _pTimer->CurrentTick();
 
@@ -107,11 +107,11 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   FLOAT fHudScaling = Clamp(pfScaling.GetFloat(), 0.05f, 2.0f);
 
   // Set wide adjustment dynamically and apply it to scaling
-  _fWideAdjustment = ((FLOAT)_vScreen(2) / (FLOAT)_vScreen(1)) * (4.0f / 3.0f);
+  _fWideAdjustment = ((FLOAT)_vpixScreen(2) / (FLOAT)_vpixScreen(1)) * (4.0f / 3.0f);
   fHudScaling *= _fWideAdjustment;
 
-  _vScaling(1) = (FLOAT)_vScreen(1) / 640.0f;
-  _vScaling(2) = (FLOAT)_vScreen(2) / (480.0f * _fWideAdjustment);
+  _vScaling(1) = (FLOAT)_vpixScreen(1) / 640.0f;
+  _vScaling(2) = (FLOAT)_vpixScreen(2) / (480.0f * _fWideAdjustment);
 
   // Determine screen edges
   INDEX iScreenEdgeX = ClampDn(_psScreenEdgeX.GetIndex(), (INDEX)0);
@@ -220,7 +220,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     }
   }
 
-  Rescale(0.5f);
+  Rescale(0.5f / _fWideAdjustment);
   RenderBars();
   ResetScale(fHudScaling);
 
@@ -256,7 +256,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     strLatency.PrintF("%4.0fms", _penPlayer->m_tmLatency*1000.0f);
 
     PIX pixFontHeight = _pfdDisplayFont->GetHeight() * fTextScale + fTextScale + 1;
-    _pdp->PutTextR(strLatency, _vScreen(1), _vScreen(2) - pixFontHeight, C_WHITE | CT_OPAQUE);
+    _pdp->PutTextR(strLatency, _vpixScreen(1), _vpixScreen(2) - pixFontHeight, C_WHITE | CT_OPAQUE);
   }
 
   // Restore font defaults
@@ -280,7 +280,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     CTString strTime;
     strTime.PrintF("%2d:%02d", tmNewTime->tm_hour, tmNewTime->tm_min);
 
-    _pdp->PutTextR(strTime, _vScreen(1) - 3, 2, C_lYELLOW | CT_OPAQUE);
+    _pdp->PutTextR(strTime, _vpixScreen(1) - 3, 2, C_lYELLOW | CT_OPAQUE);
   }
 #endif
 

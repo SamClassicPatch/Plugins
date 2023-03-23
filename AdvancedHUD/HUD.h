@@ -54,7 +54,7 @@ class CHud {
 
     // Drawing variables
     CDrawPort *_pdp;
-    PIX2D _vScreen;
+    PIX2D _vpixScreen;
     FLOAT2D _vScaling; // Scaling factors taking aspect ratio in consideration
     FLOAT _fWideAdjustment;
     FLOAT _fCustomScaling;

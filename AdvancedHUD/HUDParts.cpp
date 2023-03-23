@@ -293,18 +293,21 @@ void CHud::RenderBars(void) {
   FLOAT fValue = _penPlayer->en_tmMaxHoldBreath - (_pTimer->CurrentTick() - _penPlayer->en_tmLastBreathed);
 
   if (_penPlayer->IsConnected() && _penPlayer->GetFlags() & ENF_ALIVE && fValue < 30.0f) { 
-    FLOAT fCol = 280.0f;
+    FLOAT fCol = 320.0f + units.fHalf;
     FLOAT fRow = _vpixTL(2) + units.fOne + units.fNext;
-    FLOAT fAdv = units.fAdv + units.fOne * 2 - units.fHalf;
+
+    FLOAT fBarSize = units.fOne * 4.0f;
+    FLOAT fColIcon = fCol - (fBarSize * 0.5f) - units.fAdv + units.fHalf;
 
     PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
 
     FLOAT fNormValue = ClampDn(fValue / 30.0f, 0.0f);
 
-    DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
-    DrawBorder(fCol + fAdv, fRow, units.fOne * 4, units.fOne, _colBorder);
-    DrawBar(fCol + fAdv, fRow, units.fOne * 4 * 0.975f, units.fOne * 0.9375f, E_BD_LEFT, NONE, fNormValue);
-    DrawIcon(fCol, fRow, tex.toOxygen, _colIconStd, fNormValue, TRUE);
+    DrawBorder(fCol, fRow, fBarSize, units.fOne, _colBorder);
+    DrawBar(fCol, fRow, fBarSize * 0.975f, units.fOne * 0.9375f, E_BD_LEFT, NONE, fNormValue);
+
+    DrawBorder(fColIcon, fRow, units.fOne, units.fOne, _colBorder);
+    DrawIcon(fColIcon, fRow, tex.toOxygen, _colIconStd, fNormValue, TRUE);
 
     bOxygenOnScreen = TRUE;
   }
@@ -350,18 +353,21 @@ void CHud::RenderBars(void) {
         PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
       }
 
-      FLOAT fCol = 184.0f;
+      FLOAT fCol = 320.0f + units.fHalf;
       FLOAT fRow = _vpixTL(2) + units.fOne + units.fNext;
-      FLOAT fAdv = units.fAdv + units.fOne * 8 - units.fHalf;
+
+      FLOAT fBarSize = units.fOne * 16.0f;
+      FLOAT fColIcon = fCol - (fBarSize * 0.5f) - units.fAdv + units.fHalf;
 
       if (bOxygenOnScreen) {
         fRow += units.fNext;
       }
 
-      DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
-      DrawBorder(fCol + fAdv, fRow, units.fOne * 16, units.fOne, _colBorder);
-      DrawBar(fCol + fAdv, fRow, units.fOne * 16 * 0.995f, units.fOne * 0.9375f, E_BD_LEFT, NONE, fNormValue);
-      DrawIcon(fCol, fRow, tex.toHealth, _colIconStd, fNormValue, FALSE);
+      DrawBorder(fCol, fRow, fBarSize, units.fOne, _colBorder);
+      DrawBar(fCol, fRow, fBarSize * 0.995f, units.fOne * 0.9375f, E_BD_LEFT, NONE, fNormValue);
+
+      DrawBorder(fColIcon, fRow, units.fOne, units.fOne, _colBorder);
+      DrawIcon(fColIcon, fRow, tex.toHealth, _colIconStd, fNormValue, FALSE);
     }
   }
 };
@@ -619,14 +625,15 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
     strValue.PrintF("%d", Max(_penPlayer->m_iHighScore, _penPlayer->m_psGameStats.ps_iScore));
     BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore>_penPlayer->m_iHighScore;
 
-    fCol = 320.0f - units.fOne - units.fChar * 4;
+    fCol = 320.0f + units.fHalf;
     fRow = _vpixTL(2) + units.fHalf;
-    fAdv = units.fAdv + units.fChar * 4 - units.fHalf;
+    fAdv = units.fChar * 4 + units.fAdv - units.fHalf;
 
-    DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
-    DrawBorder(fCol + fAdv, fRow, units.fChar * 8, units.fOne, _colBorder);
-    DrawString(fCol + fAdv, fRow, strValue, NONE, bBeating ? 0.0f : 1.0f);
-    DrawIcon(fCol, fRow, tex.toHiScore, _colIconStd, 1.0f, FALSE);
+    DrawBorder(fCol, fRow, units.fChar * 8, units.fOne, _colBorder);
+    DrawString(fCol, fRow, strValue, NONE, bBeating ? 0.0f : 1.0f);
+
+    DrawBorder(fCol - fAdv, fRow, units.fOne, units.fOne, _colBorder);
+    DrawIcon(fCol - fAdv, fRow, tex.toHiScore, _colIconStd, 1.0f, FALSE);
 
     // Draw unread messages
     if (bShowMessages && _penPlayer->m_ctUnreadMessages > 0) {
@@ -684,23 +691,25 @@ void CHud::RenderCheats(void) {
 
   INDEX iLine = 1;
 
+  #define CHEAT_LINE_Y (_vpixScreen(2) - pixFontHeight * (iLine++))
+
   if (pfTrans.GetFloat() > 1.0f) {
-    _pdp->PutTextR("turbo", _vScreen(1) - 1, _vScreen(2) - pixFontHeight * (iLine++), colCheat);
+    _pdp->PutTextR("turbo", _vpixScreen(1) - 1, CHEAT_LINE_Y, colCheat);
   }
 
   if (pbInvisible.GetIndex()) {
-    _pdp->PutTextR("invisible", _vScreen(1) - 1, _vScreen(2) - pixFontHeight * (iLine++), colCheat);
+    _pdp->PutTextR("invisible", _vpixScreen(1) - 1, CHEAT_LINE_Y, colCheat);
   }
 
   if (pbGhost.GetIndex()) {
-    _pdp->PutTextR("ghost", _vScreen(1) - 1, _vScreen(2) - pixFontHeight * (iLine++), colCheat);
+    _pdp->PutTextR("ghost", _vpixScreen(1) - 1, CHEAT_LINE_Y, colCheat);
   }
 
   if (pbFly.GetIndex()) {
-    _pdp->PutTextR("fly", _vScreen(1) - 1, _vScreen(2) - pixFontHeight * (iLine++), colCheat);
+    _pdp->PutTextR("fly", _vpixScreen(1) - 1, CHEAT_LINE_Y, colCheat);
   }
 
   if (pbGod.GetIndex()) {
-    _pdp->PutTextR("god", _vScreen(1) - 1, _vScreen(2) - pixFontHeight * (iLine++), colCheat);
+    _pdp->PutTextR("god", _vpixScreen(1) - 1, CHEAT_LINE_Y, colCheat);
   }
 };
