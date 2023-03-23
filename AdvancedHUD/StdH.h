@@ -31,6 +31,7 @@ extern CPluginSymbol _psScopeAlpha;
 
 #if SE1_GAME == SS_TFE
   // TFE specific
+  extern CPluginSymbol _psShowClock;
   extern CPluginSymbol _psShowMatchInfo;
 
 #else

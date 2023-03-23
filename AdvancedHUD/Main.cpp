@@ -59,6 +59,7 @@ CPluginSymbol _psScreenEdgeY(SSF_PERSISTENT | SSF_USER, INDEX(5));
 
 #if SE1_GAME == SS_TFE
   // TFE specific
+  CPluginSymbol _psShowClock(SSF_PERSISTENT | SSF_USER, INDEX(0));
   CPluginSymbol _psShowMatchInfo(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 #else
@@ -80,6 +81,7 @@ MODULE_API void Module_Startup(void) {
 
   #if SE1_GAME == SS_TFE
     // TFE specific
+    _psShowClock.Register("hud_bShowClock");
     _psShowMatchInfo.Register("hud_bShowMatchInfo");
 
   #else
