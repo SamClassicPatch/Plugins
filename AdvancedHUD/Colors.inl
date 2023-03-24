@@ -15,52 +15,114 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Base colors
 COLOR CHud::COL_Base(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorBase.GetIndex() << 8;
+  }
+
   return _bTSEColors ? 0x4C80BB00 : C_GREEN;
 };
 
 COLOR CHud::COL_Icon(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorIcon.GetIndex() << 8;
+  }
+
   return _bTSETheme ? C_WHITE : _colHUD;
 };
 
 COLOR CHud::COL_SnoopingLight(void) {
-  if (_bTSEColors) return 0xEE9C0000;
+  // Swap color channels for TFE and custom colors
+  if (!_bTSEColors || _psColorize.GetIndex()) {
+    UBYTE ubR, ubG, ubB;
+    ColorToRGB(_colBorder, ubR, ubG, ubB);
 
-  // Shift and swap color components
-  UBYTE ubR, ubG, ubB;
-  ColorToRGB(_colBorder, ubR, ubG, ubB);
-  return RGBToColor(ubG, ubB, ubR);
+    return RGBToColor(ubG, ubB, ubR);
+  }
+
+  // TSE colors
+  return 0xEE9C0000;
 };
 
 COLOR CHud::COL_SnoopingDark(void) {
-  return _bTSEColors ? 0x9B4B0000 : (_colBorder >> 1) & 0x7F7F7F00;
+  // Shift for TFE and custom color
+  if (!_bTSEColors || _psColorize.GetIndex()) {
+    return (_colBorder >> 1) & 0x7F7F7F00;
+  }
+
+  // TSE colors
+  return 0x9B4B0000;
+};
+
+COLOR CHud::COL_AmmoSelected(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorSelect.GetIndex() << 8;
+  }
+
+  return C_WHITE;
+};
+
+COLOR CHud::COL_AmmoDepleted(void) {
+  return _bTSEColors ? C_mdGRAY : C_GRAY;
 };
 
 // Value colors
 COLOR CHud::COL_ValueOverTop(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorMax.GetIndex() << 8;
+  }
+
   return _bTSEColors ? 0x6CFF6C00 : _colHUD;
 };
 
 COLOR CHud::COL_ValueTop(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorTop.GetIndex() << 8;
+  }
+
   return _bTSEColors ? 0xFFD70000 : _colHUD;
 };
 
 COLOR CHud::COL_ValueMid(void) {
-  if (_bTSEColors) return LerpColor(COL_ValueTop(), COL_ValueLow(), 0.5f);
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorMid.GetIndex() << 8;
+  }
 
-  return _colHUD;
+  // TSE: LerpColor(0xFFD70000, 0xFF000000, 0.5f)
+  return _bTSEColors ? 0xFF6B0000 : _colHUD;
 };
 
 COLOR CHud::COL_ValueLow(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorLow.GetIndex() << 8;
+  }
+
   return C_RED;
 };
 
 // Sniper scope
 COLOR CHud::COL_ScopeMask(void) {
-  return _bTSEColors ? 0x64B4FF00 : C_GREEN;
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorBase.GetIndex() << 8;
+  }
+
+  return _bTSEColors ? 0x64B4FF00 : C_mlGREEN;
 };
 
 COLOR CHud::COL_ScopeDetails(void) {
-  return _bTSEColors ? 0xFFCC3300 : C_GREEN;
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorIcon.GetIndex() << 8;
+  }
+
+  return _bTSEColors ? 0xFFCC3300 : C_lGRAY;
 };
 
 COLOR CHud::COL_ScopeLedIdle(void) {
@@ -77,6 +139,11 @@ COLOR CHud::COL_WeaponBorder(void) {
 };
 
 COLOR CHud::COL_WeaponIcon(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorWeapon.GetIndex() << 8;
+  }
+
   return _bTSETheme ? 0xCCDDFF00 : _colHUD;
 };
 
@@ -85,5 +152,10 @@ COLOR CHud::COL_WeaponNoAmmo(void) {
 };
 
 COLOR CHud::COL_WeaponWanted(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorSelect.GetIndex() << 8;
+  }
+
   return _bTSETheme ? 0xFFCC0000 : C_WHITE;
 };

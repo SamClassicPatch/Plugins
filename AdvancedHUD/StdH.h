@@ -41,6 +41,16 @@ extern CPluginSymbol _psScopeAlpha;
 
 extern CPluginSymbol _psShowPlayerPing;
 
+extern CPluginSymbol _psColorize;
+extern CPluginSymbol _psColorBase;
+extern CPluginSymbol _psColorIcon;
+extern CPluginSymbol _psColorWeapon;
+extern CPluginSymbol _psColorSelect;
+extern CPluginSymbol _psColorMax;
+extern CPluginSymbol _psColorTop;
+extern CPluginSymbol _psColorMid;
+extern CPluginSymbol _psColorLow;
+
 // Entities library dependency
 #ifdef _DEBUG
   #pragma comment(lib, "EntitiesVD.lib")

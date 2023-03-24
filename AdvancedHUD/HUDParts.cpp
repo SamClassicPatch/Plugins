@@ -29,7 +29,7 @@ void CHud::RenderVitals(void) {
   FLOAT fValue = ClampDn(_penPlayer->GetHealth(), 0.0f);
   FLOAT fNormValue = fValue / TOP_HEALTH;
 
-  // [Cecil] Adjust border width based on which value is bigger
+  // Adjust border width based on which value is bigger
   const FLOAT fArmor = _penPlayer->m_fArmor;
   const FLOAT fMaxHealthArmor = Max(fValue, fArmor);
   const FLOAT fBorderWidth = Clamp((FLOAT)floor(log10(fMaxHealthArmor) + 1.0f), 3.0f, 5.0f);
@@ -228,10 +228,10 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
       COLOR colIcon = _colIconStd;
 
       if (ptoAmmo == ai.ptoAmmo) {
-        colIcon = C_WHITE;
+        colIcon = COL_AmmoSelected();
 
       } else if (ai.iAmmo == 0) {
-        colIcon = (_bTSEColors ? C_mdGRAY : C_GRAY);
+        colIcon = COL_AmmoDepleted();
       }
 
       FLOAT fNormValue = (FLOAT)ai.iAmmo / (FLOAT)ai.iMaxAmmo;

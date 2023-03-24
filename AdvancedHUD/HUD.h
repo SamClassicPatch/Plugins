@@ -237,6 +237,8 @@ class CHud {
     inline COLOR COL_Icon(void);
     inline COLOR COL_SnoopingLight(void);
     inline COLOR COL_SnoopingDark(void);
+    inline COLOR COL_AmmoSelected(void);
+    inline COLOR COL_AmmoDepleted(void);
 
     // Value colors
     inline COLOR COL_ValueOverTop(void);

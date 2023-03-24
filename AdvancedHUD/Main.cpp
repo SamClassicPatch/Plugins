@@ -69,6 +69,17 @@ CPluginSymbol _psScreenEdgeY(SSF_PERSISTENT | SSF_USER, INDEX(5));
 
 CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
 
+// HUD colorization (no alpha channel)
+CPluginSymbol _psColorize(SSF_PERSISTENT | SSF_USER, INDEX(0));
+CPluginSymbol _psColorBase(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorIcon(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorWeapon(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorSelect(SSF_PERSISTENT | SSF_USER, INDEX(0xFFFFFF));
+CPluginSymbol _psColorMax(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorTop(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorMid(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorLow(SSF_PERSISTENT | SSF_USER, INDEX(0xFF0000));
+
 // Module entry point
 MODULE_API void Module_Startup(void) {
   // Hook pointer to the API
@@ -92,6 +103,16 @@ MODULE_API void Module_Startup(void) {
   #endif
 
   _psShowPlayerPing.Register("ahud_iShowPlayerPing");
+
+  _psColorize.Register("ahud_bColorize");
+  _psColorBase.Register("ahud_iColorBase");
+  _psColorIcon.Register("ahud_iColorIcon");
+  _psColorWeapon.Register("ahud_iColorWeapon");
+  _psColorSelect.Register("ahud_iColorSelect");
+  _psColorMax.Register("ahud_iColorMax");
+  _psColorTop.Register("ahud_iColorTop");
+  _psColorMid.Register("ahud_iColorMid");
+  _psColorLow.Register("ahud_iColorLow");
 
   // Initialize the HUD itself
   _HUD.Initialize();
