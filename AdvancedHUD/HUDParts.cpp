@@ -216,7 +216,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
 #endif
 
   // Display available ammo
-  if (!GetSP()->sp_bInfiniteAmmo) {
+  if (!GetSP()->sp_bInfiniteAmmo && _psShowAmmoRow.GetIndex()) {
     for (INDEX iAmmo = GetAmmo().Count() - 1; iAmmo >= 0; iAmmo--) {
       HudAmmo &ai = GetAmmo()[iAmmo];
       ASSERT(ai.iAmmo >= 0);
@@ -246,6 +246,10 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
       // Advance to the next position
       fCol -= units.fAdv;
     }
+
+    // Set new starting position for powerups
+    fCol = _vpixBR(1) - units.fHalf;
+    fRow -= units.fAdv + units.fHalf;
   }
 
 #if SE1_GAME != SS_TFE
@@ -254,9 +258,6 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
 
   const FLOAT *ptmPowerups = &_penPlayer->m_tmInvisibility;
   const FLOAT *ptmPowerupsMax = &_penPlayer->m_tmInvisibilityMax;
-
-  fCol = _vpixBR(1) - units.fHalf;
-  fRow = _vpixBR(2) - units.fOne - units.fAdv;
 
   for (INDEX iPowerUp = 0; iPowerUp < MAX_POWERUPS; iPowerUp++) {
     const TIME tmDelta = ptmPowerups[iPowerUp] - _tmNow;

@@ -68,6 +68,7 @@ CPluginSymbol _psScreenEdgeY(SSF_PERSISTENT | SSF_USER, INDEX(5));
 #endif
 
 CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
+CPluginSymbol _psShowAmmoRow(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 // HUD colorization (no alpha channel)
 CPluginSymbol _psColorize(SSF_PERSISTENT | SSF_USER, INDEX(0));
@@ -103,6 +104,7 @@ MODULE_API void Module_Startup(void) {
   #endif
 
   _psShowPlayerPing.Register("ahud_iShowPlayerPing");
+  _psShowAmmoRow.Register("ahud_bShowAmmoRow");
 
   _psColorize.Register("ahud_bColorize");
   _psColorBase.Register("ahud_iColorBase");

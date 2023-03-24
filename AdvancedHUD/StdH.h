@@ -40,6 +40,7 @@ extern CPluginSymbol _psScopeAlpha;
 #endif
 
 extern CPluginSymbol _psShowPlayerPing;
+extern CPluginSymbol _psShowAmmoRow;
 
 extern CPluginSymbol _psColorize;
 extern CPluginSymbol _psColorBase;
