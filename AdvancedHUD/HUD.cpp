@@ -292,10 +292,20 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 #if SE1_VER < SE1_107
   #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
     CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon
+
+  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+    _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon
+
 #else
   #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
     CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye
+
+  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+    _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye
 #endif
+
+// Original function pointer
+static void (CPlayer::*pRenderHUD)(RENDERARGS(pr, pdp, v, colL, colA, b, i)) = NULL;
 
 // Player function patch
 class CPlayerPatch : public CPlayer {
@@ -306,14 +316,8 @@ class CPlayerPatch : public CPlayer {
 // Initialize everything for drawing the HUD
 void CHud::Initialize(void) {
   // Patch HUD rendering function
-  void (CPlayer::*pRenderHUD)(RENDERARGS(pr, pdp, v, colL, colA, b, i)) = &CPlayer::RenderHUD;
-  CPatch *pPatch = GetPluginAPI()->NewPatch(pRenderHUD, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
-
-  // Disable the patch if needed
-  if (!_psEnable.GetIndex()) {
-    INDEX iDisablePatch = GetPatchAPI()->GetPatchIndex("CPlayer::RenderHUD(...)", pPatch);
-    GetPatchAPI()->DisablePatch(iDisablePatch);
-  }
+  pRenderHUD = &CPlayer::RenderHUD;
+  GetPluginAPI()->NewPatch(pRenderHUD, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
 
   try {
     // Load numbers font
@@ -369,6 +373,12 @@ void CHud::Initialize(void) {
 
 void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye))
 {
+  // Proceed to the original function instead
+  if (!_psEnable.GetIndex()) {
+    (this->*pRenderHUD)(RENDERCALLARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
+    return;
+  }
+
   static CSymbolPtr pbRenderModels("gfx_bRenderModels");
   static CSymbolPtr pbShowWeapon("hud_bShowWeapon");
   static CSymbolPtr pbShowInterface("hud_bShowInfo");
