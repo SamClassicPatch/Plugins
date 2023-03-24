@@ -31,12 +31,13 @@ struct SIconTexture {
 #endif
 
   // Wrapper for the CTextureObject method
-  void SetData_t(const CTString &strTex) {
-    toTFE.SetData_t("Textures\\Interface\\" + strTex);
+  void SetData_t(const CTString &strTFE, const CTString &strTSE = "") {
+    toTFE.SetData_t("Textures\\Interface\\" + strTFE);
     ((CTextureData *)toTFE.GetData())->Force(TEX_CONSTANT);
 
   #if TSE_THEME_ENABLED
-    toTSE.SetData_t("TexturesMP\\Interface\\" + strTex);
+    // Take TFE texture if TSE isn't specified
+    toTSE.SetData_t("TexturesMP\\Interface\\" + (strTSE == "" ? strTFE : strTSE));
     ((CTextureData *)toTSE.GetData())->Force(TEX_CONSTANT);
   #endif
   };
@@ -122,7 +123,7 @@ struct HudTextureSet {
     toARockets.SetData_t("AmRockets.tex");
     toAGrenades.SetData_t("AmGrenades.tex");
     toAElectricity.SetData_t("AmElectricity.tex");
-    toAIronBall.SetData_t("AmCannon.tex");
+    toAIronBall.SetData_t("AmCannon.tex", "AmCannonBall.tex");
 
     // Weapon textures
     toWKnife.SetData_t("WKnife.tex");
