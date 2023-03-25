@@ -72,6 +72,8 @@ CPluginSymbol _psShowAmmoRow(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 // HUD colorization (no alpha channel)
 CPluginSymbol _psColorize(SSF_PERSISTENT | SSF_USER, INDEX(0));
+static CPluginSymbol _psColorPreset(SSF_PERSISTENT | SSF_USER, INDEX(0));
+
 CPluginSymbol _psColorBase(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorIcon(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorWeapon(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
@@ -107,6 +109,8 @@ MODULE_API void Module_Startup(void) {
   _psShowAmmoRow.Register("ahud_bShowAmmoRow");
 
   _psColorize.Register("ahud_bColorize");
+  _psColorPreset.Register("ahud_iColorPreset");
+
   _psColorBase.Register("ahud_iColorBase");
   _psColorIcon.Register("ahud_iColorIcon");
   _psColorWeapon.Register("ahud_iColorWeapon");
