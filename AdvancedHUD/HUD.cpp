@@ -123,13 +123,8 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   // Determine HUD colors
   _ulAlphaHUD = NormFloatToByte(Clamp(pfOpacity.GetFloat(), 0.0f, 1.0f));
 
-  _bTSEColors = (_psTheme.GetIndex() > 0);
-
-#if TSE_THEME_ENABLED
-  _bTSETheme = (_psTheme.GetIndex() > 1);
-#else
-  _bTSETheme = FALSE;
-#endif
+  _bTSEColors = (_psTheme.GetIndex() > E_HUD_TFE);
+  _bTSETheme = (_psTheme.GetIndex() >= E_HUD_TSE);
 
   _colHUD = COL_Base();
   _colBorder = _colHUD;

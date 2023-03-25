@@ -19,9 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <CoreLib/Compatibility/Game.h>
 #include <CoreLib/Patcher/FuncPatching.h>
 
-// Enable TSE theme even in TFE
-#define TSE_THEME_ENABLED 1
-
 extern CPluginSymbol _psEnable;
 extern CPluginSymbol _psTheme;
 

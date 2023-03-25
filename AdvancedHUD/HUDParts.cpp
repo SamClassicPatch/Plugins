@@ -72,19 +72,14 @@ void CHud::RenderVitals(void) {
 
   DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
 
-  if (_bTSETheme) {
-    if (fValue <= 50.5f) {
-      DrawIcon(fCol, fRow, tex.atoArmor[1], _colIconStd, fNormValue, FALSE);
+  if (fValue <= 50.5f) {
+    DrawIcon(fCol, fRow, tex.atoArmor[0], _colIconStd, fNormValue, FALSE);
 
-    } else if (fValue <= 100.5f) {
-      DrawIcon(fCol, fRow, tex.atoArmor[2], _colIconStd, fNormValue, FALSE);
-
-    } else {
-      DrawIcon(fCol, fRow, tex.atoArmor[3], _colIconStd, fNormValue, FALSE);
-    }
+  } else if (fValue <= 100.5f) {
+    DrawIcon(fCol, fRow, tex.atoArmor[1], _colIconStd, fNormValue, FALSE);
 
   } else {
-    DrawIcon(fCol, fRow, tex.atoArmor[0], _colIconStd, fNormValue, FALSE);
+    DrawIcon(fCol, fRow, tex.atoArmor[2], _colIconStd, fNormValue, FALSE);
   }
 
   fCol -= fMoverX;

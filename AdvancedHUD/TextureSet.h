@@ -20,37 +20,36 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
+// Available HUD themes
+enum EHudTheme {
+  E_HUD_TFE,
+  E_HUD_WARPED,
+  E_HUD_TSE,
+
+  E_HUD_MAX, // Maximum amount of themes
+};
+
 #define MAX_POWERUPS 4
 
-// Container for both TFE and TSE icons
+// Multi-theme container for icons
 struct SIconTexture {
-  CTextureObject toTFE;
+  CTextureObject ato[E_HUD_MAX];
 
-#if TSE_THEME_ENABLED
-  CTextureObject toTSE;
-#endif
-
-  // Wrapper for the CTextureObject method
-  void SetData_t(const CTString &strTFE, const CTString &strTSE = "") {
-    toTFE.SetData_t("Textures\\Interface\\" + strTFE);
-    ((CTextureData *)toTFE.GetData())->Force(TEX_CONSTANT);
-
-  #if TSE_THEME_ENABLED
-    // Take TFE texture if TSE isn't specified
-    toTSE.SetData_t("TexturesMP\\Interface\\" + (strTSE == "" ? strTFE : strTSE));
-    ((CTextureData *)toTSE.GetData())->Force(TEX_CONSTANT);
-  #endif
+  // Set icon texture for a specific theme
+  void SetIcon(INDEX iTheme, const CTString &strTexture) {
+    ato[iTheme].SetData_t(strTexture);
+    ((CTextureData *)ato[iTheme].GetData())->Force(TEX_CONSTANT);
   };
 
-  // Return TFE or TSE texture depending on the theme
-  operator CTextureObject &() {
-  #if TSE_THEME_ENABLED
-    if (_psTheme.GetIndex() > 1) {
-      return toTSE;
-    }
-  #endif
+  // Return texture depending on the theme
+  inline CTextureObject &Texture(void) {
+    INDEX iTheme = Clamp(_psTheme.GetIndex(), (INDEX)0, INDEX(E_HUD_MAX - 1));
+    return ato[iTheme];
+  };
 
-    return toTFE;
+  // Implicit conversion
+  inline operator CTextureObject &() {
+    return Texture();
   };
 };
 
@@ -61,21 +60,21 @@ struct HudTextureSet {
   SIconTexture toScore;
   SIconTexture toHiScore;
   SIconTexture toMessage;
-  SIconTexture toMana;
   SIconTexture toFrags;
   SIconTexture toDeaths;
-  CTextureObject atoArmor[4];
+  SIconTexture atoArmor[3];
 
   // Ammo
   SIconTexture toAShells;
   SIconTexture toABullets;
   SIconTexture toARockets;
   SIconTexture toAGrenades;
-  SIconTexture toANapalm;
   SIconTexture toAElectricity;
   SIconTexture toAIronBall;
+
+  SIconTexture toANapalm;
   SIconTexture toASniperBullets;
-  CTextureObject toASeriousBomb;
+  SIconTexture toASeriousBomb;
 
   // Weapons
   SIconTexture toWKnife;
@@ -83,20 +82,19 @@ struct HudTextureSet {
   SIconTexture toWSingleShotgun;
   SIconTexture toWDoubleShotgun;
   SIconTexture toWTommygun;
-  SIconTexture toWSniper;
-  SIconTexture toWChainsaw;
   SIconTexture toWMinigun;
   SIconTexture toWRocketLauncher;
   SIconTexture toWGrenadeLauncher;
-  SIconTexture toWFlamer;
   SIconTexture toWLaser;
   SIconTexture toWIronCannon;
 
-  // Power-ups
-  CTextureObject atoPowerups[MAX_POWERUPS];
+  SIconTexture toWChainsaw;
+  SIconTexture toWFlamer;
+  SIconTexture toWSniper;
 
-  // Tile texture with one corner, edges and center
-  CTextureObject toTile;
+#if SE1_GAME != SS_TFE
+  // Powerups
+  SIconTexture atoPowerups[MAX_POWERUPS];
 
   // Sniper mask
   CTextureObject toSniperMask;
@@ -104,99 +102,94 @@ struct HudTextureSet {
   CTextureObject toSniperArrow;
   CTextureObject toSniperEye;
   CTextureObject toSniperLed;
+#endif
+
+  // Tile texture with one corner, edges and center
+  CTextureObject toTile;
 
   void LoadTextures(void) {
-    // Status bar textures
-    toHealth.SetData_t("HSuper.tex");
-    toOxygen.SetData_t("Oxygen-2.tex");
-    toFrags.SetData_t("IBead.tex");
-    toDeaths.SetData_t("ISkull.tex");
-    toScore.SetData_t("IScore.tex");
-    toHiScore.SetData_t("IHiScore.tex");
-    toMessage.SetData_t("IMessage.tex");
-    toMana.SetData_t("IValue.tex");
-    atoArmor[0].SetData_t(CTFILENAME("Textures\\Interface\\ArStrong.tex"));
+    // Directories with themed icons
+    static const CTString astrPaths[E_HUD_MAX] = {
+      "Textures\\Interface\\",
+      "Textures\\Interface\\",
+      "TexturesMP\\Interface\\",
+    };
 
-    // Ammo textures                    
-    toAShells.SetData_t("AmShells.tex");
-    toABullets.SetData_t("AmBullets.tex");
-    toARockets.SetData_t("AmRockets.tex");
-    toAGrenades.SetData_t("AmGrenades.tex");
-    toAElectricity.SetData_t("AmElectricity.tex");
-    toAIronBall.SetData_t("AmCannon.tex", "AmCannonBall.tex");
+    for (INDEX iTheme = 0; iTheme < E_HUD_MAX; iTheme++) {
+      const CTString &strPath = astrPaths[iTheme];
+      const BOOL bTFE = (iTheme <= E_HUD_WARPED);
 
-    // Weapon textures
-    toWKnife.SetData_t("WKnife.tex");
-    toWColt.SetData_t("WColt.tex");
-    toWSingleShotgun.SetData_t("WSingleShotgun.tex");
-    toWDoubleShotgun.SetData_t("WDoubleShotgun.tex");
-    toWTommygun.SetData_t("WTommygun.tex");
-    toWMinigun.SetData_t("WMinigun.tex");
-    toWRocketLauncher.SetData_t("WRocketLauncher.tex");
-    toWGrenadeLauncher.SetData_t("WGrenadeLauncher.tex");
-    toWLaser.SetData_t("WLaser.tex");
-    toWIronCannon.SetData_t("WCannon.tex");
-
-    // TSE exclusive
-    #if TSE_THEME_ENABLED
       // Status bar textures
-      atoArmor[1].SetData_t(CTFILENAME("TexturesMP\\Interface\\ArSmall.tex"));
-      atoArmor[2].SetData_t(CTFILENAME("TexturesMP\\Interface\\ArMedium.tex"));
-      atoArmor[3].SetData_t(CTFILENAME("TexturesMP\\Interface\\ArStrong.tex"));
-    #endif
+      toHealth   .SetIcon(iTheme, strPath + "HSuper.tex");
+      toOxygen   .SetIcon(iTheme, strPath + "Oxygen-2.tex");
+      toFrags    .SetIcon(iTheme, strPath + "IBead.tex");
+      toDeaths   .SetIcon(iTheme, strPath + "ISkull.tex");
+      toScore    .SetIcon(iTheme, strPath + "IScore.tex");
+      toHiScore  .SetIcon(iTheme, strPath + "IHiScore.tex");
+      toMessage  .SetIcon(iTheme, strPath + "IMessage.tex");
+      atoArmor[0].SetIcon(iTheme, strPath + (bTFE ? "ArStrong.tex" : "ArSmall.tex"));
+      atoArmor[1].SetIcon(iTheme, strPath + (bTFE ? "ArStrong.tex" : "ArMedium.tex"));
+      atoArmor[2].SetIcon(iTheme, strPath + "ArStrong.tex");
+
+      // Ammo textures
+      toAShells     .SetIcon(iTheme, strPath + "AmShells.tex");
+      toABullets    .SetIcon(iTheme, strPath + "AmBullets.tex");
+      toARockets    .SetIcon(iTheme, strPath + "AmRockets.tex");
+      toAGrenades   .SetIcon(iTheme, strPath + "AmGrenades.tex");
+      toAElectricity.SetIcon(iTheme, strPath + "AmElectricity.tex");
+      toAIronBall   .SetIcon(iTheme, strPath + (bTFE ? "AmCannon.tex" : "AmCannonBall.tex"));
+
+      // Weapon textures
+      toWKnife          .SetIcon(iTheme, strPath + "WKnife.tex");
+      toWColt           .SetIcon(iTheme, strPath + "WColt.tex");
+      toWSingleShotgun  .SetIcon(iTheme, strPath + "WSingleShotgun.tex");
+      toWDoubleShotgun  .SetIcon(iTheme, strPath + "WDoubleShotgun.tex");
+      toWTommygun       .SetIcon(iTheme, strPath + "WTommygun.tex");
+      toWMinigun        .SetIcon(iTheme, strPath + "WMinigun.tex");
+      toWRocketLauncher .SetIcon(iTheme, strPath + "WRocketLauncher.tex");
+      toWGrenadeLauncher.SetIcon(iTheme, strPath + "WGrenadeLauncher.tex");
+      toWLaser          .SetIcon(iTheme, strPath + "WLaser.tex");
+      toWIronCannon     .SetIcon(iTheme, strPath + "WCannon.tex");
 
     #if SE1_GAME != SS_TFE
       // Ammo textures
-      toANapalm.SetData_t("AmFuelReservoir.tex");
-      toASniperBullets.SetData_t("AmSniperBullets.tex");
-      toASeriousBomb.SetData_t(CTFILENAME("TexturesMP\\Interface\\AmSeriousBomb.tex"));
+      toANapalm       .SetIcon(iTheme, strPath + "AmFuelReservoir.tex");
+      toASniperBullets.SetIcon(iTheme, strPath + "AmSniperBullets.tex");
 
       // Weapon textures
-      toWChainsaw.SetData_t("WChainsaw.tex");
-      toWSniper.SetData_t("WSniper.tex");
-      toWFlamer.SetData_t("WFlamer.tex");
+      toWChainsaw.SetIcon(iTheme, strPath + "WChainsaw.tex");
+      toWSniper  .SetIcon(iTheme, strPath + "WSniper.tex");
+      toWFlamer  .SetIcon(iTheme, strPath + "WFlamer.tex");
 
       // Power up textures
-      atoPowerups[0].SetData_t(CTFILENAME("TexturesMP\\Interface\\PInvisibility.tex"));
-      atoPowerups[1].SetData_t(CTFILENAME("TexturesMP\\Interface\\PInvulnerability.tex"));
-      atoPowerups[2].SetData_t(CTFILENAME("TexturesMP\\Interface\\PSeriousDamage.tex"));
-      atoPowerups[3].SetData_t(CTFILENAME("TexturesMP\\Interface\\PSeriousSpeed.tex"));
+      const CTString &strPowerUp = (bTFE ? astrPaths[E_HUD_TSE] : strPath);
 
-      // Sniper mask textures
+      atoPowerups[0].SetIcon(iTheme, strPowerUp + "PInvisibility.tex");
+      atoPowerups[1].SetIcon(iTheme, strPowerUp + "PInvulnerability.tex");
+      atoPowerups[2].SetIcon(iTheme, strPowerUp + "PSeriousDamage.tex");
+      atoPowerups[3].SetIcon(iTheme, strPowerUp + "PSeriousSpeed.tex");
+      toASeriousBomb.SetIcon(iTheme, strPowerUp + "AmSeriousBomb.tex");
+    #endif
+    }
+
+    // Sniper mask textures for TSE
+    #if SE1_GAME != SS_TFE
       toSniperMask.SetData_t(CTFILENAME("TexturesMP\\Interface\\SniperMask.tex"));
       toSniperWheel.SetData_t(CTFILENAME("TexturesMP\\Interface\\SniperWheel.tex"));
       toSniperArrow.SetData_t(CTFILENAME("TexturesMP\\Interface\\SniperArrow.tex"));
       toSniperEye.SetData_t(CTFILENAME("TexturesMP\\Interface\\SniperEye.tex"));
       toSniperLed.SetData_t(CTFILENAME("TexturesMP\\Interface\\SniperLed.tex"));
+
+      ((CTextureData *)toSniperMask.GetData())->Force(TEX_CONSTANT);
+      ((CTextureData *)toSniperWheel.GetData())->Force(TEX_CONSTANT);
+      ((CTextureData *)toSniperArrow.GetData())->Force(TEX_CONSTANT);
+      ((CTextureData *)toSniperEye.GetData())->Force(TEX_CONSTANT);
+      ((CTextureData *)toSniperLed.GetData())->Force(TEX_CONSTANT);
     #endif
 
     // Tile texture
     toTile.SetData_t(CTFILENAME("Textures\\Interface\\Tile.tex"));
-
-    // Set all textures as constant
-    #define MAKE_CONSTANT(_TextureObject) ((CTextureData *)_TextureObject.GetData())->Force(TEX_CONSTANT)
-    
-    MAKE_CONSTANT(toTile);
-    MAKE_CONSTANT(atoArmor[0]);
-
-    #if TSE_THEME_ENABLED
-      MAKE_CONSTANT(atoArmor[1]);
-      MAKE_CONSTANT(atoArmor[2]);
-      MAKE_CONSTANT(atoArmor[3]);
-    #endif
-      
-    #if SE1_GAME != SS_TFE
-      MAKE_CONSTANT(atoPowerups[0]);
-      MAKE_CONSTANT(atoPowerups[1]);
-      MAKE_CONSTANT(atoPowerups[2]);
-      MAKE_CONSTANT(atoPowerups[3]);
-
-      MAKE_CONSTANT(toSniperMask);
-      MAKE_CONSTANT(toSniperWheel);
-      MAKE_CONSTANT(toSniperArrow);
-      MAKE_CONSTANT(toSniperEye);
-      MAKE_CONSTANT(toSniperLed);
-    #endif
+    ((CTextureData *)toTile.GetData())->Force(TEX_CONSTANT);
   };
 };
 

@@ -49,9 +49,9 @@ CPluginSymbol _psEnable(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 // Select default theme
 #if SE1_GAME == SS_TFE
-  CPluginSymbol _psTheme(SSF_PERSISTENT | SSF_USER, INDEX(0));
+  CPluginSymbol _psTheme(SSF_PERSISTENT | SSF_USER, (INDEX)E_HUD_TFE);
 #else
-  CPluginSymbol _psTheme(SSF_PERSISTENT | SSF_USER, INDEX(2));
+  CPluginSymbol _psTheme(SSF_PERSISTENT | SSF_USER, (INDEX)E_HUD_TSE);
 #endif
 
 CPluginSymbol _psScreenEdgeX(SSF_PERSISTENT | SSF_USER, INDEX(5));
