@@ -21,7 +21,7 @@
     <ClInclude Include="HUD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureSet.h">
+    <ClInclude Include="Themes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WeaponArsenal.h">
@@ -45,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Elements.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Themes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

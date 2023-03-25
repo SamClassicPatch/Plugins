@@ -22,7 +22,7 @@
     <ClInclude Include="Colors.inl" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="StdH.h" />
-    <ClInclude Include="TextureSet.h" />
+    <ClInclude Include="Themes.h" />
     <ClInclude Include="WeaponArsenal.h" />
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +36,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_TSE107|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_TFE105|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Themes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sorting.inl" />

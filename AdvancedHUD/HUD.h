@@ -20,7 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "TextureSet.h"
+#include "Themes.h"
 #include "WeaponArsenal.h"
 
 #include <EntitiesV/StdH/StdH.h>
@@ -105,6 +105,7 @@ class CHud {
     } _cttHUD;
 
     HudTextureSet tex;
+    const HudColorSet *pColorSet;
     HudArsenal arWeapons;
 
   public:

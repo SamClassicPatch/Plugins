@@ -20,7 +20,7 @@ COLOR CHud::COL_Base(void) {
     return _psColorBase.GetIndex() << 8;
   }
 
-  return _bTSEColors ? 0x4C80BB00 : C_GREEN;
+  return pColorSet->colBase;
 };
 
 COLOR CHud::COL_Icon(void) {
@@ -29,7 +29,7 @@ COLOR CHud::COL_Icon(void) {
     return _psColorIcon.GetIndex() << 8;
   }
 
-  return _bTSETheme ? C_WHITE : _colHUD;
+  return pColorSet->colIcon;
 };
 
 COLOR CHud::COL_SnoopingLight(void) {
@@ -61,11 +61,11 @@ COLOR CHud::COL_AmmoSelected(void) {
     return _psColorSelect.GetIndex() << 8;
   }
 
-  return C_WHITE;
+  return pColorSet->colAmmoSelected;
 };
 
 COLOR CHud::COL_AmmoDepleted(void) {
-  return _bTSEColors ? C_mdGRAY : C_GRAY;
+  return pColorSet->colAmmoDepleted;
 };
 
 // Value colors
@@ -75,7 +75,7 @@ COLOR CHud::COL_ValueOverTop(void) {
     return _psColorMax.GetIndex() << 8;
   }
 
-  return _bTSEColors ? 0x6CFF6C00 : _colHUD;
+  return pColorSet->colValueOverTop;
 };
 
 COLOR CHud::COL_ValueTop(void) {
@@ -84,7 +84,7 @@ COLOR CHud::COL_ValueTop(void) {
     return _psColorTop.GetIndex() << 8;
   }
 
-  return _bTSEColors ? 0xFFD70000 : _colHUD;
+  return pColorSet->colValueTop;
 };
 
 COLOR CHud::COL_ValueMid(void) {
@@ -93,8 +93,7 @@ COLOR CHud::COL_ValueMid(void) {
     return _psColorMid.GetIndex() << 8;
   }
 
-  // TSE: LerpColor(0xFFD70000, 0xFF000000, 0.5f)
-  return _bTSEColors ? 0xFF6B0000 : _colHUD;
+  return pColorSet->colValueMid;
 };
 
 COLOR CHud::COL_ValueLow(void) {
@@ -103,7 +102,7 @@ COLOR CHud::COL_ValueLow(void) {
     return _psColorLow.GetIndex() << 8;
   }
 
-  return C_RED;
+  return pColorSet->colValueLow;
 };
 
 // Sniper scope
@@ -113,7 +112,7 @@ COLOR CHud::COL_ScopeMask(void) {
     return _psColorBase.GetIndex() << 8;
   }
 
-  return _bTSEColors ? 0x64B4FF00 : C_mlGREEN;
+  return pColorSet->colScopeMask;
 };
 
 COLOR CHud::COL_ScopeDetails(void) {
@@ -122,20 +121,20 @@ COLOR CHud::COL_ScopeDetails(void) {
     return _psColorIcon.GetIndex() << 8;
   }
 
-  return _bTSEColors ? 0xFFCC3300 : C_lGRAY;
+  return pColorSet->colScopeDetails;
 };
 
 COLOR CHud::COL_ScopeLedIdle(void) {
-  return 0x44FF22BB;
+  return pColorSet->colScopeLedIdle;
 };
 
 COLOR CHud::COL_ScopeLedFire(void) {
-  return 0xFF4422DD;
+  return pColorSet->colScopeLedFire;
 };
 
 // Weapon selection list
 COLOR CHud::COL_WeaponBorder(void) {
-  return _colHUD;
+  return pColorSet->colWeaponBorder;
 };
 
 COLOR CHud::COL_WeaponIcon(void) {
@@ -144,11 +143,11 @@ COLOR CHud::COL_WeaponIcon(void) {
     return _psColorWeapon.GetIndex() << 8;
   }
 
-  return _bTSETheme ? 0xCCDDFF00 : _colHUD;
+  return pColorSet->colWeaponIcon;
 };
 
 COLOR CHud::COL_WeaponNoAmmo(void) {
-  return _bTSETheme ? 0x22334400 : C_dGRAY;
+  return pColorSet->colWeaponNoAmmo;
 };
 
 COLOR CHud::COL_WeaponWanted(void) {
@@ -157,5 +156,5 @@ COLOR CHud::COL_WeaponWanted(void) {
     return _psColorSelect.GetIndex() << 8;
   }
 
-  return _bTSETheme ? 0xFFCC0000 : C_WHITE;
+  return pColorSet->colWeaponWanted;
 };

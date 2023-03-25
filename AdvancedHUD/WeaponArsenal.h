@@ -20,16 +20,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   #pragma once
 #endif
 
-#include "TextureSet.h"
-
 // Ammo info
 struct HudAmmo {
-  SIconTexture *ptoAmmo;
+  struct SIconTexture *ptoAmmo;
   INDEX iAmmo;
   INDEX iMaxAmmo;
   INDEX iLastAmmo;
-  TIME  tmAmmoChanged;
-  BOOL  bHasWeapon;
+  TIME tmAmmoChanged;
+  BOOL bHasWeapon;
 
   HudAmmo() : ptoAmmo(NULL),
     iAmmo(0), iMaxAmmo(0), iLastAmmo(0),

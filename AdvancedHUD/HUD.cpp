@@ -120,12 +120,20 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   _vpixTL = PIX2D(iScreenEdgeX + 1, iScreenEdgeY + 1);
   _vpixBR = PIX2D(640 - _vpixTL(1), (480 * _fWideAdjustment) - _vpixTL(2));
 
-  // Determine HUD colors
   _ulAlphaHUD = NormFloatToByte(Clamp(pfOpacity.GetFloat(), 0.0f, 1.0f));
 
-  _bTSEColors = (_psTheme.GetIndex() > E_HUD_TFE);
-  _bTSETheme = (_psTheme.GetIndex() >= E_HUD_TSE);
+  // Setup HUD theme
+  const INDEX iCurrentTheme = Clamp(_psTheme.GetIndex(), (INDEX)0, INDEX(E_HUD_MAX - 1));
+  _bTSEColors = (iCurrentTheme > E_HUD_TFE);
+  _bTSETheme = (iCurrentTheme >= E_HUD_TSE);
 
+  static const HudColorSet *aColorSets[E_HUD_MAX] = {
+    &_hcolTFE, &_hcolWarped, &_hcolTSE,
+  };
+
+  pColorSet = aColorSets[iCurrentTheme];
+
+  // Set colors
   _colHUD = COL_Base();
   _colBorder = _colHUD;
   _colIconStd = COL_Icon();
