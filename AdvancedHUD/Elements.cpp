@@ -206,13 +206,10 @@ void CHud::DrawBorder(FLOAT fX, FLOAT fY, FLOAT fW, FLOAT fH, COLOR colTiles)
 // Draw icon texture
 void CHud::DrawIcon(FLOAT fX, FLOAT fY, CTextureObject &toIcon, COLOR colDefault, FLOAT fNormValue, BOOL bBlink)
 {
-  // Determine color
-  COLOR col = (colDefault == NONE) ? GetCurrentColor(fNormValue) : colDefault;
-
   // Blink only when the value is lower than half of the medium threshold
   if (bBlink && fNormValue <= _cttHUD.ctt_fLowMedium * 0.5f) {
     if (INDEX(_tmNow * 4.0f) & 1) {
-      col = C_vdGRAY;
+      colDefault = C_vdGRAY;
     }
   }
 
@@ -224,27 +221,23 @@ void CHud::DrawIcon(FLOAT fX, FLOAT fY, CTextureObject &toIcon, COLOR colDefault
   const FLOAT fSize = 16 * _vScaling(1) * _fCustomScaling;
 
   _pdp->InitTexture(&toIcon);
-  _pdp->AddTexture(fCenterI - fSize, fCenterJ - fSize, fCenterI + fSize, fCenterJ + fSize, col | _ulAlphaHUD);
+  _pdp->AddTexture(fCenterI - fSize, fCenterJ - fSize, fCenterI + fSize, fCenterJ + fSize, colDefault | _ulAlphaHUD);
   _pdp->FlushRenderingQueue();
 };
 
 // Draw text
 void CHud::DrawString(FLOAT fX, FLOAT fY, const CTString &strText, COLOR colDefault, FLOAT fNormValue)
 {
-  // Determine color and location
-  const COLOR col = (colDefault == NONE) ? GetCurrentColor(fNormValue) : colDefault;
+  // Determine location
   const FLOAT fFontScaling = (FLOAT)_pfdCurrentNumbers->GetHeight() * 0.03125f; // (1 / 32)
 
   _pdp->SetTextScaling(_vScaling(1) * _fCustomScaling / fFontScaling);
-  _pdp->PutTextCXY(strText, fX * _vScaling(1), fY * _vScaling(2), col | _ulAlphaHUD);
+  _pdp->PutTextCXY(strText, fX * _vScaling(1), fY * _vScaling(2), colDefault | _ulAlphaHUD);
 };
 
 // Draw percentage bar
 void CHud::DrawBar(FLOAT fX, FLOAT fY, PIX pixW, PIX pixH, EBarDir eBarDir, COLOR colDefault, FLOAT fNormValue)
 {
-  // Determine color
-  const COLOR col = (colDefault == NONE) ? GetCurrentColor(fNormValue) : colDefault;
-
   // Determine location and size
   PIX pixSizeI = pixW * _vScaling(1);
   PIX pixSizeJ = pixH * _vScaling(1);
@@ -274,7 +267,7 @@ void CHud::DrawBar(FLOAT fX, FLOAT fY, PIX pixW, PIX pixH, EBarDir eBarDir, COLO
       break;
   }
 
-  _pdp->Fill(pixLeft, pixUpper, pixSizeI, pixSizeJ, col | _ulAlphaHUD);
+  _pdp->Fill(pixLeft, pixUpper, pixSizeI, pixSizeJ, colDefault | _ulAlphaHUD);
 };
 
 // Draw texture rotated at a certain angle

@@ -44,7 +44,9 @@ void CHud::RenderVitals(void) {
   PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.5f, 0.25f, FALSE);
 
   FLOAT fMoverX, fMoverY;
-  COLOR colDefault = AddShaker(5, fValue, _penLast->m_iLastHealth, _penLast->m_tmHealthChanged, fMoverX, fMoverY);
+  COLOR col = AddShaker(5, fValue, _penLast->m_iLastHealth, _penLast->m_tmHealthChanged, fMoverX, fMoverY);
+
+  if (col == NONE) col = GetCurrentColor(fNormValue);
 
   FLOAT fCol = _vpixTL(1) + units.fHalf;
   FLOAT fRow = _vpixBR(2) - units.fHalf;
@@ -55,7 +57,7 @@ void CHud::RenderVitals(void) {
   fCol += units.fAdv + units.fChar * (fBorderWidth * 0.5f) - units.fHalf;
 
   DrawBorder(fCol, fRow, units.fChar * fBorderWidth, units.fOne, _colBorder);
-  DrawString(fCol, fRow, strValue, colDefault, fNormValue);
+  DrawString(fCol, fRow, strValue, col, fNormValue);
 
   // Don't display empty armor
   if (fArmor <= 0.0f) return;
@@ -69,7 +71,7 @@ void CHud::RenderVitals(void) {
   fCol = _vpixTL(1) + units.fHalf;
   fRow = _vpixBR(2) - (units.fNext + units.fHalf);
 
-  colDefault = AddShaker(3, fValue, _penLast->m_iLastArmor, _penLast->m_tmArmorChanged, fMoverX, fMoverY);
+  AddShaker(3, fValue, _penLast->m_iLastArmor, _penLast->m_tmArmorChanged, fMoverX, fMoverY);
 
   fCol += fMoverX;
   fRow += fMoverY;
@@ -91,7 +93,7 @@ void CHud::RenderVitals(void) {
 
   fCol += units.fAdv + units.fChar * (fBorderWidth * 0.5f) - units.fHalf;
   DrawBorder(fCol, fRow, units.fChar * fBorderWidth, units.fOne, _colBorder);
-  DrawString(fCol, fRow, strValue, NONE, fNormValue);
+  DrawString(fCol, fRow, strValue, GetCurrentColor(fNormValue), fNormValue);
 };
 
 void CHud::RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **pptoCurrentAmmo) {
@@ -142,9 +144,14 @@ void CHud::RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **p
     PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, (_bTSEColors ? 0.30f : 0.5f), (_bTSEColors ? 0.15f : 0.25f), FALSE);
     BOOL bDrawAmmoIcon = _fCustomScaling <= 1.0f;
 
-    // draw ammo, value and weapon
+    // Draw weapon and its ammo
     FLOAT fMoverX, fMoverY;
-    COLOR colDefault = AddShaker(4, iValue, _penLast->m_iLastAmmo, _penLast->m_tmAmmoChanged, fMoverX, fMoverY);
+    COLOR col = AddShaker(4, iValue, _penLast->m_iLastAmmo, _penLast->m_tmAmmoChanged, fMoverX, fMoverY);
+
+    // Override with the current color
+    if (_bTSEColors || col == NONE) {
+      col = GetCurrentColor(fNormValue);
+    }
 
     fCol -= units.fAdv + units.fChar * 1.5f - units.fHalf;
 
@@ -153,7 +160,7 @@ void CHud::RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **p
 
     fCol += units.fAdv + units.fChar * 1.5f - units.fHalf;
     DrawBorder(fCol, fRow, units.fChar * 3, units.fOne, _colBorder);
-    DrawString(fCol, fRow, strValue, (_bTSEColors ? NONE : colDefault), fNormValue);
+    DrawString(fCol, fRow, strValue, col, fNormValue);
 
     if (bDrawAmmoIcon) {
       fCol += units.fAdv + units.fChar * 1.5f - units.fHalf;
@@ -236,11 +243,13 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
       FLOAT fNormValue = (FLOAT)ai.iAmmo / (FLOAT)ai.iMaxAmmo;
 
       FLOAT fMoverX, fMoverY;
-      COLOR colBar = AddShaker(4, ai.iAmmo, ai.iLastAmmo, ai.tmAmmoChanged, fMoverX, fMoverY);
+      COLOR col = AddShaker(4, ai.iAmmo, ai.iLastAmmo, ai.tmAmmoChanged, fMoverX, fMoverY);
+
+      if (col == NONE) col = GetCurrentColor(fNormValue);
 
       DrawBorder(fCol, fRow + fMoverY, units.fOne, units.fOne, _colBorder);
       DrawIcon(fCol, fRow + fMoverY, *ai.ptoAmmo, colIcon, fNormValue, FALSE);
-      DrawBar(fCol + fBarPos, fRow + fMoverY, units.fOne * 0.2f, units.fOne - 2, E_BD_DOWN, colBar, fNormValue);
+      DrawBar(fCol + fBarPos, fRow + fMoverY, units.fOne * 0.2f, units.fOne - 2, E_BD_DOWN, col, fNormValue);
 
       // Advance to the next position
       fCol -= units.fAdv;
@@ -269,7 +278,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
     // Draw icon and a little bar
     DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
     DrawIcon(fCol, fRow, tex.atoPowerups[iPowerUp], _colIconStd, fNormValue, TRUE);
-    DrawBar(fCol + fBarPos, fRow, units.fOne * 0.2f, units.fOne - 2, E_BD_DOWN, NONE, fNormValue);
+    DrawBar(fCol + fBarPos, fRow, units.fOne * 0.2f, units.fOne - 2, E_BD_DOWN, GetCurrentColor(fNormValue), fNormValue);
 
     // Play sound if icon is flashing
     if (fNormValue <= _cttHUD.ctt_fLowMedium * 0.5f) {
@@ -304,7 +313,7 @@ void CHud::RenderBars(void) {
     FLOAT fNormValue = ClampDn(fValue / 30.0f, 0.0f);
 
     DrawBorder(fCol, fRow, fBarSize, units.fOne, _colBorder);
-    DrawBar(fCol, fRow, fBarSize * 0.975f, units.fOne * 0.9375f, E_BD_LEFT, NONE, fNormValue);
+    DrawBar(fCol, fRow, fBarSize * 0.975f, units.fOne * 0.9375f, E_BD_LEFT, GetCurrentColor(fNormValue), fNormValue);
 
     DrawBorder(fColIcon, fRow, units.fOne, units.fOne, _colBorder);
     DrawIcon(fColIcon, fRow, tex.toOxygen, _colIconStd, fNormValue, TRUE);
@@ -364,7 +373,7 @@ void CHud::RenderBars(void) {
       }
 
       DrawBorder(fCol, fRow, fBarSize, units.fOne, _colBorder);
-      DrawBar(fCol, fRow, fBarSize * 0.995f, units.fOne * 0.9375f, E_BD_LEFT, NONE, fNormValue);
+      DrawBar(fCol, fRow, fBarSize * 0.995f, units.fOne * 0.9375f, E_BD_LEFT, GetCurrentColor(fNormValue), fNormValue);
 
       DrawBorder(fColIcon, fRow, units.fOne, units.fOne, _colBorder);
       DrawIcon(fColIcon, fRow, tex.toHealth, _colIconStd, fNormValue, FALSE);
@@ -687,7 +696,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
     fAdv = units.fChar * 4 + units.fAdv - units.fHalf;
 
     DrawBorder(fCol, fRow, units.fChar * 8, units.fOne, _colBorder);
-    DrawString(fCol, fRow, strValue, NONE, bBeating ? 0.0f : 1.0f);
+    DrawString(fCol, fRow, strValue, GetCurrentColor(!bBeating), !bBeating);
 
     DrawBorder(fCol - fAdv, fRow, units.fOne, units.fOne, _colBorder);
     DrawIcon(fCol - fAdv, fRow, tex.toHiScore, _colIconStd, 1.0f, FALSE);
@@ -722,7 +731,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       }
 
       DrawBorder(fCol, fRow, units.fOne, units.fOne, col);
-      DrawBorder(fCol + fAdv, fRow, units.fChar*4, units.fOne, col);
+      DrawBorder(fCol + fAdv, fRow, units.fChar * 4, units.fOne, col);
       DrawString(fCol + fAdv, fRow, strValue, col, 1.0f);
       DrawIcon(fCol, fRow, tex.toMessage, (_bTSETheme ? C_WHITE : col), 0.0f, TRUE);
     }
