@@ -134,6 +134,11 @@ COLOR CHud::COL_ScopeLedFire(void) {
 
 // Weapon selection list
 COLOR CHud::COL_WeaponBorder(void) {
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorBase.GetIndex() << 8;
+  }
+
   return pColorSet->colWeaponBorder;
 };
 
