@@ -233,8 +233,9 @@ void CHud::DrawString(FLOAT fX, FLOAT fY, const CTString &strText, COLOR colDefa
 {
   // Determine color and location
   const COLOR col = (colDefault == NONE) ? GetCurrentColor(fNormValue) : colDefault;
+  const FLOAT fFontScaling = (FLOAT)_pfdCurrentNumbers->GetHeight() * 0.03125f; // (1 / 32)
 
-  _pdp->SetTextScaling(_vScaling(1) * _fCustomScaling);
+  _pdp->SetTextScaling(_vScaling(1) * _fCustomScaling / fFontScaling);
   _pdp->PutTextCXY(strText, fX * _vScaling(1), fY * _vScaling(2), col | _ulAlphaHUD);
 };
 
@@ -387,9 +388,9 @@ void CHud::DrawSniperMask(void) {
       fRightYD = 6.0f;
 
     } else {
-      _pdp->SetFont(_pfdDisplayFont);
+      _pdp->SetFont(_pfdCurrentText);
       _pdp->SetTextAspect(1.0f);
-      _pdp->SetTextScaling(0.7f * fScalingY);
+      _pdp->SetTextScaling(0.7f * fScalingY * _fTextFontScale);
       fIconSize = 19.0f;
       fLeftX = 162.0f;
       fLeftYU = 8.0f;

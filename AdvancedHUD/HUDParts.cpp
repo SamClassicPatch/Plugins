@@ -388,13 +388,13 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   INDEX iScoreSum = 0;
 
   // Normal text scaling
-  const FLOAT fTextScale = (_vScaling(2) + 1) * 0.5f;
+  const FLOAT fTextScale = (_vScaling(2) + 1) * 0.5f * _fTextFontScale;
 
   // Display player list if not in singleplayer
   if (eMode != E_GM_SP) {
     // Set font
-    _pfdDisplayFont->SetVariableWidth();
-    _pdp->SetFont(_pfdDisplayFont);
+    _pfdCurrentText->SetVariableWidth();
+    _pdp->SetFont(_pfdCurrentText);
     _pdp->SetTextScaling(fTextScale);
 
     // Sort player list
@@ -528,8 +528,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
       // Put player in the list
       if ((iShowPlayers == 1 || iShowPlayers == -1) && eMode != E_GM_SP) {
-        const PIX pixCharW = (_pfdDisplayFont->GetWidth() - 2) * fTextScale;
-        const PIX pixCharH = (_pfdDisplayFont->GetHeight() - 2) * fTextScale;
+        const PIX pixCharW = (_pfdCurrentText->GetWidth() - 2) * fTextScale;
+        const PIX pixCharH = (_pfdCurrentText->GetHeight() - 2) * fTextScale;
 
         // Vertical offset
         const PIX pixOffsetY = _vpixTL(2) + (bShowMessages ? units.fNext : 5.0f);
@@ -606,8 +606,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("SCORE LEFT"), iScoreLeft);
       }
 
-      _pfdDisplayFont->SetFixedWidth();
-      _pdp->SetFont(_pfdDisplayFont);
+      _pfdCurrentText->SetFixedWidth();
+      _pdp->SetFont(_pfdCurrentText);
       _pdp->SetTextScaling(fTextScale * 0.8f);
       _pdp->SetTextCharSpacing(-2.0f * fTextScale);
       _pdp->PutText(strLimitsInfo, 5 * _vScaling(1), 48 * _vScaling(1), C_WHITE | CT_OPAQUE);
@@ -621,8 +621,9 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   }
 
   // Restore font defaults
-  _pfdDisplayFont->SetVariableWidth();
-  _pdp->SetFont(&_fdNumbersFont);
+  _pfdCurrentText->SetVariableWidth();
+
+  _pdp->SetFont(_pfdCurrentNumbers);
   _pdp->SetTextCharSpacing(1);
 
   // Prepare outputs depending on gamemode

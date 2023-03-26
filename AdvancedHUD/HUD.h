@@ -77,10 +77,16 @@ class CHud {
     COLOR _colMid;
     COLOR _colLow;
 
+    // Fonts
+    CFontData _afdText[E_HUD_MAX];
+    CFontData _afdNumbers[E_HUD_MAX];
+    CFontData *_pfdCurrentText;
+    CFontData *_pfdCurrentNumbers;
+    FLOAT _fTextFontScale;
+
     // Other
     TIME _tmNow;
     TIME _tmLast;
-    CFontData _fdNumbersFont;
 
     struct Units {
       FLOAT fChar;
@@ -140,7 +146,7 @@ class CHud {
     inline void ResetScale(FLOAT fScale) {
       _fCustomScaling = fScale;
 
-      const PIX pixChar = _fdNumbersFont.GetWidth() + _fdNumbersFont.GetCharSpacing() + 1;
+      const PIX pixChar = _pfdCurrentNumbers->GetWidth() + _pfdCurrentNumbers->GetCharSpacing() + 1;
       units.fChar = pixChar * fScale;
 
       units.fOne  = 32 * fScale;

@@ -154,6 +154,13 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     }
   }
 
+  // Select current fonts
+  _pfdCurrentText = &_afdText[iCurrentTheme];
+  _pfdCurrentNumbers = &_afdNumbers[iCurrentTheme];
+
+  // Calculate relative scaling for the text font
+  _fTextFontScale = (FLOAT)_pfdDisplayFont->GetHeight() / (FLOAT)_pfdCurrentText->GetHeight();
+
 #if SE1_GAME != SS_TFE
   // Render sniper mask (even while snooping)
   CPlayerWeapons &enMyWeapons = (CPlayerWeapons &)*penOwner->m_penWeapons;
@@ -164,7 +171,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 #endif
 
   // Set font and unit sizes
-  _pdp->SetFont(&_fdNumbersFont);
+  _pdp->SetFont(_pfdCurrentNumbers);
   ResetScale(fHudScaling);
 
   // Render parts of the interface
@@ -248,22 +255,22 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   // Display local client latency
   if (bShowLatency) {
-    const FLOAT fTextScale = (_vScaling(1) + 1) * 0.5f;
+    const FLOAT fTextScale = (_vScaling(1) + 1) * 0.5f * _fTextFontScale;
 
-    _pfdDisplayFont->SetFixedWidth();
-    _pdp->SetFont(_pfdDisplayFont);
+    _pfdCurrentText->SetFixedWidth();
+    _pdp->SetFont(_pfdCurrentText);
     _pdp->SetTextScaling(fTextScale);
     _pdp->SetTextCharSpacing(-2.0f * fTextScale);
 
     CTString strLatency;
     strLatency.PrintF("%4.0fms", _penPlayer->m_tmLatency * 1000.0f);
 
-    PIX pixFontHeight = _pfdDisplayFont->GetHeight() * fTextScale + fTextScale + 1;
+    const PIX pixFontHeight = _pfdCurrentText->GetHeight() * fTextScale + fTextScale + 1;
     _pdp->PutTextR(strLatency, _vpixScreen(1), _vpixScreen(2) - pixFontHeight, C_WHITE | CT_OPAQUE);
   }
 
   // Restore font defaults
-  _pfdDisplayFont->SetVariableWidth();
+  _pfdCurrentText->SetVariableWidth();
 
   RenderCheats();
 
@@ -323,9 +330,14 @@ void CHud::Initialize(void) {
   GetPluginAPI()->NewPatch(pRenderHUD, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
 
   try {
-    // Load numbers font
-    DECLARE_CTFILENAME(fnFont, "Fonts\\Numbers3.fnt");
-    _fdNumbersFont.Load_t(fnFont);
+    // Load fonts for each theme
+    for (INDEX iTheme = 0; iTheme < E_HUD_MAX; iTheme++) {
+      _afdText[iTheme].Load_t(CTFILENAME("Fonts\\Display3-narrow.fnt"));
+      _afdNumbers[iTheme].Load_t(CTFILENAME("Fonts\\Numbers3.fnt"));
+
+      _afdText[iTheme].SetCharSpacing(0);
+      _afdText[iTheme].SetLineSpacing(1);
+    }
 
     tex.LoadTextures();
 
