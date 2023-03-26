@@ -387,6 +387,9 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   const INDEX bShowMatchInfo = pbMatchInfo.GetIndex();
 #endif
 
+  // Display details for PvE games
+  const BOOL bCoopDetails = (eMode == E_GM_SP || eMode == E_GM_COOP);
+
   COLOR colMana, colFrags, colDeaths, colHealth, colArmor;
   COLOR colScore = _colHUD;
   INDEX iScoreSum = 0;
@@ -536,7 +539,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         const PIX pixCharH = (_pfdCurrentText->GetHeight() - 2) * fTextScale;
 
         // Vertical offset
-        const PIX pixOffsetY = _vpixTL(2) + (bShowMessages ? units.fNext : 5.0f);
+        const PIX pixOffsetY = _vpixTL(2) + ((bCoopDetails && bShowMessages) ? units.fNext : 5.0f);
         const PIX pixInfoY = pixOffsetY * _vScaling(2) + pixCharH * iPlayer;
 
         // Horizontal offset
@@ -674,7 +677,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
     DrawIcon(fCol, fRow, tex.toDeaths, (_bTSETheme ? C_WHITE : colMana), 1.0f, FALSE);
 
   // Singleplayer or cooperative
-  } else if (eMode == E_GM_SP || eMode == E_GM_COOP) {
+  } else if (bCoopDetails) {
     // Draw high score
     strValue.PrintF("%d", Max(_penPlayer->m_iHighScore, _penPlayer->m_psGameStats.ps_iScore));
     BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore>_penPlayer->m_iHighScore;
