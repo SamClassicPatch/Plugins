@@ -32,7 +32,11 @@ void CHud::RenderVitals(void) {
   // Adjust border width based on which value is bigger
   const FLOAT fArmor = _penPlayer->m_fArmor;
   const FLOAT fMaxHealthArmor = Max(fValue, fArmor);
-  const FLOAT fBorderWidth = Clamp((FLOAT)floor(log10(fMaxHealthArmor) + 1.0f), 3.0f, 5.0f);
+  FLOAT fBorderWidth = Clamp((FLOAT)floor(log10(fMaxHealthArmor) + 1.0f), 3.0f, 5.0f);
+
+  if (_psTheme.GetIndex() == E_HUD_SSR) {
+    fBorderWidth = 3.0f;
+  }
 
   CTString strValue;
   strValue.PrintF("%d", (SLONG)ceil(fValue));

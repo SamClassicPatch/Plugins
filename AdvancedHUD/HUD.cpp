@@ -128,7 +128,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   _bTSETheme = (iCurrentTheme >= E_HUD_TSE);
 
   static const HudColorSet *aColorSets[E_HUD_MAX] = {
-    &_hcolTFE, &_hcolWarped, &_hcolTSE,
+    &_hcolTFE, &_hcolWarped, &_hcolTSE, &_hcolSSR,
   };
 
   pColorSet = aColorSets[iCurrentTheme];
@@ -332,8 +332,14 @@ void CHud::Initialize(void) {
   try {
     // Load fonts for each theme
     for (INDEX iTheme = 0; iTheme < E_HUD_MAX; iTheme++) {
-      _afdText[iTheme].Load_t(CTFILENAME("Fonts\\Display3-narrow.fnt"));
-      _afdNumbers[iTheme].Load_t(CTFILENAME("Fonts\\Numbers3.fnt"));
+      if (iTheme <= E_HUD_TSE) {
+        _afdText[iTheme].Load_t(CTFILENAME("Fonts\\Display3-narrow.fnt"));
+        _afdNumbers[iTheme].Load_t(CTFILENAME("Fonts\\Numbers3.fnt"));
+
+      } else {
+        _afdText[iTheme].Load_t(CTFILENAME("Fonts\\Rev_HUD\\Cabin.fnt"));
+        _afdNumbers[iTheme].Load_t(CTFILENAME("Fonts\\Rev_HUD\\Numbers.fnt"));
+      }
 
       _afdText[iTheme].SetCharSpacing(0);
       _afdText[iTheme].SetLineSpacing(1);

@@ -39,12 +39,20 @@ const HudColorSet _hcolTSE = {
   0x4C80BB00, 0xCCDDFF00, 0x22334400, 0xFFCC0000, // Weapon selection
 };
 
+const HudColorSet _hcolSSR = {
+  0x56596700, C_WHITE, C_WHITE, C_mdGRAY, // Base
+  0x6CFF6C00, 0xFFD70000, 0xFF6B0000, C_RED, // Values
+  0x64B4FF00, 0xFFCC3300, 0x44FF22BB, 0xFF4422DD, // Sniper scope
+  0x56596700, 0xCCDDFF00, 0x22334400, 0xFFBF5B00, // Weapon selection
+};
+
 void HudTextureSet::LoadTextures(void) {
   // Directories with themed icons
   static const CTString astrPaths[E_HUD_MAX] = {
     "Textures\\Interface\\",
     "Textures\\Interface\\",
     "TexturesMP\\Interface\\",
+    "Textures\\Interface\\Revolution\\",
   };
 
   for (INDEX iTheme = 0; iTheme < E_HUD_MAX; iTheme++) {

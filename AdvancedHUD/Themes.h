@@ -25,6 +25,7 @@ enum EHudTheme {
   E_HUD_TFE,
   E_HUD_WARPED,
   E_HUD_TSE,
+  E_HUD_SSR,
 
   E_HUD_MAX, // Maximum amount of themes
 };
@@ -141,5 +142,6 @@ struct HudColorSet {
 extern const HudColorSet _hcolTFE;
 extern const HudColorSet _hcolWarped;
 extern const HudColorSet _hcolTSE;
+extern const HudColorSet _hcolSSR;
 
 #endif
