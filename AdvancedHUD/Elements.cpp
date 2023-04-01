@@ -67,8 +67,10 @@ COLOR CHud::AddShaker(const PIX pixAmount, const INDEX iCurrentValue, INDEX &iLa
   const FLOAT fNormRnd2 = FLOAT((iRandomizer ^ (iRandomizer >> 7)) & 1023) * 0.0009775f; // 1/1023 - normalized
 
   // Set and clamp to adjusted amounts
-  fMoverX = Clamp((fNormRnd1 - 0.5f) * fMultiplier, -fAmount, fAmount);
-  fMoverY = Clamp((fNormRnd2 - 0.5f) * fMultiplier, -fAmount, fAmount);
+  if (_psIconShake.GetIndex()) {
+    fMoverX = Clamp((fNormRnd1 - 0.5f) * fMultiplier, -fAmount, fAmount);
+    fMoverY = Clamp((fNormRnd2 - 0.5f) * fMultiplier, -fAmount, fAmount);
+  }
 
   if (tmDelta < SHAKE_TIME / 3.0f) {
     return C_WHITE;

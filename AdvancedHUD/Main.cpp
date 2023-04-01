@@ -56,6 +56,7 @@ CPluginSymbol _psEnable(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 CPluginSymbol _psScreenEdgeX(SSF_PERSISTENT | SSF_USER, INDEX(5));
 CPluginSymbol _psScreenEdgeY(SSF_PERSISTENT | SSF_USER, INDEX(5));
+CPluginSymbol _psIconShake(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 #if SE1_GAME == SS_TFE
   // TFE specific
@@ -69,6 +70,7 @@ CPluginSymbol _psScreenEdgeY(SSF_PERSISTENT | SSF_USER, INDEX(5));
 
 CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
 CPluginSymbol _psShowAmmoRow(SSF_PERSISTENT | SSF_USER, INDEX(1));
+CPluginSymbol _psShowHighScore(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 // HUD colorization (no alpha channel)
 CPluginSymbol _psColorize(SSF_PERSISTENT | SSF_USER, INDEX(0));
@@ -94,6 +96,7 @@ MODULE_API void Module_Startup(void) {
 
   _psScreenEdgeX.Register("ahud_iScreenEdgeX");
   _psScreenEdgeY.Register("ahud_iScreenEdgeY");
+  _psIconShake.Register("ahud_bIconShake");
 
   #if SE1_GAME == SS_TFE
     // TFE specific
@@ -107,6 +110,7 @@ MODULE_API void Module_Startup(void) {
 
   _psShowPlayerPing.Register("ahud_iShowPlayerPing");
   _psShowAmmoRow.Register("ahud_bShowAmmoRow");
+  _psShowHighScore.Register("ahud_bShowHighScore");
 
   _psColorize.Register("ahud_bColorize");
   _psColorPreset.Register("ahud_iColorPreset");

@@ -688,18 +688,20 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   // Singleplayer or cooperative
   } else if (bCoopDetails) {
     // Draw high score
-    strValue.PrintF("%d", Max(_penPlayer->m_iHighScore, _penPlayer->m_psGameStats.ps_iScore));
-    BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore>_penPlayer->m_iHighScore;
+    if (_psShowHighScore.GetIndex()) {
+      strValue.PrintF("%d", Max(_penPlayer->m_iHighScore, _penPlayer->m_psGameStats.ps_iScore));
+      BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore>_penPlayer->m_iHighScore;
 
-    fCol = 320.0f + units.fHalf;
-    fRow = _vpixTL(2) + units.fHalf;
-    fAdv = units.fChar * 4 + units.fAdv - units.fHalf;
+      fCol = 320.0f + units.fHalf;
+      fRow = _vpixTL(2) + units.fHalf;
+      fAdv = units.fChar * 4 + units.fAdv - units.fHalf;
 
-    DrawBorder(fCol, fRow, units.fChar * 8, units.fOne, _colBorder);
-    DrawString(fCol, fRow, strValue, GetCurrentColor(!bBeating), !bBeating);
+      DrawBorder(fCol, fRow, units.fChar * 8, units.fOne, _colBorder);
+      DrawString(fCol, fRow, strValue, GetCurrentColor(!bBeating), !bBeating);
 
-    DrawBorder(fCol - fAdv, fRow, units.fOne, units.fOne, _colBorder);
-    DrawIcon(fCol - fAdv, fRow, tex.toHiScore, _colIconStd, 1.0f, FALSE);
+      DrawBorder(fCol - fAdv, fRow, units.fOne, units.fOne, _colBorder);
+      DrawIcon(fCol - fAdv, fRow, tex.toHiScore, _colIconStd, 1.0f, FALSE);
+    }
 
     // Draw unread messages
     if (bShowMessages && _penPlayer->m_ctUnreadMessages > 0) {

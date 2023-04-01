@@ -24,7 +24,7 @@ extern CPluginSymbol _psTheme;
 
 extern CPluginSymbol _psScreenEdgeX;
 extern CPluginSymbol _psScreenEdgeY;
-extern CPluginSymbol _psScopeAlpha;
+extern CPluginSymbol _psIconShake;
 
 #if SE1_GAME == SS_TFE
   // TFE specific
@@ -38,6 +38,7 @@ extern CPluginSymbol _psScopeAlpha;
 
 extern CPluginSymbol _psShowPlayerPing;
 extern CPluginSymbol _psShowAmmoRow;
+extern CPluginSymbol _psShowHighScore;
 
 extern CPluginSymbol _psColorize;
 extern CPluginSymbol _psColorBase;
