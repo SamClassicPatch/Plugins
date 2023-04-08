@@ -350,7 +350,29 @@ void CHud::DrawSniperMask(void) {
   FLOAT fAFact = (Clamp(aFOV, 14.2f, 53.1f) - 14.2f) / (53.1f - 14.2f); // For zooms 2 to 4 times
   ANGLE aAngle = 314.0f + fAFact * 292.0f;
 
-  DrawRotatedQuad(&tex.toSniperWheel, fX, fY, 40.0f * fScalingY, aAngle, colMask | 0x44);
+  COLOR colSniperWheel = colMask | 0x44;
+  const FLOAT fEnemyHealth = _penWeapons->m_fEnemyHealth;
+
+  if (_psScopeColoring.GetIndex()) {
+    if (fEnemyHealth > 0.0f) {
+      if (fEnemyHealth < 0.25f) {
+        colSniperWheel = C_RED;
+
+      } else if (fEnemyHealth < 0.6f) {
+        colSniperWheel = C_YELLOW;
+
+      } else {
+        colSniperWheel = C_GREEN;
+      }
+
+    } else {
+      colSniperWheel = C_lGRAY;
+    }
+
+    colSniperWheel |= 0x5F;
+  }
+
+  DrawRotatedQuad(&tex.toSniperWheel, fX, fY, 40.0f * fScalingY, aAngle, colSniperWheel);
 
   COLOR colLED;
 

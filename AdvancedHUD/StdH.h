@@ -34,6 +34,7 @@ extern CPluginSymbol _psIconShake;
 #else
   // TSE specific
   extern CPluginSymbol _psScopeAlpha;
+  extern CPluginSymbol _psScopeColoring;
 #endif
 
 extern CPluginSymbol _psShowPlayerPing;

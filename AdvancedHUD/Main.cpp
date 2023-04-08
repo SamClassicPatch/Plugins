@@ -66,6 +66,7 @@ CPluginSymbol _psIconShake(SSF_PERSISTENT | SSF_USER, INDEX(1));
 #else
   // TSE specific
   CPluginSymbol _psScopeAlpha(SSF_PERSISTENT | SSF_USER, FLOAT(1.0f));
+  CPluginSymbol _psScopeColoring(SSF_PERSISTENT | SSF_USER, INDEX(0));
 #endif
 
 CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
@@ -107,6 +108,7 @@ MODULE_API void Module_Startup(void) {
   #else
     // TSE specific
     _psScopeAlpha.Register("ahud_fScopeAlpha");
+    _psScopeColoring.Register("ahud_bScopeColoring");
   #endif
 
   _psShowPlayerPing.Register("ahud_iShowPlayerPing");
