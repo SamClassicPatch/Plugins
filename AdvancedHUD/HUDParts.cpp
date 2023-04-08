@@ -228,7 +228,9 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
       ASSERT(ai.iAmmo >= 0);
 
       // No ammo and no weapon that uses it
-      if (ai.iAmmo == 0 && !ai.bHasWeapon) continue;
+      BOOL bShowDepletedAmmo = (ai.bHasWeapon && _psShowDepletedAmmo.GetIndex());
+
+      if (ai.iAmmo == 0 && !bShowDepletedAmmo) continue;
 
       // Display ammo info
       COLOR colIcon = _colIconStd;
