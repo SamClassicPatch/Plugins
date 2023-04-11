@@ -15,6 +15,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#include <CoreLib/Compatibility/VanillaEvents.h>
+
 // Define own pointer to the API
 CCoreAPI *_pCoreAPI = NULL;
 
@@ -28,8 +30,8 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   // Metadata
   pInfo->strAuthor = "Dreamy Cecil";
   pInfo->strName = "Local Cheats";
-  pInfo->strDescription = "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer-synchronized!";
-  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 3);
+  pInfo->strDescription = "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!";
+  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 4);
 };
 
 CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));
@@ -93,6 +95,28 @@ static void SetHealth(INDEX iHealth) {
 
     pen->SetHealth(iHealth);
     CPrintF(TRANS("Set %s^r health to %d\n"), pen->GetName(), iHealth);
+  }
+};
+
+// Trigger an entity at the crosshair position
+static void Trigger(void) {
+  FOREACHPLAYER(iten) {
+    CPlayerEntity *pen = iten;
+    CPlacement3D plView = IWorld::GetViewpoint(pen, FALSE);
+
+    CCastRay crRay(pen, plView);
+    crRay.cr_bHitTranslucentPortals = FALSE;
+    crRay.cr_bPhysical = FALSE;
+    crRay.cr_ttHitModels = CCastRay::TT_COLLISIONBOX;
+
+    IWorld::GetWorld()->CastRay(crRay);
+
+    if (crRay.cr_penHit != NULL) {
+      ETrigger eTrigger;
+      eTrigger.penCaused = pen;
+
+      crRay.cr_penHit->SendEvent(eTrigger);
+    }
   }
 };
 
@@ -178,6 +202,7 @@ MODULE_API void Module_Startup(void) {
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_WallWalking",  "void",  &WallWalking);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_Noclip",       "void",  &Noclip);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_SetHealth",    "INDEX", &SetHealth);
+  GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_Trigger",      "void",  &Trigger);
 
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateWeapon",  "INDEX", &CreateWeapon);
   GetPluginAPI()->RegisterMethod(TRUE, "void", "cht_CreateAmmo",    "INDEX", &CreateAmmo);
