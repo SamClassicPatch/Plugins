@@ -201,7 +201,7 @@ void IServerSandbox::SetEntityProperty(INDEX iEntityID, CTString &strProperty, C
 
   // No property
   if (pep == NULL) {
-    CPrintF(TRANS("Could not find entity property with the name '%s' in %s\n"), strProperty, pen->en_pecClass->ec_pdecDLLClass->dec_strName);
+    CPrintF(TRANS("Could not find entity property with the name '%s' in %s\n"), strProperty, pen->GetClass()->ec_pdecDLLClass->dec_strName);
     return;
   }
 
