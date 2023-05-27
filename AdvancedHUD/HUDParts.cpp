@@ -400,9 +400,11 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
   // Display details for PvE games
   const BOOL bCoopDetails = (eMode == E_GM_SP || eMode == E_GM_COOP);
+  const BOOL bRev = (_psTheme.GetIndex() == E_HUD_SSR);
+  const COLOR colDefault = (bRev ? C_lGRAY : _colHUD);
 
   COLOR colMana, colFrags, colDeaths, colHealth, colArmor;
-  COLOR colScore = _colHUD;
+  COLOR colScore = colDefault;
   INDEX iScoreSum = 0;
 
   // Normal text scaling
@@ -537,12 +539,12 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
       // Current player
       if (penPlayer == _penPlayer) {
-        colScore = colMana = colFrags = colDeaths = _colHUD;
+        colScore = colMana = colFrags = colDeaths = colDefault;
       }
 
       // Enough health and armor
-      if (iHealth > 25) colHealth = _colHUD;
-      if (iArmor > 25) colArmor  = _colHUD;
+      if (iHealth > 25) colHealth = colDefault;
+      if (iArmor > 25) colArmor = colDefault;
 
       // Put player in the list
       if ((iShowPlayers == 1 || iShowPlayers == -1) && eMode != E_GM_SP) {
@@ -567,22 +569,22 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
         // Display player stats
         if (eMode == E_GM_COOP) {
-          _pdp->PutTextR(strName,   PLAYER_INFO_X(8), pixInfoY, colScore  | _ulAlphaHUD);
-          _pdp->PutTextC(strHealth, PLAYER_INFO_X(6), pixInfoY, colHealth | _ulAlphaHUD);
-          _pdp->PutText("/",        PLAYER_INFO_X(4), pixInfoY, _colHUD   | _ulAlphaHUD);
-          _pdp->PutTextC(strArmor,  PLAYER_INFO_X(2), pixInfoY, colArmor  | _ulAlphaHUD);
+          _pdp->PutTextR(strName,   PLAYER_INFO_X(8), pixInfoY, colScore   | _ulAlphaHUD);
+          _pdp->PutTextC(strHealth, PLAYER_INFO_X(6), pixInfoY, colHealth  | _ulAlphaHUD);
+          _pdp->PutText("/",        PLAYER_INFO_X(4), pixInfoY, colDefault | _ulAlphaHUD);
+          _pdp->PutTextC(strArmor,  PLAYER_INFO_X(2), pixInfoY, colArmor   | _ulAlphaHUD);
 
         } else if (eMode == E_GM_SCORE) {
-          _pdp->PutTextR(strName,  PLAYER_INFO_X(12), pixInfoY, _colHUD  | _ulAlphaHUD);
-          _pdp->PutTextC(strScore, PLAYER_INFO_X(8),  pixInfoY, colScore | _ulAlphaHUD);
-          _pdp->PutText("/",       PLAYER_INFO_X(5),  pixInfoY, _colHUD  | _ulAlphaHUD);
-          _pdp->PutTextC(strMana,  PLAYER_INFO_X(2),  pixInfoY, colMana  | _ulAlphaHUD);
+          _pdp->PutTextR(strName,  PLAYER_INFO_X(12), pixInfoY, colDefault | _ulAlphaHUD);
+          _pdp->PutTextC(strScore, PLAYER_INFO_X(8),  pixInfoY, colScore   | _ulAlphaHUD);
+          _pdp->PutText("/",       PLAYER_INFO_X(5),  pixInfoY, colDefault | _ulAlphaHUD);
+          _pdp->PutTextC(strMana,  PLAYER_INFO_X(2),  pixInfoY, colMana    | _ulAlphaHUD);
 
         } else {
-          _pdp->PutTextR(strName,   PLAYER_INFO_X(8), pixInfoY, _colHUD   | _ulAlphaHUD);
-          _pdp->PutTextC(strFrags,  PLAYER_INFO_X(6), pixInfoY, colFrags  | _ulAlphaHUD);
-          _pdp->PutText("/",        PLAYER_INFO_X(4), pixInfoY, _colHUD   | _ulAlphaHUD);
-          _pdp->PutTextC(strDeaths, PLAYER_INFO_X(2), pixInfoY, colDeaths | _ulAlphaHUD);
+          _pdp->PutTextR(strName,   PLAYER_INFO_X(8), pixInfoY, colDefault | _ulAlphaHUD);
+          _pdp->PutTextC(strFrags,  PLAYER_INFO_X(6), pixInfoY, colFrags   | _ulAlphaHUD);
+          _pdp->PutText("/",        PLAYER_INFO_X(4), pixInfoY, colDefault | _ulAlphaHUD);
+          _pdp->PutTextC(strDeaths, PLAYER_INFO_X(2), pixInfoY, colDeaths  | _ulAlphaHUD);
         }
       }
 
@@ -672,7 +674,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
   DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
   DrawBorder(fCol + fAdv, fRow, units.fChar * fWidthAdj, units.fOne, _colBorder);
-  DrawString(fCol + fAdv, fRow, strValue, colScore, 1.0f);
+  DrawString(fCol + fAdv, fRow, strValue, (bRev ? _colTop : colScore), 1.0f);
   DrawIcon(fCol, fRow, tex.toFrags, (_bTSETheme ? C_WHITE : colScore), 1.0f, FALSE);
 
   // Deathmatch
