@@ -31,7 +31,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->strAuthor = "Dreamy Cecil";
   pInfo->strName = "Local Cheats";
   pInfo->strDescription = "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!";
-  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 4);
+  pInfo->ulVersion = CORE_PATCH_VERSION;
 };
 
 CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));

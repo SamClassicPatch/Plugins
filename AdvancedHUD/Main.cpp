@@ -62,7 +62,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->strAuthor = "Dreamy Cecil";
   pInfo->strName = "Advanced HUD";
   pInfo->strDescription = "Patches for the heads-up display with various improvements and expanded customization.";
-  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 1, 0);
+  pInfo->ulVersion = CORE_PATCH_VERSION;
 };
 
 CPluginSymbol _psEnable(SSF_PERSISTENT | SSF_USER, INDEX(1));

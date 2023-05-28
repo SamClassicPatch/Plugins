@@ -32,7 +32,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->strAuthor = "Dreamy Cecil";
   pInfo->strName = "Server Utilities";
   pInfo->strDescription = "A collection of commands for enhanced world manipulation for hosting custom game servers.";
-  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 0);
+  pInfo->ulVersion = CORE_PATCH_VERSION;
 };
 
 // Mode switch symbol (-100 = ignore)

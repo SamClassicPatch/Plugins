@@ -29,7 +29,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->strAuthor = "Dreamy Cecil";
   pInfo->strName = "Accessibility";
   pInfo->strDescription = "Various toggleable options for enhanced accessibility.";
-  pInfo->ulVersion = CCoreAPI::MakeVersion(1, 0, 0);
+  pInfo->ulVersion = CORE_PATCH_VERSION;
 };
 
 // Module entry point
