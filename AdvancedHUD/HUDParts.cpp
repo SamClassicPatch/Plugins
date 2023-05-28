@@ -686,7 +686,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
     DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
     DrawBorder(fCol + fAdv, fRow, units.fChar * fWidthAdj, units.fOne, _colBorder);
-    DrawString(fCol + fAdv, fRow, strValue, colMana, 1.0f);
+    DrawString(fCol + fAdv, fRow, strValue, (bRev ? _colTop : colMana), 1.0f);
     DrawIcon(fCol, fRow, tex.toDeaths, (_bTSETheme ? C_WHITE : colMana), 1.0f, FALSE);
 
   // Singleplayer or cooperative
