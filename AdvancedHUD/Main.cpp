@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdH.h"
 
 #include "HUD.h"
+#include <CoreLib/Interfaces/ConfigFunctions.h>
 
 bool CPatch::_bDebugOutput = false;
 
@@ -24,14 +25,33 @@ CCoreAPI *_pCoreAPI = NULL;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
-  // Refuse to load for anything if running under a mod with custom logic
+  // Check if default entities are modified in a mod
   if (_fnmMod != "") {
     CTFileName fnmFull;
     ExpandFilePath(EFP_READ, CTString("Bin\\Entities") + _strModExt + ".dll", fnmFull);
 
     if (fnmFull.HasPrefix(_fnmApplicationPath + _fnmMod)) {
-      pInfo->SetUtility(0);
-      return;
+      // Load configuration file for the mod
+      IConfig::CProperties aProps;
+      BOOL bRefuse = TRUE;
+
+      if (IConfig::ReadConfig(aProps, "Bin\\Plugins\\AdvancedHUD.ini")) {
+        for (INDEX i = 0; i < aProps.Count(); i++) {
+          const CTString &strKey = aProps[i].strKey;
+
+          // Determine whether or not to use the same function hook
+          if (strKey == "SameHook") {
+            bRefuse = (aProps[i].strVal != "1");
+            break;
+          }
+        }
+      }
+
+      // Refuse to load
+      if (bRefuse) {
+        pInfo->SetUtility(0);
+        return;
+      }
     }
   }
 
