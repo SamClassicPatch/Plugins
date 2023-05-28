@@ -45,7 +45,7 @@ void IGameEvents::OnGameStart(void)
   }
 
   // Execute all scheduled commands
-  CStaticStackArray<CTString> &astrCommands = IServerSandbox::astrScheduled;
+  CStringStack &astrCommands = IServerSandbox::astrScheduled;
 
   if (astrCommands.Count() > 0) {
     CPrintF(TRANS("Executing scheduled sandbox commands...\n"));

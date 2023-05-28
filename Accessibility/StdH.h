@@ -16,7 +16,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Utilize the API
 #include <CoreLib/API/CoreAPI.h>
 
-#include <CoreLib/Patcher/FuncPatching.h>
 #include <CoreLib/Interfaces/WorldFunctions.h>
 
 #include "Modules.h"

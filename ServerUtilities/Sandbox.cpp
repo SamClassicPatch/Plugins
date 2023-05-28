@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <CoreLib/Interfaces/PropertyFunctions.h>
 
 // Scheduled commands to be executed after the world loads
-CStaticStackArray<CTString> IServerSandbox::astrScheduled;
+CStringStack IServerSandbox::astrScheduled;
 
 // Schedule one command
 void IServerSandbox::ScheduleCommand(const CTString &strCommand) {

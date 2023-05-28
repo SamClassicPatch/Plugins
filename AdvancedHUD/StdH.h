@@ -17,7 +17,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <CoreLib/API/CoreAPI.h>
 
 #include <CoreLib/Compatibility/Game.h>
-#include <CoreLib/Patcher/FuncPatching.h>
 
 extern CPluginSymbol _psEnable;
 extern CPluginSymbol _psTheme;

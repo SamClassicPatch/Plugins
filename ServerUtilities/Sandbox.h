@@ -16,7 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class IServerSandbox {
   public:
     // Scheduled commands to be executed after the world loads
-    static CStaticStackArray<CTString> astrScheduled;
+    static CStringStack astrScheduled;
 
   public:
     // Schedule one command
