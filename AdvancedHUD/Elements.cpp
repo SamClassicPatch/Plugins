@@ -135,18 +135,17 @@ COLOR CHud::GetCurrentColor(FLOAT fNormValue)
 // Fill array with player statistics
 void CHud::SetAllPlayersStats(INDEX iSortKey) {
   // Determine amount of players in this session
-  INDEX iMaxPlayers = _penPlayer->GetMaxPlayers();
-
   _cenPlayers.Clear();
 
-  for (INDEX i = 0; i < iMaxPlayers; i++) {
-    CPlayer *penCurrent = (CPlayer *)&*_penPlayer->GetPlayerEntity(i);
+  FOREACHINDYNAMICCONTAINER(_penPlayer->GetWorld()->wo_cenEntities, CEntity, iten) {
+    CEntity *pen = iten;
+    if (!IsDerivedFromClass(pen, "Player")) continue;
 
     // Skip invalid players
-    if (penCurrent == NULL) continue;
+    if (pen == NULL || pen->GetFlags() & ENF_DELETED) continue;
 
     // Count this player
-    _cenPlayers.Add(penCurrent);
+    _cenPlayers.Add((CPlayer *)pen);
   }
 
   typedef int (*CSortingFunc)(const void *, const void *);

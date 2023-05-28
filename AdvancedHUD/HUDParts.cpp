@@ -288,7 +288,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
       INDEX iCurrentTime = INDEX(_tmNow * 4);
 
       if (iCurrentTime & 1 && !(iLastTime & 1)) {
-        ((CPlayer *)_penPlayer)->PlayPowerUpSound();
+        _penPlayer->PlayPowerUpSound();
       }
     }
 
@@ -694,7 +694,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
     // Draw high score
     if (_psShowHighScore.GetIndex()) {
       strValue.PrintF("%d", Max(_penPlayer->m_iHighScore, _penPlayer->m_psGameStats.ps_iScore));
-      BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore>_penPlayer->m_iHighScore;
+      BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore > _penPlayer->m_iHighScore;
 
       fCol = 320.0f + units.fHalf;
       fRow = _vpixTL(2) + units.fHalf;
@@ -718,7 +718,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       const FLOAT tmIn = 0.5f;
       const FLOAT tmOut = 0.5f;
       const FLOAT tmStay = 2.0f;
-      FLOAT tmDelta = _pTimer->GetLerpedCurrentTick()-_penPlayer->m_tmAnimateInbox;
+      FLOAT tmDelta = _pTimer->GetLerpedCurrentTick() - _penPlayer->m_tmAnimateInbox;
       COLOR col = _colHUD;
 
       if (tmDelta > 0 && tmDelta < (tmIn + tmStay + tmOut) && eMode == E_GM_SP) {

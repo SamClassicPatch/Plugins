@@ -48,7 +48,7 @@ class CHud {
 
   public:
     // Player entities
-    const CPlayer *_penPlayer;
+    CPlayer *_penPlayer;
     CPlayer *_penLast;
     CPlayerWeapons *_penWeapons;
 

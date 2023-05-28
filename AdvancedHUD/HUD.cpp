@@ -94,7 +94,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   if (_penLast == NULL) return;
 
   // Player entities
-  _penPlayer = penCurPl;
+  _penPlayer = (CPlayer *)penCurPl;
   _penWeapons = (CPlayerWeapons *)&*_penPlayer->m_penWeapons;
 
   // Get drawport with its dimensions
