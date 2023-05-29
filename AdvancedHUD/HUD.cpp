@@ -23,6 +23,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Main HUD structure
 CHud _HUD;
 
+// Define method hooks
+CHud::CGetPropsFunc     CHud::pGetSP = NULL;
+CHud::CPowerUpSoundFunc CHud::pPlayPowerUpSound = NULL;
+CHud::CIsConnectedFunc  CHud::pIsConnected = NULL;
+CHud::CWorldGlaringFunc CHud::pGetWorldGlaring = NULL;
+CHud::CParticlesFunc    CHud::pRenderChainsawParticles = NULL;
+CHud::CRenderHudFunc    CHud::pRenderHud = NULL;
+CHud::CRenderWeaponFunc CHud::pRenderWeaponModel = NULL;
+CHud::CRenderCrossFunc  CHud::pRenderCrosshair = NULL;
+CHud::CGetAmmoFunc      CHud::pGetAmmo = NULL;
+CHud::CGetMaxAmmoFunc   CHud::pGetMaxAmmo = NULL;
+
 // Update weapon and ammo tables with current info
 void CHud::UpdateWeaponArsenal(void) {
   // Ammo quantities
@@ -237,11 +249,11 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   // Determine current gamemode
   EGameMode eGameMode = E_GM_SP;
 
-  if (!GetSP()->sp_bSinglePlayer) {
-    if (GetSP()->sp_bCooperative) {
+  if (!pGetSP()->sp_bSinglePlayer) {
+    if (pGetSP()->sp_bCooperative) {
       eGameMode = E_GM_COOP;
 
-    } else if (!GetSP()->sp_bUseFrags) {
+    } else if (!pGetSP()->sp_bUseFrags) {
       eGameMode = E_GM_SCORE;
 
     } else {
@@ -298,25 +310,6 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   _tmLast = _tmNow;
 };
 
-// Argument list for the RenderHUD() function
-#if SE1_VER < SE1_107
-  #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-    CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon
-
-  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-    _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon
-
-#else
-  #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-    CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye
-
-  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-    _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye
-#endif
-
-// Original function pointer
-static void (CPlayer::*pRenderHUD)(RENDERARGS(pr, pdp, v, colL, colA, b, i)) = NULL;
-
 // Player function patch
 class CPlayerPatch : public CPlayer {
   public:
@@ -325,9 +318,61 @@ class CPlayerPatch : public CPlayer {
 
 // Initialize everything for drawing the HUD
 void CHud::Initialize(void) {
+  StructPtr pFuncPtr;
+
+  // Abort HUD initialization if some method can't be hooked
+  #define GET_SYMBOL(_Symbol) \
+    pFuncPtr = StructPtr(GetProcAddress(_hEntities, _Symbol)); \
+    if (pFuncPtr.iAddress == NULL) { \
+      ASSERT(FALSE); \
+      InfoMessage(TRANS("Cannot hook '%s'!\nAborting HUD initialization..."), _Symbol); \
+      return; \
+    }
+
+  // Hook library methods
+  GET_SYMBOL("?GetSP@@YAPBVCSessionProperties@@XZ");
+  pGetSP = pFuncPtr(CGetPropsFunc());
+
+#if SE1_GAME != SS_TFE
+  GET_SYMBOL("?PlayPowerUpSound@CPlayer@@QAEXXZ");
+  pPlayPowerUpSound = pFuncPtr(CPowerUpSoundFunc());
+
+  GET_SYMBOL("?RenderChainsawParticles@CPlayer@@QAEXH@Z");
+  pRenderChainsawParticles = pFuncPtr(CParticlesFunc());
+#endif
+
+  GET_SYMBOL("?IsConnected@CPlayer@@QBEHXZ");
+  pIsConnected = pFuncPtr(CIsConnectedFunc());
+
+  GET_SYMBOL("?GetWorldGlaring@CPlayer@@QAEKXZ");
+  pGetWorldGlaring = pFuncPtr(CWorldGlaringFunc());
+
+#if SE1_VER < SE1_107
+  GET_SYMBOL("?RenderHUD@CPlayer@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKH@Z");
+  pRenderHud = pFuncPtr(CRenderHudFunc());
+
+  GET_SYMBOL("?RenderWeaponModel@CPlayerWeapons@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKH@Z");
+  pRenderWeaponModel = pFuncPtr(CRenderWeaponFunc());
+
+#else
+  GET_SYMBOL("?RenderHUD@CPlayer@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKHJ@Z");
+  pRenderHud = pFuncPtr(CRenderHudFunc());
+
+  GET_SYMBOL("?RenderWeaponModel@CPlayerWeapons@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKHJ@Z");
+  pRenderWeaponModel = pFuncPtr(CRenderWeaponFunc());
+#endif
+
+  GET_SYMBOL("?RenderCrosshair@CPlayerWeapons@@QAEXAAVCProjection3D@@PAVCDrawPort@@AAVCPlacement3D@@@Z");
+  pRenderCrosshair = pFuncPtr(CRenderCrossFunc());
+
+  GET_SYMBOL("?GetAmmo@CPlayerWeapons@@QAEJXZ");
+  pGetAmmo = pFuncPtr(CGetAmmoFunc());
+
+  GET_SYMBOL("?GetMaxAmmo@CPlayerWeapons@@QAEJXZ");
+  pGetMaxAmmo = pFuncPtr(CGetMaxAmmoFunc());
+
   // Patch HUD rendering function
-  pRenderHUD = &CPlayer::RenderHUD;
-  GetPluginAPI()->NewPatch(pRenderHUD, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
+  GetPluginAPI()->NewPatch(pRenderHud, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
 
   try {
     // Load fonts for each theme
@@ -396,7 +441,7 @@ void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight
 {
   // Proceed to the original function instead
   if (!_psEnable.GetIndex()) {
-    (this->*pRenderHUD)(RENDERCALLARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
+    (this->*CHud::pRenderHud)(RENDERCALLARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
     return;
   }
 
@@ -419,9 +464,9 @@ void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight
   // Don't render the weapon while sniping
   if (pbShowWeapon.GetIndex() && pbRenderModels.GetIndex() && !bSniping) {
     #if SE1_VER < SE1_107
-      enWeapons.RenderWeaponModel(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon);
+      (enWeapons.*CHud::pRenderWeaponModel)(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon);
     #else
-      enWeapons.RenderWeaponModel(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye);
+      (enWeapons.*CHud::pRenderWeaponModel)(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye);
     #endif
   }
 
@@ -436,7 +481,7 @@ void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight
 
     Particle_PrepareSystem(pdp, apr);
     Particle_PrepareEntity(2.0f, FALSE, FALSE, this);
-    RenderChainsawParticles(FALSE);
+    (this->*CHud::pRenderChainsawParticles)(FALSE);
     Particle_EndSystem();
   #endif
   }
@@ -455,7 +500,7 @@ void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight
 
   // Render crosshair while not sniping
   if (!bSniping) {
-    enWeapons.RenderCrosshair(prProjection, pdp, plView);
+    (enWeapons.*CHud::pRenderCrosshair)(prProjection, pdp, plView);
   }
 
   // Toggleable red screen on damage
@@ -483,7 +528,7 @@ void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight
 
   // Add world glaring
   {
-    COLOR colGlare = GetWorldGlaring();
+    COLOR colGlare = (this->*CHud::pGetWorldGlaring)();
     UBYTE ubR, ubG, ubB, ubA;
     ColorToRGBA(colGlare, ubR, ubG, ubB, ubA);
 

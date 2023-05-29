@@ -26,6 +26,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <EntitiesV/StdH/StdH.h>
 #include <EntitiesV/PlayerWeapons.h>
 
+// Argument list for the RenderHUD() function
+#if SE1_VER < SE1_107
+  #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+    CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon
+
+  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+    _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon
+
+#else
+  #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+    CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye
+
+  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+    _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye
+#endif
+
 class CHud {
   public:
     // Keys for sorting player statistics
@@ -45,6 +61,30 @@ class CHud {
       E_BD_UP    = 3,
       E_BD_DOWN  = 4,
     };
+
+  public:
+    // Method hooks
+    typedef const CSessionProperties *(*CGetPropsFunc)(void);
+    typedef void  (CPlayer       ::*CPowerUpSoundFunc)(void);
+    typedef BOOL  (CPlayer       ::*CIsConnectedFunc)(void) const;
+    typedef COLOR (CPlayer       ::*CWorldGlaringFunc)(void);
+    typedef void  (CPlayer       ::*CParticlesFunc)(BOOL);
+    typedef void  (CPlayer       ::*CRenderHudFunc)(RENDERARGS(pr, pdp, v, colL, colA, b, i));
+    typedef void  (CPlayerWeapons::*CRenderWeaponFunc)(RENDERARGS(pr, pdp, v, colL, colA, b, i));
+    typedef void  (CPlayerWeapons::*CRenderCrossFunc)(CProjection3D &, CDrawPort *, CPlacement3D &);
+    typedef INDEX (CPlayerWeapons::*CGetAmmoFunc)(void);
+    typedef INDEX (CPlayerWeapons::*CGetMaxAmmoFunc)(void);
+
+    static CGetPropsFunc     pGetSP;
+    static CPowerUpSoundFunc pPlayPowerUpSound;
+    static CIsConnectedFunc  pIsConnected;
+    static CWorldGlaringFunc pGetWorldGlaring;
+    static CParticlesFunc    pRenderChainsawParticles;
+    static CRenderHudFunc    pRenderHud;
+    static CRenderWeaponFunc pRenderWeaponModel;
+    static CRenderCrossFunc  pRenderCrosshair;
+    static CGetAmmoFunc      pGetAmmo;
+    static CGetMaxAmmoFunc   pGetMaxAmmo;
 
   public:
     // Player entities

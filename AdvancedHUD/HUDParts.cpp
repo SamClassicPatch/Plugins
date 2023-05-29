@@ -132,10 +132,10 @@ void CHud::RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **p
   FLOAT fRow = _vpixBR(2) - units.fHalf;
 
   // Draw weapons with ammo
-  if (ptoAmmo != NULL && !GetSP()->sp_bInfiniteAmmo) {
+  if (ptoAmmo != NULL && !pGetSP()->sp_bInfiniteAmmo) {
     // Get amount of ammo
-    INDEX iMaxValue = _penWeapons->GetMaxAmmo();
-    INDEX iValue = _penWeapons->GetAmmo();
+    INDEX iMaxValue = (_penWeapons->*pGetMaxAmmo)();
+    INDEX iValue = (_penWeapons->*pGetAmmo)();
     FLOAT fNormValue = (FLOAT)iValue / (FLOAT)iMaxValue;
 
     CTString strValue;
@@ -222,7 +222,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
 #endif
 
   // Display available ammo
-  if (!GetSP()->sp_bInfiniteAmmo && _psShowAmmoRow.GetIndex()) {
+  if (!pGetSP()->sp_bInfiniteAmmo && _psShowAmmoRow.GetIndex()) {
     for (INDEX iAmmo = GetAmmo().Count() - 1; iAmmo >= 0; iAmmo--) {
       HudAmmo &ai = GetAmmo()[iAmmo];
       ASSERT(ai.iAmmo >= 0);
@@ -288,7 +288,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
       INDEX iCurrentTime = INDEX(_tmNow * 4);
 
       if (iCurrentTime & 1 && !(iLastTime & 1)) {
-        _penPlayer->PlayPowerUpSound();
+        (_penPlayer->*pPlayPowerUpSound)();
       }
     }
 
@@ -303,7 +303,7 @@ void CHud::RenderBars(void) {
   BOOL bOxygenOnScreen = FALSE;
   FLOAT fValue = _penPlayer->en_tmMaxHoldBreath - (_pTimer->CurrentTick() - _penPlayer->en_tmLastBreathed);
 
-  if (_penPlayer->IsConnected() && _penPlayer->GetFlags() & ENF_ALIVE && fValue < 30.0f) { 
+  if ((_penPlayer->*pIsConnected)() && _penPlayer->GetFlags() & ENF_ALIVE && fValue < 30.0f) { 
     FLOAT fCol = 320.0f + units.fHalf;
     FLOAT fRow = _vpixTL(2) + units.fOne + units.fNext;
 
@@ -599,8 +599,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       CTString strLimitsInfo = "";
 
       // Draw remaining time
-      if (GetSP()->sp_iTimeLimit > 0) {
-        FLOAT fTimeLeft = ClampDn(GetSP()->sp_iTimeLimit * 60.0f - _pNetwork->GetGameTime(), 0.0f);
+      if (pGetSP()->sp_iTimeLimit > 0) {
+        FLOAT fTimeLeft = ClampDn(pGetSP()->sp_iTimeLimit * 60.0f - _pNetwork->GetGameTime(), 0.0f);
         strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, TRANS("TIME LEFT"), TimeToString(fTimeLeft));
       }
 
@@ -616,13 +616,13 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         iMaxScore = Max(iMaxScore, itenStats->m_psLevelStats.ps_iScore);
       }}
 
-      if (GetSP()->sp_iFragLimit > 0) {
-        INDEX iFragsLeft = ClampDn(GetSP()->sp_iFragLimit-iMaxFrags, INDEX(0));
+      if (pGetSP()->sp_iFragLimit > 0) {
+        INDEX iFragsLeft = ClampDn(pGetSP()->sp_iFragLimit-iMaxFrags, INDEX(0));
         strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("FRAGS LEFT"), iFragsLeft);
       }
 
-      if (GetSP()->sp_iScoreLimit > 0) {
-        INDEX iScoreLeft = ClampDn(GetSP()->sp_iScoreLimit-iMaxScore, INDEX(0));
+      if (pGetSP()->sp_iScoreLimit > 0) {
+        INDEX iScoreLeft = ClampDn(pGetSP()->sp_iScoreLimit-iMaxScore, INDEX(0));
         strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("SCORE LEFT"), iScoreLeft);
       }
 
@@ -746,7 +746,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
 void CHud::RenderCheats(void) {
   // Render active cheats while in singleplayer
-  if (GetSP()->sp_ctMaxPlayers != 1) return;
+  if (pGetSP()->sp_ctMaxPlayers != 1) return;
 
   ULONG ulAlpha = sin(_tmNow * 16) * 96 + 128;
   PIX pixFontHeight = _pfdConsoleFont->fd_pixCharHeight;
