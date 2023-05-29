@@ -601,7 +601,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       // Draw remaining time
       if (pGetSP()->sp_iTimeLimit > 0) {
         FLOAT fTimeLeft = ClampDn(pGetSP()->sp_iTimeLimit * 60.0f - _pNetwork->GetGameTime(), 0.0f);
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, TRANS("TIME LEFT"), TimeToString(fTimeLeft));
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, LOCALIZE("TIME LEFT"), TimeToString(fTimeLeft));
       }
 
       // Sort player list by frags or score
@@ -618,12 +618,12 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
       if (pGetSP()->sp_iFragLimit > 0) {
         INDEX iFragsLeft = ClampDn(pGetSP()->sp_iFragLimit-iMaxFrags, INDEX(0));
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("FRAGS LEFT"), iFragsLeft);
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, LOCALIZE("FRAGS LEFT"), iFragsLeft);
       }
 
       if (pGetSP()->sp_iScoreLimit > 0) {
         INDEX iScoreLeft = ClampDn(pGetSP()->sp_iScoreLimit-iMaxScore, INDEX(0));
-        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, TRANS("SCORE LEFT"), iScoreLeft);
+        strLimitsInfo.PrintF("%s^cFFFFFF%s: %d\n", strLimitsInfo, LOCALIZE("SCORE LEFT"), iScoreLeft);
       }
 
       _pfdCurrentText->SetFixedWidth();
