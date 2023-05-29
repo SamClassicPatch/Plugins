@@ -16,7 +16,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdH.h"
 
 #include "HUD.h"
-#include <CoreLib/Interfaces/ConfigFunctions.h>
 
 bool CPatch::_bDebugOutput = false;
 
@@ -31,24 +30,8 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
     ExpandFilePath(EFP_READ, CTString("Bin\\Entities") + _strModExt + ".dll", fnmFull);
 
     if (fnmFull.HasPrefix(_fnmApplicationPath + _fnmMod)) {
-      // Load configuration file for the mod
-      IConfig::CProperties aProps;
-      BOOL bRefuse = TRUE;
-
-      if (IConfig::ReadConfig(aProps, "Bin\\Plugins\\AdvancedHUD.ini")) {
-        for (INDEX i = 0; i < aProps.Count(); i++) {
-          const CTString &strKey = aProps[i].strKey;
-
-          // Determine whether or not to use the same function hook
-          if (strKey == "SameHook") {
-            bRefuse = (aProps[i].strVal != "1");
-            break;
-          }
-        }
-      }
-
-      // Refuse to load
-      if (bRefuse) {
+      // Refuse to load if not using the same function hook
+      if (pInfo->GetValue("SameHook") != "1") {
         pInfo->SetUtility(0);
         return;
       }
