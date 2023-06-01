@@ -24,6 +24,9 @@ CCoreAPI *_pCoreAPI = NULL;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
+  // Hook pointer to the API
+  HookSymbolAPI();
+
   // Check if default entities are modified in a mod
   if (_fnmMod != "" && GetPatchAPI()->GetEntitiesPath().HasPrefix(_fnmApplicationPath + _fnmMod))
   {
