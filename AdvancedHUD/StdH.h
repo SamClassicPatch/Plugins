@@ -18,8 +18,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <CoreLib/Compatibility/Game.h>
 
-extern HMODULE _hEntities;
-
 extern CPluginSymbol _psEnable;
 extern CPluginSymbol _psTheme;
 

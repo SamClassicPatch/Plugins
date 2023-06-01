@@ -322,7 +322,7 @@ void CHud::Initialize(void) {
 
   // Abort HUD initialization if some method can't be hooked
   #define GET_SYMBOL(_Symbol) \
-    pFuncPtr = StructPtr(GetProcAddress(_hEntities, _Symbol)); \
+    pFuncPtr = StructPtr(GetPatchAPI()->GetEntitiesSymbol(_Symbol)); \
     if (pFuncPtr.iAddress == NULL) { \
       ASSERT(FALSE); \
       InfoMessage(TRANS("Cannot hook '%s'!\nAborting HUD initialization..."), _Symbol); \

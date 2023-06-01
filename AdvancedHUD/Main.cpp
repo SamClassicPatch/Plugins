@@ -22,22 +22,15 @@ bool CPatch::_bDebugOutput = false;
 // Define own pointer to the API
 CCoreAPI *_pCoreAPI = NULL;
 
-// Path to the Entities library
-static CTFileName _fnmEntitiesLib;
-
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
-  // Get full path to the library
-  ExpandFilePath(EFP_READ, CTString("Bin\\Entities") + _strModExt + ".dll", _fnmEntitiesLib);
-
   // Check if default entities are modified in a mod
-  if (_fnmMod != "") {
-    if (_fnmEntitiesLib.HasPrefix(_fnmApplicationPath + _fnmMod)) {
-      // Refuse to load if not using the same function hook
-      if (pInfo->GetValue("SameHook") != "1") {
-        pInfo->SetUtility(0);
-        return;
-      }
+  if (_fnmMod != "" && GetPatchAPI()->GetEntitiesPath().HasPrefix(_fnmApplicationPath + _fnmMod))
+  {
+    // Refuse to load if not using the same function hook
+    if (pInfo->GetValue("SameHook") != "1") {
+      pInfo->SetUtility(0);
+      return;
     }
   }
 
@@ -50,9 +43,6 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   pInfo->strDescription = "Patches for the heads-up display with various improvements and expanded customization.";
   pInfo->ulVersion = CORE_PATCH_VERSION;
 };
-
-// Entities library handle
-HMODULE _hEntities = NULL;
 
 CPluginSymbol _psEnable(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
@@ -100,9 +90,6 @@ CPluginSymbol _psColorLow(SSF_PERSISTENT | SSF_USER, INDEX(0xFF0000));
 MODULE_API void Module_Startup(void) {
   // Hook pointer to the API
   HookSymbolAPI();
-
-  // Get Entities handle
-  _hEntities = GetModuleHandleA(_fnmEntitiesLib.str_String);
 
   // Custom symbols
   _psEnable.Register("ahud_bEnable");
