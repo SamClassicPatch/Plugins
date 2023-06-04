@@ -144,6 +144,9 @@ void CHud::SetAllPlayersStats(INDEX iSortKey) {
     // Skip invalid players
     if (pen == NULL || pen->GetFlags() & ENF_DELETED) continue;
 
+    // Skip predictors
+    if (pen->IsPredictor()) continue;
+
     // Count this player
     _cenPlayers.Add((CPlayer *)pen);
   }
