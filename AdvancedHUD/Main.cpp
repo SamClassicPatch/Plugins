@@ -31,7 +31,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   if (_fnmMod != "" && GetPatchAPI()->GetEntitiesPath().HasPrefix(_fnmApplicationPath + _fnmMod))
   {
     // Refuse to load if not using the same function hook
-    if (pInfo->GetValue("SameHook") != "1") {
+    if (pInfo->GetValue("SameHook", "0") != "1") {
       pInfo->SetUtility(0);
       return;
     }
