@@ -17,9 +17,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "HUD.h"
 
-#include <CoreLib/Compatibility/SymbolPtr.h>
-#include <CoreLib/Objects/PropertyPtr.h>
-
 // Main HUD structure
 CHud _HUD;
 
@@ -313,7 +310,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 // Player function patch
 class CPlayerPatch : public CPlayer {
   public:
-    void P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
+    void P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
 };
 
 // Initialize everything for drawing the HUD
@@ -437,11 +434,11 @@ void CHud::Initialize(void) {
   NEW_WEAPON(WEAPON_IRONCANNON, &tex.toWIronCannon, &aAmmo[7]);
 };
 
-void CPlayerPatch::P_RenderHUD(RENDERARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye))
+void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye))
 {
   // Proceed to the original function instead
   if (!_psEnable.GetIndex()) {
-    (this->*CHud::pRenderHud)(RENDERCALLARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
+    (this->*CHud::pRenderHud)(RENDER_ARGS_RAW(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
     return;
   }
 

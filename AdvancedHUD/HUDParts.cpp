@@ -17,9 +17,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "HUD.h"
 
-#include <CoreLib/Compatibility/SymbolPtr.h>
-#include <CoreLib/Objects/PropertyPtr.h>
-
 // Armor & health constants (they don't reflect tourist/easy top values by design)
 #define TOP_ARMOR  100
 #define TOP_HEALTH 100

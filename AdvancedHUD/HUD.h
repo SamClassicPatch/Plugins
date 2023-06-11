@@ -26,21 +26,20 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <EntitiesV/StdH/StdH.h>
 #include <EntitiesV/PlayerWeapons.h>
 
+#include <CoreLib/Objects/PropertyPtr.h>
+
 // Argument list for the RenderHUD() function
 #if SE1_VER < SE1_107
-  #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-    CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon
-
-  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+  #define RENDER_ARGS_RAW(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
     _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon
 
 #else
-  #define RENDERARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-    CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye
-
-  #define RENDERCALLARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+  #define RENDER_ARGS_RAW(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
     _prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye
 #endif
+
+#define RENDER_ARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
+  RENDER_ARGS_RAW(CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye)
 
 class CHud {
   public:
@@ -69,8 +68,8 @@ class CHud {
     typedef BOOL  (CPlayer       ::*CIsConnectedFunc)(void) const;
     typedef COLOR (CPlayer       ::*CWorldGlaringFunc)(void);
     typedef void  (CPlayer       ::*CParticlesFunc)(BOOL);
-    typedef void  (CPlayer       ::*CRenderHudFunc)(RENDERARGS(pr, pdp, v, colL, colA, b, i));
-    typedef void  (CPlayerWeapons::*CRenderWeaponFunc)(RENDERARGS(pr, pdp, v, colL, colA, b, i));
+    typedef void  (CPlayer       ::*CRenderHudFunc)(RENDER_ARGS(pr, pdp, v, colL, colA, b, i));
+    typedef void  (CPlayerWeapons::*CRenderWeaponFunc)(RENDER_ARGS(pr, pdp, v, colL, colA, b, i));
     typedef void  (CPlayerWeapons::*CRenderCrossFunc)(CProjection3D &, CDrawPort *, CPlacement3D &);
     typedef INDEX (CPlayerWeapons::*CGetAmmoFunc)(void);
     typedef INDEX (CPlayerWeapons::*CGetMaxAmmoFunc)(void);
