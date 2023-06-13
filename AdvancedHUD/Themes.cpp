@@ -52,7 +52,7 @@ void HudTextureSet::LoadTextures(void) {
     "Textures\\Interface\\",
     "Textures\\Interface\\",
     "TexturesMP\\Interface\\",
-    "Textures\\Interface\\Revolution\\",
+    "TexturesPatch\\Interface\\Revolution\\",
   };
 
   for (INDEX iTheme = 0; iTheme < E_HUD_MAX; iTheme++) {
