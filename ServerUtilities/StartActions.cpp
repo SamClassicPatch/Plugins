@@ -22,6 +22,19 @@ static void ReportPropError(CEntity *pen, const char *strPropertyName) {
   CPrintF(TRANS("'%s' (%u) : Cannot retrieve '%s' property!\n"), pen->GetName(), pen->en_ulID, strPropertyName);
 };
 
+// Verify item type and reset it to default value if it's invalid
+static INDEX VerifyItemType(CEntity *pen, const CPropertyPtr &pptrType, INDEX iType) {
+  CTString strType = pptrType._pep->ep_pepetEnumType->NameForValue(iType);
+
+  // Set default valid type if invalid
+  if (strType == "") {
+    CPrintF(TRANS("'%s' (%u) : Item type %d is invalid!\n"), pen->GetName(), pen->en_ulID, iType);
+    return 1;
+  }
+
+  return iType;
+};
+
 // Affect weapon item at the beginning of the game
 void AffectWeaponItem(CEntity *pen) {
   // Retrieve CWeaponItem::m_EwitType
@@ -41,12 +54,12 @@ void AffectWeaponItem(CEntity *pen) {
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iWeaponType = iSetType;
+    iWeaponType = VerifyItemType(pen, pptr, iSetType);
     pen->Reinitialize();
 
   // Replace with another weapon
   } else if (_psReplaceWeapons.GetIndex() >= 0) {
-    iWeaponType = _psReplaceWeapons.GetIndex();
+    iWeaponType = VerifyItemType(pen, pptr, _psReplaceWeapons.GetIndex());
     pen->Reinitialize();
   }
 };
@@ -70,12 +83,12 @@ void AffectHealthItem(CEntity *pen) {
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iHealthType = iSetType;
+    iHealthType = VerifyItemType(pen, pptr, iSetType);
     pen->Reinitialize();
 
   // Replace with another health item
   } else if (_psReplaceHealth.GetIndex() >= 0) {
-    iHealthType = _psReplaceHealth.GetIndex();
+    iHealthType = VerifyItemType(pen, pptr, _psReplaceHealth.GetIndex());
     pen->Reinitialize();
   }
 };
@@ -99,12 +112,12 @@ void AffectArmorItem(CEntity *pen) {
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iArmorType = iSetType;
+    iArmorType = VerifyItemType(pen, pptr, iSetType);
     pen->Reinitialize();
 
   // Replace with another armor item
   } else if (_psReplaceArmor.GetIndex() >= 0) {
-    iArmorType = _psReplaceArmor.GetIndex();
+    iArmorType = VerifyItemType(pen, pptr, _psReplaceArmor.GetIndex());
     pen->Reinitialize();
   }
 };
@@ -128,7 +141,7 @@ void AffectPowerUpItem(CEntity *pen) {
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iPowerUp = iSetType;
+    iPowerUp = VerifyItemType(pen, pptr, iSetType);
     pen->Reinitialize();
   }
 };
