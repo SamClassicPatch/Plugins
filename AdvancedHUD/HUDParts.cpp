@@ -627,7 +627,11 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       _pdp->SetFont(_pfdCurrentText);
       _pdp->SetTextScaling(fTextScale * 0.8f);
       _pdp->SetTextCharSpacing(-2.0f * fTextScale);
-      _pdp->PutText(strLimitsInfo, 5 * _vScaling(1), 48 * _vScaling(1), C_WHITE | CT_OPAQUE);
+
+      // [Cecil] Screen edge offset
+      const PIX pixInfoX = _vpixTL(1);
+      const PIX pixInfoY = _vpixTL(2) + units.fNext * 2;
+      _pdp->PutText(strLimitsInfo, pixInfoX * _vScaling(1), pixInfoY * _vScaling(1), C_WHITE | CT_OPAQUE);
     }
 
     // Prepare colors for local player printouts
