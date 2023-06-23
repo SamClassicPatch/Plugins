@@ -28,7 +28,7 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   HookSymbolAPI();
 
   // Check if default entities are modified in a mod
-  if (_fnmMod != "" && GetPatchAPI()->GetEntitiesPath().HasPrefix(_fnmApplicationPath + _fnmMod))
+  if (_fnmMod != "" && GetPatchAPI()->IsEntitiesModded())
   {
     // Refuse to load if not using the same function hook
     if (pInfo->GetValue("SameHook", "0") != "1") {
