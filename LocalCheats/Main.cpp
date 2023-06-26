@@ -23,15 +23,15 @@ CCoreAPI *_pCoreAPI = NULL;
 static IProcessingEvents _evProcessing;
 
 // Retrieve module information
-MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
+MODULE_API void Module_GetInfo(CPluginInfo &info) {
   // Utility flags
-  pInfo->SetUtility(CPluginAPI::PF_GAME | CPluginAPI::PF_EDITOR);
+  info.SetUtility(PLF_GAMEPLAY_LOGIC);
 
   // Metadata
-  pInfo->strAuthor = "Dreamy Cecil";
-  pInfo->strName = "Local Cheats";
-  pInfo->strDescription = "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!";
-  pInfo->ulVersion = CORE_PATCH_VERSION;
+  info.strAuthor = "Dreamy Cecil";
+  info.strName = "Local Cheats";
+  info.strDescription = "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!";
+  info.ulVersion = CORE_PATCH_VERSION;
 };
 
 CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));

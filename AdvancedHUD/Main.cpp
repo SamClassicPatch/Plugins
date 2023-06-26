@@ -23,7 +23,7 @@ bool CPatch::_bDebugOutput = false;
 CCoreAPI *_pCoreAPI = NULL;
 
 // Retrieve module information
-MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
+MODULE_API void Module_GetInfo(CPluginInfo &info) {
   // Hook pointer to the API
   HookSymbolAPI();
 
@@ -31,20 +31,20 @@ MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
   if (_fnmMod != "" && GetPatchAPI()->IsEntitiesModded())
   {
     // Refuse to load if not using the same function hook
-    if (pInfo->GetValue("SameHook", "0") != "1") {
-      pInfo->SetUtility(0);
+    if (!info.props.GetBoolValue("", "SameHook", false)) {
+      info.SetUtility(PLF_UNSUITABLE);
       return;
     }
   }
 
   // Utility flags
-  pInfo->SetUtility(CPluginAPI::PF_GAME | CPluginAPI::PF_EDITOR);
+  info.SetUtility(PLF_GAMEPLAY_LOGIC);
 
   // Metadata
-  pInfo->strAuthor = "Dreamy Cecil";
-  pInfo->strName = "Advanced HUD";
-  pInfo->strDescription = "Patches for the heads-up display with various improvements and expanded customization.";
-  pInfo->ulVersion = CORE_PATCH_VERSION;
+  info.strAuthor = "Dreamy Cecil";
+  info.strName = "Advanced HUD";
+  info.strDescription = "Patches for the heads-up display with various improvements and expanded customization.";
+  info.ulVersion = CORE_PATCH_VERSION;
 };
 
 CPluginSymbol _psEnable(SSF_PERSISTENT | SSF_USER, INDEX(1));

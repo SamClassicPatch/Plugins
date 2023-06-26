@@ -21,15 +21,15 @@ bool CPatch::_bDebugOutput = false;
 CCoreAPI *_pCoreAPI = NULL;
 
 // Retrieve module information
-MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
+MODULE_API void Module_GetInfo(CPluginInfo &info) {
   // Utility flags
-  pInfo->SetUtility(CPluginAPI::PF_GAME | CPluginAPI::PF_EDITOR);
+  info.SetUtility(PLF_GAMEPLAY_LOGIC);
 
   // Metadata
-  pInfo->strAuthor = "Dreamy Cecil";
-  pInfo->strName = "Accessibility";
-  pInfo->strDescription = "Various toggleable options for enhanced accessibility.";
-  pInfo->ulVersion = CORE_PATCH_VERSION;
+  info.strAuthor = "Dreamy Cecil";
+  info.strName = "Accessibility";
+  info.strDescription = "Various toggleable options for enhanced accessibility.";
+  info.ulVersion = CORE_PATCH_VERSION;
 };
 
 // Module entry point

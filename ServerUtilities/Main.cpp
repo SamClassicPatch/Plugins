@@ -24,15 +24,15 @@ CCoreAPI *_pCoreAPI = NULL;
 static IGameEvents _evGame;
 
 // Retrieve module information
-MODULE_API void Module_GetInfo(CPluginAPI::PluginInfo *pInfo) {
+MODULE_API void Module_GetInfo(CPluginInfo &info) {
   // Utility flags
-  pInfo->SetUtility(CPluginAPI::PF_GAME | CPluginAPI::PF_SERVER);
+  info.SetUtility(PLF_GAME | PLF_SERVER);
 
   // Metadata
-  pInfo->strAuthor = "Dreamy Cecil";
-  pInfo->strName = "Server Utilities";
-  pInfo->strDescription = "A collection of commands for enhanced world manipulation for hosting custom game servers.";
-  pInfo->ulVersion = CORE_PATCH_VERSION;
+  info.strAuthor = "Dreamy Cecil";
+  info.strName = "Server Utilities";
+  info.strDescription = "A collection of commands for enhanced world manipulation for hosting custom game servers.";
+  info.ulVersion = CORE_PATCH_VERSION;
 };
 
 // Mode switch symbol (-100 = ignore)
