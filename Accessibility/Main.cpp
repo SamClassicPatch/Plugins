@@ -15,8 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-bool CPatch::_bDebugOutput = false;
-
 // Define own pointer to the API
 CCoreAPI *_pCoreAPI = NULL;
 
