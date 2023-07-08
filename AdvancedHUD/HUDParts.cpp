@@ -336,19 +336,19 @@ void CHud::RenderBars(void) {
     if (mh.m_penCounter != NULL) {
       CEntity *penCounter = mh.m_penCounter;
 
-      // Find both counter properties
-      static CPropertyPtr pptrCount(penCounter);
+      // Find CEnemyCounter::m_iCount and CEnemyCounter::m_iCountFrom
+      static CPropertyPtr pptrCountCurr(penCounter);
       static CPropertyPtr pptrCountFrom(penCounter);
 
-      BOOL bProps = pptrCount.ByIdOrOffset(CEntityProperty::EPT_INDEX, (0x153 << 8) + 5, -1)
-        && pptrCountFrom.ByNameOrId(CEntityProperty::EPT_INDEX, "Count start", (0x153 << 8) + 4);
+      BOOL bProps = pptrCountCurr.ByVariable("CEnemyCounter", "m_iCount")
+                 && pptrCountFrom.ByVariable("CEnemyCounter", "m_iCountFrom");
 
       if (bProps) {
-        INDEX iCount = ENTITYPROPERTY(penCounter, pptrCount.Offset(), INDEX);
+        INDEX iCountCurr = ENTITYPROPERTY(penCounter, pptrCountCurr.Offset(), INDEX);
         INDEX iCountFrom = ENTITYPROPERTY(penCounter, pptrCountFrom.Offset(), INDEX);
 
-        if (iCount > 0) {
-          fValue = iCount;
+        if (iCountCurr > 0) {
+          fValue = iCountCurr;
           fNormValue = fValue / iCountFrom;
         }
       }

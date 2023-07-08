@@ -55,7 +55,7 @@ void IProcessingEvents::OnStep(void)
       static CPropertyPtr pptrTemplate(pen);
 
       // Skip template enemies
-      if (!pptrTemplate.ByNameOrId(CEntityProperty::EPT_BOOL, "Template", (0x136 << 8) + 86)) {
+      if (!pptrTemplate.ByVariable("CEnemyBase", "m_bTemplate")) {
         if (ENTITYPROPERTY(pen, pptrTemplate.Offset(), BOOL)) {
           continue;
         }
@@ -69,7 +69,7 @@ void IProcessingEvents::OnStep(void)
         static CPropertyPtr pptrEnemy(pen);
 
         // No property
-        if (!pptrEnemy.ByIdOrOffset(CEntityProperty::EPT_ENTITYPTR, (0x136 << 8) + 3, 0x30C)) {
+        if (!pptrEnemy.ByVariable("CEnemyBase", "m_penEnemy")) {
           continue;
         }
 

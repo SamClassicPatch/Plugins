@@ -40,7 +40,7 @@ void AffectWeaponItem(CEntity *pen) {
   // Retrieve CWeaponItem::m_EwitType
   static CPropertyPtr pptr(pen);
 
-  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x322 << 8) + 1)) {
+  if (!pptr.ByVariable("CWeaponItem", "m_EwitType")) {
     ReportPropError(pen, "CWeaponItem::m_EwitType");
     return;
   }
@@ -69,7 +69,7 @@ void AffectHealthItem(CEntity *pen) {
   // Retrieve CHealthItem::m_EhitType
   static CPropertyPtr pptr(pen);
 
-  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x321 << 8) + 1)) {
+  if (!pptr.ByVariable("CHealthItem", "m_EhitType")) {
     ReportPropError(pen, "CHealthItem::m_EhitType");
     return;
   }
@@ -98,7 +98,7 @@ void AffectArmorItem(CEntity *pen) {
   // Retrieve CArmorItem::m_EaitType
   static CPropertyPtr pptr(pen);
 
-  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x324 << 8) + 1)) {
+  if (!pptr.ByVariable("CArmorItem", "m_EaitType")) {
     ReportPropError(pen, "CArmorItem::m_EaitType");
     return;
   }
@@ -127,7 +127,7 @@ void AffectPowerUpItem(CEntity *pen) {
   // Retrieve CPowerUpItem::m_puitType
   static CPropertyPtr pptr(pen);
 
-  if (!pptr.ByNameOrId(CEntityProperty::EPT_ENUM, "Type", (0x328 << 8) + 1)) {
+  if (!pptr.ByVariable("CPowerUpItem", "m_puitType")) {
     ReportPropError(pen, "CPowerUpItem::m_puitType");
     return;
   }
@@ -151,7 +151,7 @@ void AffectPlayerMarker(CEntity *pen) {
   // Retrieve CPlayerMarker::m_iGiveWeapons
   static CPropertyPtr pptrGive(pen);
 
-  if (!pptrGive.ByNameOrId(CEntityProperty::EPT_INDEX, "Give Weapons", (0x194 << 8) + 3)) {
+  if (!pptrGive.ByVariable("CPlayerMarker", "m_iGiveWeapons")) {
     ReportPropError(pen, "CPlayerMarker::m_iGiveWeapons");
 
   } else {
@@ -174,7 +174,7 @@ void AffectPlayerMarker(CEntity *pen) {
   // Retrieve CPlayerMarker::m_fMaxAmmoRatio
   static CPropertyPtr pptrMaxAmmo(pen);
 
-  if (!pptrMaxAmmo.ByNameOrId(CEntityProperty::EPT_FLOAT, "Max ammo ratio", (0x194 << 8) + 9)) {
+  if (!pptrMaxAmmo.ByVariable("CPlayerMarker", "m_fMaxAmmoRatio")) {
     ReportPropError(pen, "CPlayerMarker::m_fMaxAmmoRatio");
 
   // Set maximum ammo
@@ -185,7 +185,7 @@ void AffectPlayerMarker(CEntity *pen) {
   // Retrieve CPlayerMarker::m_fHealth
   static CPropertyPtr pptrHealth(pen);
 
-  if (!pptrHealth.ByNameOrId(CEntityProperty::EPT_FLOAT, "Health", (0x194 << 8) + 1)) {
+  if (!pptrHealth.ByVariable("CPlayerMarker", "m_fHealth")) {
     ReportPropError(pen, "CPlayerMarker::m_fHealth");
 
   // Set custom health
@@ -196,7 +196,7 @@ void AffectPlayerMarker(CEntity *pen) {
   // Retrieve CPlayerMarker::m_fShield
   static CPropertyPtr pptrArmor(pen);
 
-  if (!pptrArmor.ByNameOrId(CEntityProperty::EPT_FLOAT, "Shield", (0x194 << 8) + 2)) {
+  if (!pptrArmor.ByVariable("CPlayerMarker", "m_fShield")) {
     ReportPropError(pen, "CPlayerMarker::m_fShield");
 
   // Set custom armor
@@ -212,7 +212,7 @@ void AffectEnemySpawner(CEntity *pen) {
   // Retrieve CEnemySpawner::m_ctTotal
   static CPropertyPtr pptrTotal(pen);
 
-  if (!pptrTotal.ByNameOrId(CEntityProperty::EPT_INDEX, "Count total", (0x130 << 8) + 8)) {
+  if (!pptrTotal.ByVariable("CEnemySpawner", "m_ctTotal")) {
     ReportPropError(pen, "CEnemySpawner::m_ctTotal");
 
   // Multiply total amount
@@ -224,7 +224,7 @@ void AffectEnemySpawner(CEntity *pen) {
   // Retrieve CEnemySpawner::m_ctGroupSize
   static CPropertyPtr pptrGroup(pen);
 
-  if (!pptrGroup.ByNameOrId(CEntityProperty::EPT_INDEX, "Count group", (0x130 << 8) + 17)) {
+  if (!pptrGroup.ByVariable("CEnemySpawner", "m_ctGroupSize")) {
     ReportPropError(pen, "CEnemySpawner::m_ctGroupSize");
 
   // Multiply group size
@@ -236,7 +236,7 @@ void AffectEnemySpawner(CEntity *pen) {
   // Retrieve CEnemySpawner::m_tmSingleWait
   static CPropertyPtr pptrDelaySingle(pen);
 
-  if (!pptrDelaySingle.ByNameOrId(CEntityProperty::EPT_FLOAT, "Delay single", (0x130 << 8) + 16)) {
+  if (!pptrDelaySingle.ByVariable("CEnemySpawner", "m_tmSingleWait")) {
     ReportPropError(pen, "CEnemySpawner::m_tmSingleWait");
 
   // Decrease delay between single enemies
@@ -248,7 +248,7 @@ void AffectEnemySpawner(CEntity *pen) {
   // Retrieve CEnemySpawner::m_tmGroupWait
   static CPropertyPtr pptrDelayGroup(pen);
 
-  if (!pptrDelayGroup.ByNameOrId(CEntityProperty::EPT_FLOAT, "Delay group", (0x130 << 8) + 5)) {
+  if (!pptrDelayGroup.ByVariable("CEnemySpawner", "m_tmGroupWait")) {
     ReportPropError(pen, "CEnemySpawner::m_tmGroupWait");
 
   // Decrease delay between groups of enemies
