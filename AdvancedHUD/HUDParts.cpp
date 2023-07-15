@@ -263,8 +263,8 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
   // Display active powerups
   PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.66f, 0.33f, FALSE);
 
-  const FLOAT *ptmPowerups = &_penPlayer->m_tmInvisibility;
-  const FLOAT *ptmPowerupsMax = &_penPlayer->m_tmInvisibilityMax;
+  const TIME *ptmPowerups = &_penPlayer->m_tmInvisibility;
+  const TIME *ptmPowerupsMax = &_penPlayer->m_tmInvisibilityMax;
 
   for (INDEX iPowerUp = 0; iPowerUp < MAX_POWERUPS; iPowerUp++) {
     const TIME tmDelta = ptmPowerups[iPowerUp] - _tmNow;
@@ -597,7 +597,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
       // Draw remaining time
       if (pGetSP()->sp_iTimeLimit > 0) {
-        FLOAT fTimeLeft = ClampDn(pGetSP()->sp_iTimeLimit * 60.0f - _pNetwork->GetGameTime(), 0.0f);
+        FLOAT fTimeLeft = ClampDn(pGetSP()->sp_iTimeLimit * 60.0f - _pNetwork->GetGameTime(), (TIME)0.0);
         strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, LOCALIZE("TIME LEFT"), TimeToString(fTimeLeft));
       }
 
