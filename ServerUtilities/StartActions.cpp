@@ -182,6 +182,17 @@ void AffectPlayerMarker(CEntity *pen) {
     ENTITYPROPERTY(pen, pptrMaxAmmo.Offset(), FLOAT) = 1.0f;
   }
 
+  // Retrieve CPlayerMarker::m_iTakeAmmo
+  static CPropertyPtr pptrTakeAmmo(pen);
+
+  if (!pptrTakeAmmo.ByVariable("CPlayerMarker", "m_iTakeAmmo")) {
+    ReportPropError(pen, "CPlayerMarker::m_iTakeAmmo");
+
+  // Allow maximum ammo for all available weapons
+  } else if (_psMaxAmmo.GetIndex() != 0) {
+    ENTITYPROPERTY(pen, pptrTakeAmmo.Offset(), INDEX) = 0;
+  }
+
   // Retrieve CPlayerMarker::m_fHealth
   static CPropertyPtr pptrHealth(pen);
 
