@@ -89,7 +89,10 @@ static void Noclip(void) {
 };
 
 // Set health for all local players
-static void SetHealth(INDEX iHealth) {
+static void SetHealth(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iHealth = NEXT_ARG(INDEX);
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
 
@@ -149,7 +152,10 @@ static void CreateItem(CEntity *penPlayer, const CTString &strClass,
 };
 
 // Create weapon entity
-static void CreateWeapon(INDEX iType) {
+static void CreateWeapon(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iType = NEXT_ARG(INDEX);
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
     CreateItem(pen, "Classes\\WeaponItem.ecl", "Type", (0x322 << 8) + 1, iType);
@@ -157,7 +163,10 @@ static void CreateWeapon(INDEX iType) {
 };
 
 // Create ammo entity
-static void CreateAmmo(INDEX iType) {
+static void CreateAmmo(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iType = NEXT_ARG(INDEX);
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
     CreateItem(pen, "Classes\\AmmoItem.ecl", "Type", (0x323 << 8) + 1, iType);
@@ -165,7 +174,10 @@ static void CreateAmmo(INDEX iType) {
 };
 
 // Create health entity
-static void CreateHealth(INDEX iType) {
+static void CreateHealth(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iType = NEXT_ARG(INDEX);
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
     CreateItem(pen, "Classes\\HealthItem.ecl", "Type", (0x321 << 8) + 1, iType);
@@ -173,7 +185,10 @@ static void CreateHealth(INDEX iType) {
 };
 
 // Create armor entity
-static void CreateArmor(INDEX iType) {
+static void CreateArmor(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iType = NEXT_ARG(INDEX);
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
     CreateItem(pen, "Classes\\ArmorItem.ecl", "Type", (0x324 << 8) + 1, iType);
@@ -181,7 +196,10 @@ static void CreateArmor(INDEX iType) {
 };
 
 // Create powerup entity
-static void CreatePowerUp(INDEX iType) {
+static void CreatePowerUp(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iType = NEXT_ARG(INDEX);
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
     CreateItem(pen, "Classes\\PowerUpItem.ecl", "Type", (0x328 << 8) + 1, iType);

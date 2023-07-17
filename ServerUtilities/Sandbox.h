@@ -29,20 +29,20 @@ class IServerSandbox {
     static void ClearScheduledCommands(void);
 
     // Delete an entity from the world
-    static void DeleteEntity(INDEX iEntityID);
+    static void DeleteEntity(SHELL_FUNC_ARGS);
 
     // Initialize/reinitialize an entity
-    static void InitEntity(INDEX iEntityID);
+    static void InitEntity(SHELL_FUNC_ARGS);
 
     // Set new absolute position of an entity
-    static void SetEntityPosition(INDEX iEntityID, FLOAT fX, FLOAT fY, FLOAT fZ);
+    static void SetEntityPosition(SHELL_FUNC_ARGS);
 
     // Set new absolute rotation of an entity
-    static void SetEntityRotation(INDEX iEntityID, FLOAT fH, FLOAT fP, FLOAT fB);
+    static void SetEntityRotation(SHELL_FUNC_ARGS);
 
     // Set new value to some property by its name of an entity
-    static void SetEntityProperty(INDEX iEntityID, CTString &strProperty, CTString &strValue);
+    static void SetEntityProperty(SHELL_FUNC_ARGS);
 
     // Parent an entity to another entity
-    static void ParentEntity(INDEX iEntityID, INDEX iParentEntityID);
+    static void ParentEntity(SHELL_FUNC_ARGS);
 };

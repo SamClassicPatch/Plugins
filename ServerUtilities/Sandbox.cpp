@@ -51,7 +51,10 @@ void IServerSandbox::ClearScheduledCommands(void) {
 };
 
 // Delete an entity from the world
-void IServerSandbox::DeleteEntity(INDEX iEntityID) {
+void IServerSandbox::DeleteEntity(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iEntityID = NEXT_ARG(INDEX);
+
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
@@ -79,7 +82,10 @@ void IServerSandbox::DeleteEntity(INDEX iEntityID) {
 };
 
 // Initialize/reinitialize an entity
-void IServerSandbox::InitEntity(INDEX iEntityID) {
+void IServerSandbox::InitEntity(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iEntityID = NEXT_ARG(INDEX);
+
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
@@ -114,7 +120,13 @@ void IServerSandbox::InitEntity(INDEX iEntityID) {
 };
 
 // Set new absolute position of an entity
-void IServerSandbox::SetEntityPosition(INDEX iEntityID, FLOAT fX, FLOAT fY, FLOAT fZ) {
+void IServerSandbox::SetEntityPosition(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iEntityID = NEXT_ARG(INDEX);
+  FLOAT fX = NEXT_ARG(FLOAT);
+  FLOAT fY = NEXT_ARG(FLOAT);
+  FLOAT fZ = NEXT_ARG(FLOAT);
+
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
@@ -144,7 +156,13 @@ void IServerSandbox::SetEntityPosition(INDEX iEntityID, FLOAT fX, FLOAT fY, FLOA
 };
 
 // Set new absolute rotation of an entity
-void IServerSandbox::SetEntityRotation(INDEX iEntityID, FLOAT fH, FLOAT fP, FLOAT fB) {
+void IServerSandbox::SetEntityRotation(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iEntityID = NEXT_ARG(INDEX);
+  FLOAT fH = NEXT_ARG(FLOAT);
+  FLOAT fP = NEXT_ARG(FLOAT);
+  FLOAT fB = NEXT_ARG(FLOAT);
+
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
@@ -174,7 +192,12 @@ void IServerSandbox::SetEntityRotation(INDEX iEntityID, FLOAT fH, FLOAT fP, FLOA
 };
 
 // Set new value to some property by its name of an entity
-void IServerSandbox::SetEntityProperty(INDEX iEntityID, CTString &strProperty, CTString &strValue) {
+void IServerSandbox::SetEntityProperty(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iEntityID = NEXT_ARG(INDEX);
+  const CTString &strProperty = *NEXT_ARG(CTString *);
+  CTString &strValue = *NEXT_ARG(CTString *);
+
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
@@ -256,7 +279,11 @@ void IServerSandbox::SetEntityProperty(INDEX iEntityID, CTString &strProperty, C
 };
 
 // Parent an entity to another entity
-void IServerSandbox::ParentEntity(INDEX iEntityID, INDEX iParentEntityID) {
+void IServerSandbox::ParentEntity(SHELL_FUNC_ARGS) {
+  BEGIN_SHELL_FUNC;
+  INDEX iEntityID = NEXT_ARG(INDEX);
+  INDEX iParentEntityID = NEXT_ARG(INDEX);
+
   if (iEntityID < 0) {
     CPrintF(TRANS("Invalid entity ID: %d\n"), iEntityID);
     return;
