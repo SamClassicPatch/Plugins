@@ -16,6 +16,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Affect weapon item at the beginning of the game
 void AffectWeaponItem(CEntity *pen);
 
+// Affect ammo item at the beginning of the game
+void AffectAmmoItem(CEntity *pen);
+
 // Affect health item at the beginning of the game
 void AffectHealthItem(CEntity *pen);
 

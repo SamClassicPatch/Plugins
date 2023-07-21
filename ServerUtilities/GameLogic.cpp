@@ -27,6 +27,9 @@ void IGameEvents::OnGameStart(void)
     if (IsOfClass(pen, "Weapon Item")) {
       AffectWeaponItem(pen);
 
+    } else if (IsOfClass(pen, "Ammo Item")) {
+      AffectAmmoItem(pen);
+
     } else if (IsOfClass(pen, "Health Item")) {
       AffectHealthItem(pen);
 

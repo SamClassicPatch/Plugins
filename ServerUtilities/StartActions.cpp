@@ -64,6 +64,35 @@ void AffectWeaponItem(CEntity *pen) {
   }
 };
 
+// Affect ammo item at the beginning of the game
+void AffectAmmoItem(CEntity *pen) {
+  // Retrieve CAmmoItem::m_EaitType
+  static CPropertyPtr pptr(pen);
+
+  if (!pptr.ByVariable("CAmmoItem", "m_EaitType")) {
+    ReportPropError(pen, "CAmmoItem::m_EaitType");
+    return;
+  }
+
+  INDEX &iAmmoType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
+  INDEX iSetType = _apsAmmoItems[iAmmoType].GetIndex();
+
+  // Remove ammo item
+  if (iSetType == -1) {
+    pen->Destroy();
+
+  // Set specific type
+  } else if (iSetType >= 0) {
+    iAmmoType = VerifyItemType(pen, pptr, iSetType);
+    pen->Reinitialize();
+
+  // Replace with another weapon
+  } else if (_psReplaceAmmo.GetIndex() >= 0) {
+    iAmmoType = VerifyItemType(pen, pptr, _psReplaceAmmo.GetIndex());
+    pen->Reinitialize();
+  }
+};
+
 // Affect health item at the beginning of the game
 void AffectHealthItem(CEntity *pen) {
   // Retrieve CHealthItem::m_EhitType

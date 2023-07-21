@@ -35,7 +35,7 @@ MODULE_API void Module_GetInfo(CPluginInfo &info) {
   info.ulVersion = CORE_PATCH_VERSION;
 };
 
-// Mode switch symbol (-100 = ignore)
+// Non-persistent and invisible mode switch symbol (-100 = ignore)
 #define MSS CPluginSymbol(0, INDEX(-100))
 
 // Difficulty settings
@@ -59,6 +59,15 @@ CPluginSymbol _apsGiveWeapons[CT_WEAPONS] = {
 CPluginSymbol _apsWeaponItems[CT_WEAPONS] = {
   MSS, MSS, MSS, MSS, MSS, MSS, MSS, // <none>, Colt, SShotgun, DShotgun, Tommygun, Minigun, RLauncher
   MSS, MSS, MSS, MSS, MSS, MSS, MSS, // GLauncher, Sniper, Flamer, Laser, Chainsaw, Cannon, Ghostbuster
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // PlasmaThrower, MineLayer
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS,
+  MSS, MSS, MSS,
+};
+
+// 0+ = specific type
+CPluginSymbol _apsAmmoItems[CT_WEAPONS] = {
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // <none>, Shells, Bullets, Rockets, Grenades, Electricity, NukeBalls
+  MSS, MSS, MSS, MSS, MSS, MSS, MSS, // IronBalls, SeriousPack, BackPack, Napalm, SnipBullets, Plasma, Mines
   MSS, MSS, MSS, MSS, MSS, MSS, MSS,
   MSS, MSS, MSS, MSS, MSS, MSS, MSS,
   MSS, MSS, MSS,
@@ -87,6 +96,7 @@ CPluginSymbol _apsPowerUpItems[CT_ITEMS] = {
 
 // -1 = leave as is; 0+ = item index
 CPluginSymbol _psReplaceWeapons(SSF_PERSISTENT | SSF_USER, INDEX(-1));
+CPluginSymbol _psReplaceAmmo   (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 CPluginSymbol _psReplaceHealth (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 CPluginSymbol _psReplaceArmor  (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 
@@ -117,6 +127,9 @@ MODULE_API void Module_Startup(void) {
 
       strCommand.PrintF("sutl_iWeaponType%d", iWeapon);
       _apsWeaponItems[iWeapon].Register(strCommand);
+
+      strCommand.PrintF("sutl_iAmmoType%d", iWeapon);
+      _apsAmmoItems[iWeapon].Register(strCommand);
     }
 
     // Item settings
@@ -133,6 +146,7 @@ MODULE_API void Module_Startup(void) {
     }
 
     _psReplaceWeapons.Register("sutl_iReplaceWeapons");
+    _psReplaceAmmo.Register("sutl_iReplaceAmmo");
     _psReplaceHealth.Register("sutl_iReplaceHealth");
     _psReplaceArmor.Register("sutl_iReplaceArmor");
 

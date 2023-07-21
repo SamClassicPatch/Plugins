@@ -30,9 +30,11 @@ extern CPluginSymbol _apsGiveWeapons[CT_WEAPONS];
 
 // Item settings
 extern CPluginSymbol _apsWeaponItems[CT_WEAPONS];
+extern CPluginSymbol _apsAmmoItems[CT_WEAPONS];
 extern CPluginSymbol _apsHealthItems[CT_ITEMS];
 extern CPluginSymbol _apsArmorItems[CT_ITEMS];
 extern CPluginSymbol _apsPowerUpItems[CT_ITEMS];
 extern CPluginSymbol _psReplaceWeapons;
+extern CPluginSymbol _psReplaceAmmo;
 extern CPluginSymbol _psReplaceHealth;
 extern CPluginSymbol _psReplaceArmor;
