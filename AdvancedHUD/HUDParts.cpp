@@ -263,8 +263,31 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
   // Display active powerups
   PrepareColorTransitions(_colMax, _colTop, _colMid, _colLow, 0.66f, 0.33f, FALSE);
 
-  const TIME *ptmPowerups = &_penPlayer->m_tmInvisibility;
-  const TIME *ptmPowerupsMax = &_penPlayer->m_tmInvisibilityMax;
+  // Arrange into arrays
+  TIME ptmPowerups[] = {
+    _penPlayer->m_tmInvisibility,
+    _penPlayer->m_tmInvulnerability,
+    _penPlayer->m_tmSeriousDamage,
+    _penPlayer->m_tmSeriousSpeed,
+  };
+
+  TIME ptmPowerupsMax[] = {
+    _penPlayer->m_tmInvisibilityMax,
+    _penPlayer->m_tmInvulnerabilityMax,
+    _penPlayer->m_tmSeriousDamageMax,
+    _penPlayer->m_tmSeriousSpeedMax,
+  };
+
+  // Count spawn invulnerability as normal invulnerability
+  static CSymbolPtr piSpawnInvul("plr_iSpawnInvulIndicator");
+
+  const BOOL bSpawnInvul = (piSpawnInvul.Exists() && piSpawnInvul.GetIndex() > 0);
+  const TIME tmSpawnInvul = GetSP()->sp_tmSpawnInvulnerability;
+
+  if (bSpawnInvul && tmSpawnInvul > 0.0f) {
+    const TIME tmRemaining = _penPlayer->m_tmSpawned + tmSpawnInvul;
+    ptmPowerups[1] = Max(ptmPowerups[1], tmRemaining);
+  }
 
   for (INDEX iPowerUp = 0; iPowerUp < MAX_POWERUPS; iPowerUp++) {
     const TIME tmDelta = ptmPowerups[iPowerUp] - _tmNow;
@@ -272,7 +295,8 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
     // Skip inactive
     if (tmDelta <= 0) continue;
 
-    FLOAT fNormValue = tmDelta / ptmPowerupsMax[iPowerUp];
+    // Don't go over 100%
+    FLOAT fNormValue = ClampUp(tmDelta / ptmPowerupsMax[iPowerUp], (TIME)1.0);
 
     // Draw icon and a little bar
     DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
