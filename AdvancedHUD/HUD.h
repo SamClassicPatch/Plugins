@@ -39,7 +39,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #endif
 
 #define RENDER_ARGS(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
-  RENDER_ARGS_RAW(CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye)
+  RENDER_ARGS_RAW(CPerspectiveProjection3D &_prProjection, CDrawPort *_pdp, FLOAT3D _vLightDir, \
+                  COLOR _colLight, COLOR _colAmbient, BOOL _bRenderWeapon, INDEX _iEye)
 
 class CHud {
   public:
@@ -195,7 +196,7 @@ class CHud {
     };
 
     // Scale unit sizes by a factor
-    inline void Rescale(FLOAT fFactor) {
+    inline FLOAT Rescale(FLOAT fFactor) {
       const FLOAT fUpperSize = (_fCustomScaling * fFactor) / _fCustomScaling;
       _fCustomScaling *= fUpperSize;
 
@@ -204,6 +205,9 @@ class CHud {
       units.fAdv  *= fUpperSize;
       units.fNext *= fUpperSize;
       units.fHalf *= fUpperSize;
+
+      // Return factor for undoing current factor
+      return 1.0f / fUpperSize;
     };
 
   // Main methods

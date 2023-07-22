@@ -130,4 +130,8 @@ void HudTextureSet::LoadTextures(void) {
   // Tile texture
   toTile.SetData_t(CTFILENAME("Textures\\Interface\\Tile.tex"));
   ((CTextureData *)toTile.GetData())->Force(TEX_CONSTANT);
+
+  // Lives counter
+  toLives.SetData_t(CTFILENAME("TexturesPatch\\Interface\\ILives.tex"));
+  ((CTextureData *)toLives.GetData())->Force(TEX_CONSTANT);
 };

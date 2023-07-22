@@ -73,6 +73,7 @@ CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
 CPluginSymbol _psShowAmmoRow(SSF_PERSISTENT | SSF_USER, INDEX(1));
 CPluginSymbol _psShowDepletedAmmo(SSF_PERSISTENT | SSF_USER, INDEX(1));
 CPluginSymbol _psShowHighScore(SSF_PERSISTENT | SSF_USER, INDEX(1));
+CPluginSymbol _psShowLives(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
 // HUD colorization (no alpha channel)
 CPluginSymbol _psColorize(SSF_PERSISTENT | SSF_USER, INDEX(0));
@@ -115,6 +116,7 @@ MODULE_API void Module_Startup(void) {
   _psShowAmmoRow.Register("ahud_bShowAmmoRow");
   _psShowDepletedAmmo.Register("ahud_bShowDepletedAmmo");
   _psShowHighScore.Register("ahud_bShowHighScore");
+  _psShowLives.Register("ahud_bShowLives");
 
   _psColorize.Register("ahud_bColorize");
   _psColorPreset.Register("ahud_strColorPreset");

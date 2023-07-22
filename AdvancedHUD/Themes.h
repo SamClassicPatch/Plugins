@@ -109,6 +109,9 @@ struct HudTextureSet {
   // Tile texture with one corner, edges and center
   CTextureObject toTile;
 
+  // Lives counter
+  CTextureObject toLives;
+
   void LoadTextures(void);
 };
 

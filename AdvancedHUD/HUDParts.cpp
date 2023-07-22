@@ -388,6 +388,9 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   const INDEX bShowMessages = pbMessages.GetIndex();
   const INDEX iShowPlayers = piPlayers.GetIndex();
 
+  // Display lives counter
+  const BOOL bShowLives = _psShowLives.GetIndex() && GetSP()->sp_ctCredits > 0;
+
 #if SE1_GAME == SS_TFE
   const INDEX bShowMatchInfo = _psShowMatchInfo.GetIndex();
 #else
@@ -549,7 +552,30 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         const PIX pixCharH = (_pfdCurrentText->GetHeight() - 2) * fTextScale;
 
         // Vertical offset
-        const PIX pixOffsetY = _vpixTL(2) + ((bCoopDetails && bShowMessages) ? units.fNext : 5.0f);
+        PIX pixOffsetY = _vpixTL(2);
+        BOOL bNoDetailsShift = TRUE;
+
+        // Shift for coop details
+        if (bCoopDetails) {
+          if (bShowLives) {
+            // Rescale temporarily
+            const FLOAT fUndoScale = Rescale(1.75f);
+
+            pixOffsetY += units.fNext;
+
+            Rescale(fUndoScale);
+            bNoDetailsShift = FALSE;
+          }
+
+          if (bShowMessages) {
+            pixOffsetY += units.fNext;
+            bNoDetailsShift = FALSE;
+          }
+        }
+
+        // Offset for no coop details
+        if (bNoDetailsShift) pixOffsetY += 5;
+
         const PIX pixInfoY = pixOffsetY * _vScaling(2) + pixCharH * iPlayer;
 
         // Horizontal offset
@@ -708,12 +734,40 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       DrawIcon(fCol - fAdv, fRow, tex.toHiScore, _colIconStd, 1.0f, FALSE);
     }
 
+    // Adjustable start of messages
+    fRow = _vpixTL(2) + units.fHalf;
+
+    // Draw lives counter
+    if (bShowLives) {
+      // Rescale
+      const FLOAT fUndoScale = Rescale(1.75f);
+
+      const INDEX iValue = ClampDn(GetSP()->sp_ctCreditsLeft, (INDEX)0);
+      const FLOAT fNormValue = (FLOAT)iValue / (FLOAT)GetSP()->sp_ctCredits;
+
+      strValue.PrintF("%d", iValue);
+
+      fCol = _vpixBR(1) - units.fHalf - units.fChar * 3;
+      fRow = _vpixTL(2) + units.fHalf;
+      fAdv = units.fAdv + units.fChar * 1.5f - units.fHalf;
+
+      PrepareColorTransitions(_colTop, _colTop, _colMid, _colLow, 0.4f, 0.2f, FALSE);
+
+      DrawBorder(fCol, fRow, units.fOne, units.fOne, _colHUD);
+      DrawBorder(fCol + fAdv, fRow, units.fChar * 3, units.fOne, _colHUD);
+      DrawString(fCol + fAdv, fRow, strValue, GetCurrentColor(fNormValue), 1.0f);
+      DrawIcon(fCol, fRow, tex.toLives, _colIconStd, 0.0f, FALSE);
+
+      // Shift messages and unscale
+      fRow += units.fOne;
+      Rescale(fUndoScale);
+    }
+
     // Draw unread messages
     if (bShowMessages && _penPlayer->m_ctUnreadMessages > 0) {
       strValue.PrintF("%d", _penPlayer->m_ctUnreadMessages);
 
-      fCol = _vpixBR(1) - units.fHalf - units.fAdv - units.fChar * 4;
-      fRow = _vpixTL(2) + units.fHalf;
+      fCol = _vpixBR(1) - units.fHalf - units.fChar * 4;
       fAdv = units.fAdv + units.fChar * 2 - units.fHalf;
 
       const FLOAT tmIn = 0.5f;
