@@ -18,31 +18,40 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StartActions.h"
 #include "Sandbox.h"
 
+#include <EntitiesV/StdH/StdH.h>
+#include <EntitiesV/AmmoItem.h>
+#include <EntitiesV/ArmorItem.h>
+#include <EntitiesV/HealthItem.h>
+#include <EntitiesV/PowerUpItem.h>
+#include <EntitiesV/WeaponItem.h>
+#include <EntitiesV/EnemySpawner.h>
+#include <EntitiesV/PlayerMarker.h>
+
 void IGameEvents::OnGameStart(void)
 {
   // Affect entities at the beginning of the game
   FOREACHINDYNAMICCONTAINER(IWorld::GetWorld()->wo_cenEntities, CEntity, iten) {
     CEntity *pen = iten;
 
-    if (IsOfClass(pen, "Weapon Item")) {
+    if (IsOfClassID(pen, CWeaponItem_ClassID)) {
       AffectWeaponItem(pen);
 
-    } else if (IsOfClass(pen, "Ammo Item")) {
+    } else if (IsOfClassID(pen, CAmmoItem_ClassID)) {
       AffectAmmoItem(pen);
 
-    } else if (IsOfClass(pen, "Health Item")) {
+    } else if (IsOfClassID(pen, CHealthItem_ClassID)) {
       AffectHealthItem(pen);
 
-    } else if (IsOfClass(pen, "Armor Item")) {
+    } else if (IsOfClassID(pen, CArmorItem_ClassID)) {
       AffectArmorItem(pen);
 
-    } else if (IsOfClass(pen, "PowerUp Item")) {
+    } else if (IsOfClassID(pen, CPowerUpItem_ClassID)) {
       AffectPowerUpItem(pen);
 
-    } else if (IsOfClass(pen, "Player Marker")) {
+    } else if (IsOfClassID(pen, CPlayerMarker_ClassID)) {
       AffectPlayerMarker(pen);
 
-    } else if (IsOfClass(pen, "Enemy Spawner")) {
+    } else if (IsOfClassID(pen, CEnemySpawner_ClassID)) {
       AffectEnemySpawner(pen);
     }
   }

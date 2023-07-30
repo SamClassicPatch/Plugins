@@ -139,7 +139,7 @@ void CHud::SetAllPlayersStats(INDEX iSortKey) {
 
   FOREACHINDYNAMICCONTAINER(_penPlayer->GetWorld()->wo_cenEntities, CEntity, iten) {
     CEntity *pen = iten;
-    if (!IsDerivedFromClass(pen, "Player")) continue;
+    if (!IsDerivedFromID(pen, CPlayer_ClassID)) continue;
 
     // Skip invalid players
     if (pen == NULL || pen->GetFlags() & ENF_DELETED) continue;

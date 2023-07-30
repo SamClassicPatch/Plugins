@@ -37,8 +37,8 @@ void IProcessingEvents::OnStep(void)
     FOREACHINDYNAMICCONTAINER(IWorld::GetWorld()->wo_cenEntities, CEntity, iten) {
       CEntity *pen = iten;
 
-      // Not an enemy or dead
-      if (!IsDerivedFromClass(pen, "Enemy Base") || !(pen->GetFlags() & ENF_ALIVE)) {
+      // Not an enemy or dead (CEnemyBase_ClassID)
+      if (!IsDerivedFromID(pen, 310) || !(pen->GetFlags() & ENF_ALIVE)) {
         continue;
       }
 

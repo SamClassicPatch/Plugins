@@ -115,7 +115,7 @@ static void Trigger(void) {
     IWorld::GetWorld()->CastRay(crRay);
 
     if (crRay.cr_penHit != NULL) {
-      ETrigger eTrigger;
+      VNL_ETrigger eTrigger;
       eTrigger.penCaused = pen;
 
       crRay.cr_penHit->SendEvent(eTrigger);
