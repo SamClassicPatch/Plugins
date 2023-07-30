@@ -282,7 +282,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
   static CSymbolPtr piSpawnInvul("plr_iSpawnInvulIndicator");
 
   const BOOL bSpawnInvul = (piSpawnInvul.Exists() && piSpawnInvul.GetIndex() > 0);
-  const TIME tmSpawnInvul = GetSP()->sp_tmSpawnInvulnerability;
+  const TIME tmSpawnInvul = pGetSP()->sp_tmSpawnInvulnerability;
 
   if (bSpawnInvul && tmSpawnInvul > 0.0f) {
     const TIME tmRemaining = _penPlayer->m_tmSpawned + tmSpawnInvul;
@@ -413,7 +413,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   const INDEX iShowPlayers = piPlayers.GetIndex();
 
   // Display lives counter
-  const BOOL bShowLives = _psShowLives.GetIndex() && GetSP()->sp_ctCredits > 0;
+  const BOOL bShowLives = _psShowLives.GetIndex() && pGetSP()->sp_ctCredits > 0;
 
 #if SE1_GAME == SS_TFE
   const INDEX bShowMatchInfo = _psShowMatchInfo.GetIndex();
@@ -766,8 +766,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       // Rescale
       const FLOAT fUndoScale = Rescale(1.75f);
 
-      const INDEX iValue = ClampDn(GetSP()->sp_ctCreditsLeft, (INDEX)0);
-      const FLOAT fNormValue = (FLOAT)iValue / (FLOAT)GetSP()->sp_ctCredits;
+      const INDEX iValue = ClampDn(pGetSP()->sp_ctCreditsLeft, (INDEX)0);
+      const FLOAT fNormValue = (FLOAT)iValue / (FLOAT)pGetSP()->sp_ctCredits;
 
       strValue.PrintF("%d", iValue);
 
