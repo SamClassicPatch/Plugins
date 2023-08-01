@@ -20,3 +20,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Plugin headers
 #include "Commands.h"
+
+// Pointer to variable data
+extern CCoreVariables *_pVarData;

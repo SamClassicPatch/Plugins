@@ -72,6 +72,16 @@ void IGameEvents::OnGameStart(void)
   }
 };
 
+void IGameEvents::OnChangeLevel(void)
+{
+  // Affect entities on a new level
+  if (_pVarData->gex.bGameplayExt)
+  {
+    // [Cecil] TODO: It should be implemented as extension packets, since it's a server plugin
+    //OnGameStart();
+  }
+};
+
 void IGameEvents::OnGameStop(void)
 {
 };
