@@ -17,12 +17,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "Sandbox.h"
 
-// Define own pointer to the API
-CCoreAPI *_pCoreAPI = NULL;
-
-// Pointer to variable data
-CCoreVariables *_pVarData = NULL;
-
 // Plugin event handlers
 static IGameEvents _evGame;
 
@@ -105,12 +99,6 @@ CPluginSymbol _psReplaceArmor  (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 
 // Module entry point
 MODULE_API void Module_Startup(void) {
-  // Hook pointer to the API
-  HookSymbolAPI();
-
-  // Get variable data
-  _pVarData = GetVarData();
-
   // Register plugin events
   _evGame.Register();
 

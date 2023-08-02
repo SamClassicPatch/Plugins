@@ -18,6 +18,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StartActions.h"
 #include "Sandbox.h"
 
+#include <CoreLib/Networking/MessageProcessing.h>
+
 #include <EntitiesV/StdH/StdH.h>
 #include <EntitiesV/AmmoItem.h>
 #include <EntitiesV/ArmorItem.h>
@@ -27,9 +29,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <EntitiesV/EnemySpawner.h>
 #include <EntitiesV/PlayerMarker.h>
 
-void IGameEvents::OnGameStart(void)
-{
-  // Affect entities at the beginning of the game
+// Affect entities at the beginning of the game
+static void AffectEntities(void) {
   FOREACHINDYNAMICCONTAINER(IWorld::GetWorld()->wo_cenEntities, CEntity, iten) {
     CEntity *pen = iten;
 
@@ -55,6 +56,11 @@ void IGameEvents::OnGameStart(void)
       AffectEnemySpawner(pen);
     }
   }
+};
+
+void IGameEvents::OnGameStart(void)
+{
+  AffectEntities();
 
   // Execute all scheduled commands
   CStringStack &astrCommands = IServerSandbox::astrScheduled;
@@ -74,11 +80,12 @@ void IGameEvents::OnGameStart(void)
 
 void IGameEvents::OnChangeLevel(void)
 {
-  // Affect entities on a new level
-  if (_pVarData->gex.bGameplayExt)
-  {
-    // [Cecil] TODO: It should be implemented as extension packets, since it's a server plugin
-    //OnGameStart();
+  // Affect entities on a new level (if singleplayer or patch-exclusive)
+  const BOOL bSingle = (_pNetwork->ga_sesSessionState.ses_ctMaxPlayers == 1);
+  const BOOL bExclusive = (IProcessPacket::_bForbidVanilla || IProcessPacket::_gexSetup.bGameplayExt);
+
+  if (_pNetwork->IsServer() && (bSingle || bExclusive)) {
+    AffectEntities();
   }
 };
 

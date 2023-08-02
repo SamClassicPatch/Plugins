@@ -16,6 +16,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdH.h"
 
 #include <CoreLib/Objects/PropertyPtr.h>
+#include <CoreLib/Networking/ExtPackets.h>
 
 // Notify about not being able to retrieve some entity property
 static void ReportPropError(CEntity *pen, const char *strPropertyName) {
@@ -35,6 +36,34 @@ static INDEX VerifyItemType(CEntity *pen, const CPropertyPtr &pptrType, INDEX iT
   return iType;
 };
 
+// Destroy some entity
+static inline void DestroyEntity(CEntity *pen) {
+  // Send packet to destroy the entity
+  CExtEntityDelete pck;
+  pck.ulEntity = pen->en_ulID;
+  pck.bSameClass = FALSE;
+  pck.SendPacket();
+};
+
+// Reinitialize some entity
+static inline void ReinitEntity(CEntity *pen) {
+  // Send packet to reinitialize the entity
+  CExtEntityInit pck;
+  pck.ulEntity = pen->en_ulID;
+  pck.SetEvent(EVoid(), sizeof(EVoid));
+  pck.SendPacket();
+};
+
+// Change property of some entity
+static inline void ChangeEntityProp(CEntity *pen, CPropertyPtr &pptr, DOUBLE fValue) {
+  // Send packet to change the property
+  CExtEntityProp pck;
+  pck.ulEntity = pen->en_ulID;
+  pck.SetProperty(pptr._pep->ep_ulID);
+  pck.SetValue(fValue);
+  pck.SendPacket();
+};
+
 // Affect weapon item at the beginning of the game
 void AffectWeaponItem(CEntity *pen) {
   // Retrieve CWeaponItem::m_EwitType
@@ -45,22 +74,26 @@ void AffectWeaponItem(CEntity *pen) {
     return;
   }
 
-  INDEX &iWeaponType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
-  INDEX iSetType = _apsWeaponItems[iWeaponType].GetIndex();
+  INDEX iCurrType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
+  INDEX iSetType = _apsWeaponItems[iCurrType].GetIndex();
 
   // Remove weapon item
   if (iSetType == -1) {
-    pen->Destroy();
+    DestroyEntity(pen);
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iWeaponType = VerifyItemType(pen, pptr, iSetType);
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, iSetType);
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
 
   // Replace with another weapon
   } else if (_psReplaceWeapons.GetIndex() >= 0) {
-    iWeaponType = VerifyItemType(pen, pptr, _psReplaceWeapons.GetIndex());
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, _psReplaceWeapons.GetIndex());
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
   }
 };
 
@@ -74,22 +107,26 @@ void AffectAmmoItem(CEntity *pen) {
     return;
   }
 
-  INDEX &iAmmoType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
-  INDEX iSetType = _apsAmmoItems[iAmmoType].GetIndex();
+  INDEX iCurrType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
+  INDEX iSetType = _apsAmmoItems[iCurrType].GetIndex();
 
   // Remove ammo item
   if (iSetType == -1) {
-    pen->Destroy();
+    DestroyEntity(pen);
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iAmmoType = VerifyItemType(pen, pptr, iSetType);
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, iSetType);
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
 
   // Replace with another weapon
   } else if (_psReplaceAmmo.GetIndex() >= 0) {
-    iAmmoType = VerifyItemType(pen, pptr, _psReplaceAmmo.GetIndex());
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, _psReplaceAmmo.GetIndex());
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
   }
 };
 
@@ -103,22 +140,26 @@ void AffectHealthItem(CEntity *pen) {
     return;
   }
 
-  INDEX &iHealthType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
-  INDEX iSetType = _apsHealthItems[iHealthType].GetIndex();
+  INDEX iCurrType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
+  INDEX iSetType = _apsHealthItems[iCurrType].GetIndex();
 
   // Remove health item
   if (iSetType == -1) {
-    pen->Destroy();
+    DestroyEntity(pen);
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iHealthType = VerifyItemType(pen, pptr, iSetType);
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, iSetType);
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
 
   // Replace with another health item
   } else if (_psReplaceHealth.GetIndex() >= 0) {
-    iHealthType = VerifyItemType(pen, pptr, _psReplaceHealth.GetIndex());
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, _psReplaceHealth.GetIndex());
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
   }
 };
 
@@ -132,22 +173,26 @@ void AffectArmorItem(CEntity *pen) {
     return;
   }
 
-  INDEX &iArmorType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
-  INDEX iSetType = _apsArmorItems[iArmorType].GetIndex();
+  INDEX iCurrType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
+  INDEX iSetType = _apsArmorItems[iCurrType].GetIndex();
 
   // Remove armor item
   if (iSetType == -1) {
-    pen->Destroy();
+    DestroyEntity(pen);
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iArmorType = VerifyItemType(pen, pptr, iSetType);
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, iSetType);
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
 
   // Replace with another armor item
   } else if (_psReplaceArmor.GetIndex() >= 0) {
-    iArmorType = VerifyItemType(pen, pptr, _psReplaceArmor.GetIndex());
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, _psReplaceArmor.GetIndex());
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
   }
 };
 
@@ -161,17 +206,19 @@ void AffectPowerUpItem(CEntity *pen) {
     return;
   }
 
-  INDEX &iPowerUp = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
-  INDEX iSetType = _apsPowerUpItems[iPowerUp].GetIndex();
+  INDEX iCurrType = ENTITYPROPERTY(pen, pptr.Offset(), INDEX);
+  INDEX iSetType = _apsPowerUpItems[iCurrType].GetIndex();
 
   // Remove power up
   if (iSetType == -1) {
-    pen->Destroy();
+    DestroyEntity(pen);
 
   // Set specific type
   } else if (iSetType >= 0) {
-    iPowerUp = VerifyItemType(pen, pptr, iSetType);
-    pen->Reinitialize();
+    iCurrType = VerifyItemType(pen, pptr, iSetType);
+
+    ChangeEntityProp(pen, pptr, iCurrType);
+    ReinitEntity(pen);
   }
 };
 
@@ -188,14 +235,17 @@ void AffectPlayerMarker(CEntity *pen) {
     for (INDEX iWeapon = 0; iWeapon < CT_WEAPONS; iWeapon++)
     {
       INDEX iGive = _apsGiveWeapons[iWeapon].GetIndex();
+      INDEX iSet = ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX);
 
       // Give weapon
       if (iGive == 1) {
-        ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX) |= (1 << iWeapon);
+        iSet |= (1 << iWeapon);
+        ChangeEntityProp(pen, pptrGive, iSet);
 
       // Take away the weapon
       } else if (iGive == 0) {
-        ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX) &= ~(1 << iWeapon);
+        iSet &= ~(1 << iWeapon);
+        ChangeEntityProp(pen, pptrGive, iSet);
       }
     }
   }
@@ -208,7 +258,7 @@ void AffectPlayerMarker(CEntity *pen) {
 
   // Set maximum ammo
   } else if (_psMaxAmmo.GetIndex() != 0) {
-    ENTITYPROPERTY(pen, pptrMaxAmmo.Offset(), FLOAT) = 1.0f;
+    ChangeEntityProp(pen, pptrMaxAmmo, 1.0f);
   }
 
   // Retrieve CPlayerMarker::m_iTakeAmmo
@@ -219,7 +269,7 @@ void AffectPlayerMarker(CEntity *pen) {
 
   // Allow maximum ammo for all available weapons
   } else if (_psMaxAmmo.GetIndex() != 0) {
-    ENTITYPROPERTY(pen, pptrTakeAmmo.Offset(), INDEX) = 0;
+    ChangeEntityProp(pen, pptrTakeAmmo, 0);
   }
 
   // Retrieve CPlayerMarker::m_fHealth
@@ -230,7 +280,7 @@ void AffectPlayerMarker(CEntity *pen) {
 
   // Set custom health
   } else if (_psStartHP.GetFloat() != 100.0f) {
-    ENTITYPROPERTY(pen, pptrHealth.Offset(), FLOAT) = _psStartHP.GetFloat();
+    ChangeEntityProp(pen, pptrHealth, _psStartHP.GetFloat());
   }
 
   // Retrieve CPlayerMarker::m_fShield
@@ -241,13 +291,16 @@ void AffectPlayerMarker(CEntity *pen) {
 
   // Set custom armor
   } else if (_psStartAR.GetFloat() != 0.0f) {
-    ENTITYPROPERTY(pen, pptrArmor.Offset(), FLOAT) = _psStartAR.GetFloat();
+    ChangeEntityProp(pen, pptrArmor, _psStartAR.GetFloat());
   }
 };
 
 // Affect enemy spawner at the beginning of the game
 void AffectEnemySpawner(CEntity *pen) {
   const FLOAT fEnemyMul = _psEnemyMul.GetFloat();
+
+  // No multiplier set
+  if (fEnemyMul <= 1.0f) return;
 
   // Retrieve CEnemySpawner::m_ctTotal
   static CPropertyPtr pptrTotal(pen);
@@ -256,9 +309,9 @@ void AffectEnemySpawner(CEntity *pen) {
     ReportPropError(pen, "CEnemySpawner::m_ctTotal");
 
   // Multiply total amount
-  } else if (fEnemyMul > 0.0f) {
+  } else {
     INDEX &iCount = ENTITYPROPERTY(pen, pptrTotal.Offset(), INDEX);
-    iCount = ClampDn(INDEX(iCount * fEnemyMul), (INDEX)1);
+    ChangeEntityProp(pen, pptrTotal, ClampDn(INDEX(iCount * fEnemyMul), (INDEX)1));
   }
 
   // Retrieve CEnemySpawner::m_ctGroupSize
@@ -268,9 +321,9 @@ void AffectEnemySpawner(CEntity *pen) {
     ReportPropError(pen, "CEnemySpawner::m_ctGroupSize");
 
   // Multiply group size
-  } else if (fEnemyMul > 0.0f) {
+  } else {
     INDEX &iGroup = ENTITYPROPERTY(pen, pptrGroup.Offset(), INDEX);
-    iGroup = ClampDn(INDEX(iGroup * fEnemyMul), (INDEX)1);
+    ChangeEntityProp(pen, pptrGroup, ClampDn(INDEX(iGroup * fEnemyMul), (INDEX)1));
   }
 
   // Retrieve CEnemySpawner::m_tmSingleWait
@@ -280,9 +333,9 @@ void AffectEnemySpawner(CEntity *pen) {
     ReportPropError(pen, "CEnemySpawner::m_tmSingleWait");
 
   // Decrease delay between single enemies
-  } else if (fEnemyMul > 0.0f) {
+  } else {
     FLOAT &fTime = ENTITYPROPERTY(pen, pptrDelaySingle.Offset(), FLOAT);
-    fTime = ClampDn(fTime / fEnemyMul, 0.05f);
+    ChangeEntityProp(pen, pptrDelaySingle, ClampDn(fTime / fEnemyMul, 0.05f));
   }
 
   // Retrieve CEnemySpawner::m_tmGroupWait
@@ -292,8 +345,8 @@ void AffectEnemySpawner(CEntity *pen) {
     ReportPropError(pen, "CEnemySpawner::m_tmGroupWait");
 
   // Decrease delay between groups of enemies
-  } else if (fEnemyMul > 0.0f) {
+  } else {
     FLOAT &fTime = ENTITYPROPERTY(pen, pptrDelayGroup.Offset(), FLOAT);
-    fTime = ClampDn(fTime / fEnemyMul, 0.05f);
+    ChangeEntityProp(pen, pptrDelayGroup, ClampDn(fTime / fEnemyMul, 0.05f));
   }
 };
