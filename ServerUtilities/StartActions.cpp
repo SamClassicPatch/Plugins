@@ -15,6 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#include <CoreLib/Interfaces/PropertyFunctions.h>
 #include <CoreLib/Objects/PropertyPtr.h>
 #include <CoreLib/Networking/ExtPackets.h>
 
@@ -38,30 +39,57 @@ static INDEX VerifyItemType(CEntity *pen, const CPropertyPtr &pptrType, INDEX iT
 
 // Destroy some entity
 static inline void DestroyEntity(CEntity *pen) {
+#if CLASSICSPATCH_EXT_PACKETS
   // Send packet to destroy the entity
   CExtEntityDelete pck;
   pck.ulEntity = pen->en_ulID;
   pck.bSameClass = FALSE;
   pck.SendPacket();
+
+#else
+  // Destroy entity immediately
+  pen->Destroy();
+#endif
 };
 
 // Reinitialize some entity
 static inline void ReinitEntity(CEntity *pen) {
+#if CLASSICSPATCH_EXT_PACKETS
   // Send packet to reinitialize the entity
   CExtEntityInit pck;
   pck.ulEntity = pen->en_ulID;
   pck.SetEvent(EVoid(), sizeof(EVoid));
   pck.SendPacket();
+
+#else
+  // Reinitialize entity immediately
+  pen->Reinitialize();
+#endif
 };
 
 // Change property of some entity
 static inline void ChangeEntityProp(CEntity *pen, CPropertyPtr &pptr, DOUBLE fValue) {
+#if CLASSICSPATCH_EXT_PACKETS
   // Send packet to change the property
   CExtEntityProp pck;
   pck.ulEntity = pen->en_ulID;
   pck.SetProperty(pptr._pep->ep_ulID);
   pck.SetValue(fValue);
   pck.SendPacket();
+
+#else
+  // Change values of float and index properties
+  INDEX iType = IProperties::ConvertType(pptr._pep->ep_eptType);
+
+  if (iType == CEntityProperty::EPT_FLOAT) {
+    FLOAT fFloatProp = fValue;
+    IProperties::SetPropValue(pen, pptr._pep, &fFloatProp);
+
+  } else if (iType == CEntityProperty::EPT_INDEX) {
+    INDEX iIntProp = fValue;
+    IProperties::SetPropValue(pen, pptr._pep, &iIntProp);
+  }
+#endif
 };
 
 // Affect weapon item at the beginning of the game
