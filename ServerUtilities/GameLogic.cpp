@@ -24,7 +24,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <EntitiesV/AmmoItem.h>
 #include <EntitiesV/ArmorItem.h>
 #include <EntitiesV/HealthItem.h>
-#include <EntitiesV/PowerUpItem.h>
+#if SE1_GAME != SS_TFE
+  #include <EntitiesV/PowerUpItem.h>
+#endif
 #include <EntitiesV/WeaponItem.h>
 #include <EntitiesV/EnemySpawner.h>
 #include <EntitiesV/PlayerMarker.h>
@@ -46,8 +48,10 @@ static void AffectEntities(void) {
     } else if (IsOfClassID(pen, CArmorItem_ClassID)) {
       AffectArmorItem(pen);
 
+  #if SE1_GAME != SS_TFE
     } else if (IsOfClassID(pen, CPowerUpItem_ClassID)) {
       AffectPowerUpItem(pen);
+  #endif
 
     } else if (IsOfClassID(pen, CPlayerMarker_ClassID)) {
       AffectPlayerMarker(pen);
