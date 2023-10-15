@@ -285,7 +285,9 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
 #if SE1_GAME == SS_TFE
   // Display real time
-  if (_psShowClock.GetIndex()) {
+  INDEX iClockMode = _psShowClock.GetIndex();
+
+  if (!GetAPI()->IsCustomModActive() && iClockMode) {
     // Set font
     _pdp->SetFont(_pfdConsoleFont);
     _pdp->SetTextScaling(1.0f);
@@ -297,7 +299,13 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     tm *tmNewTime = localtime(&iLongTime);
 
     CTString strTime;
-    strTime.PrintF("%2d:%02d", tmNewTime->tm_hour, tmNewTime->tm_min);
+
+    // Show seconds as extra
+    if (iClockMode > 1) {
+      strTime.PrintF("%2d:%02d:%02d", tmNewTime->tm_hour, tmNewTime->tm_min, tmNewTime->tm_sec);
+    } else {
+      strTime.PrintF("%2d:%02d", tmNewTime->tm_hour, tmNewTime->tm_min);
+    }
 
     _pdp->PutTextR(strTime, _vpixScreen(1) - 3, 2, C_lYELLOW | CT_OPAQUE);
   }

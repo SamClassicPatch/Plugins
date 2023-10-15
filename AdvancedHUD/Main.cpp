@@ -17,14 +17,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "HUD.h"
 
-// Define own pointer to the API
-CCoreAPI *_pCoreAPI = NULL;
-
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginInfo &info) {
-  // Hook pointer to the API
-  HookSymbolAPI();
-
   // Check if default entities are modified in a mod
   if (_fnmMod != "" && GetPatchAPI()->IsEntitiesModded())
   {
