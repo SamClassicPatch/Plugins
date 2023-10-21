@@ -377,7 +377,7 @@ void CHud::Initialize(void) {
   pGetMaxAmmo = pFuncPtr(CGetMaxAmmoFunc());
 
   // Patch HUD rendering function
-  GetPluginAPI()->NewPatch(pRenderHud, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
+  NewPluginPatch(pRenderHud, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
 
   try {
     // Load fonts for each theme
