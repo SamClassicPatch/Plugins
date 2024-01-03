@@ -17,16 +17,16 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "HUD.h"
 
+// Check if playing with modified entities
+BOOL _bModdedEntities = FALSE;
+
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginInfo &info) {
-  // Check if default entities are modified in a mod
+  // Check if standard entities are modified
   if (_fnmMod != "" && GetPatchAPI()->IsEntitiesModded())
   {
-    // Refuse to load if not using the same function hook
-    if (!info.props.GetBoolValue("", "SameHook", false)) {
-      info.SetUtility(PLF_UNSUITABLE);
-      return;
-    }
+    // Enabling "SameHook" means that it's safe to replace mod's HUD, so it counts as non-modified entities
+    _bModdedEntities = !info.props.GetBoolValue("", "SameHook", false);
   }
 
   // Utility flags

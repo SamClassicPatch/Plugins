@@ -16,6 +16,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Utilize Core
 #include <CoreLib/Core.h>
 
+// Check if playing with modified entities
+extern BOOL _bModdedEntities;
+
 extern CPluginSymbol _psEnable;
 extern CPluginSymbol _psTheme;
 

@@ -330,7 +330,7 @@ void CHud::Initialize(void) {
     pFuncPtr = StructPtr(GetPatchAPI()->GetEntitiesSymbol(_Symbol)); \
     if (pFuncPtr.iAddress == NULL) { \
       ASSERT(FALSE); \
-      InfoMessage(TRANS("Cannot hook '%s'!\nAborting HUD initialization..."), _Symbol); \
+      CPrintF(TRANS("Cannot hook '%s'!\nAborting HUD initialization...\n"), _Symbol); \
       return; \
     }
 
@@ -444,8 +444,11 @@ void CHud::Initialize(void) {
 
 void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye))
 {
+  // Replace HUD everywhere or only in vanilla if entities haven't been modified
+  const BOOL bReplaceHUD = _psEnable.GetIndex() > 1 || (_psEnable.GetIndex() == 1 && !_bModdedEntities);
+
   // Proceed to the original function instead
-  if (!_psEnable.GetIndex()) {
+  if (!bReplaceHUD) {
     (this->*CHud::pRenderHud)(RENDER_ARGS_RAW(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye));
     return;
   }
