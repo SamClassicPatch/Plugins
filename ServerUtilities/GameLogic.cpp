@@ -86,7 +86,7 @@ void IGameEvents::OnChangeLevel(void)
 {
   // Affect entities on a new level (if singleplayer/split screen or patch-exclusive)
   const BOOL bLocal = !_pNetwork->IsNetworkEnabled();
-  const BOOL bExclusive = (IProcessPacket::_bForbidVanilla || IProcessPacket::_gexSetup.bGameplayExt);
+  const BOOL bExclusive = (IProcessPacket::_bForbidVanilla || IProcessPacket::GameplayExtEnabled());
 
   if (_pNetwork->IsServer() && (bLocal || bExclusive)) {
     AffectEntities();
