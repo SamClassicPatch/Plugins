@@ -36,5 +36,6 @@ MODULE_API void Module_Startup(void) {
   HookSymbolAPI();
 
   // Initialize accessibility modules
+  InitPlayerInfoSound();
   InitRedScreen();
 };
