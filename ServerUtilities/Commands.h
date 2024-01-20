@@ -19,8 +19,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Maximum amount of items in the game
 #define CT_ITEMS INDEX(15)
 
-// Player action button mask
+// Server settings
 extern CPluginSymbol _psActionButtons;
+extern CPluginSymbol _psThirdPerson;
 
 // Difficulty settings
 extern CPluginSymbol _psStartHP;

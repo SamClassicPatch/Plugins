@@ -36,8 +36,9 @@ MODULE_API void Module_GetInfo(CPluginInfo &info) {
 // Non-persistent and invisible mode switch symbol (-100 = ignore)
 #define MSS CPluginSymbol(0, INDEX(-100))
 
-// Player action button mask
-CPluginSymbol _psActionButtons(0, INDEX(0xFFFFFFFF));
+// Server settings
+CPluginSymbol _psActionButtons(0, INDEX(0xFFFFFFFF)); // Player action button mask
+CPluginSymbol _psThirdPerson(0, INDEX(-1)); // Third person view button bit
 
 // Difficulty settings
 CPluginSymbol _psStartHP(SSF_PERSISTENT | SSF_USER, 100.0f);
@@ -109,8 +110,9 @@ MODULE_API void Module_Startup(void) {
 
   // Custom symbols
   {
-    // Player action button mask
+    // Server settings
     _psActionButtons.Register("sutl_iActionButtons");
+    _psThirdPerson.Register("sutl_iThirdPersonViewButton");
 
     // Difficulty settings
     _psStartHP.Register("sutl_fStartHealth");

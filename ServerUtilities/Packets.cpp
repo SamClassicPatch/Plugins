@@ -19,10 +19,22 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 void IPacketEvents::OnCharacterConnect(INDEX iClient, CPlayerCharacter &pc)
 {
+  CPlayerSettings *pps = (CPlayerSettings *)pc.pc_aubAppearance;
+
+  // Disallow third person view
+  if (_psThirdPerson.GetIndex() != -1) {
+    pps->ps_ulFlags &= ~PSF_PREFER3RDPERSON;
+  }
 };
 
 BOOL IPacketEvents::OnCharacterChange(INDEX iClient, INDEX iPlayer, CPlayerCharacter &pc)
 {
+  CPlayerSettings *pps = (CPlayerSettings *)pc.pc_aubAppearance;
+
+  // Disallow third person view
+  if (_psThirdPerson.GetIndex() != -1) {
+    pps->ps_ulFlags &= ~PSF_PREFER3RDPERSON;
+  }
   return TRUE;
 };
 
@@ -30,6 +42,13 @@ void IPacketEvents::OnPlayerAction(INDEX iClient, INDEX iPlayer, CPlayerAction &
 {
   // Lock disabled buttons
   pa.pa_ulButtons &= _psActionButtons.GetIndex();
+
+  // Disallow toggling third person view using a specified button
+  INDEX i3rdPersonButton = _psThirdPerson.GetIndex();
+
+  if (i3rdPersonButton != -1) {
+    pa.pa_ulButtons &= ~(1 << i3rdPersonButton);
+  }
 };
 
 BOOL IPacketEvents::OnChatMessage(INDEX iClient, ULONG ulFrom, ULONG ulTo, CTString &strMessage)
