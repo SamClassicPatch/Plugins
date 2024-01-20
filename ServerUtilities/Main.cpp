@@ -19,6 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Plugin event handlers
 static IGameEvents _evGame;
+static IPacketEvents _evPackets;
 
 // Retrieve module information
 MODULE_API void Module_GetInfo(CPluginInfo &info) {
@@ -34,6 +35,9 @@ MODULE_API void Module_GetInfo(CPluginInfo &info) {
 
 // Non-persistent and invisible mode switch symbol (-100 = ignore)
 #define MSS CPluginSymbol(0, INDEX(-100))
+
+// Player action button mask
+CPluginSymbol _psActionButtons(0, INDEX(0xFFFFFFFF));
 
 // Difficulty settings
 CPluginSymbol _psStartHP(SSF_PERSISTENT | SSF_USER, 100.0f);
@@ -101,9 +105,13 @@ CPluginSymbol _psReplaceArmor  (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 MODULE_API void Module_Startup(void) {
   // Register plugin events
   _evGame.Register();
+  _evPackets.Register();
 
   // Custom symbols
   {
+    // Player action button mask
+    _psActionButtons.Register("sutl_iActionButtons");
+
     // Difficulty settings
     _psStartHP.Register("sutl_fStartHealth");
     _psStartAR.Register("sutl_fStartArmor");
@@ -160,4 +168,5 @@ MODULE_API void Module_Startup(void) {
 // Module cleanup
 MODULE_API void Module_Shutdown(void) {
   _evGame.Unregister();
+  _evPackets.Unregister();
 };
