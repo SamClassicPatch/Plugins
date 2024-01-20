@@ -198,7 +198,7 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
   if (iBombCount > 0) {
     FLOAT fNormValue = (FLOAT)iBombCount / 3.0f;
 
-    COLOR colBombBorder = _colHUD;
+    COLOR colBombBorder = _colBorder;
     COLOR colBombIcon = _colIconStd;
     COLOR colBombBar = (iBombCount == 1) ? _colLow : _colTop;
 
@@ -777,8 +777,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
       PrepareColorTransitions(_colTop, _colTop, _colMid, _colLow, 0.4f, 0.2f, FALSE);
 
-      DrawBorder(fCol, fRow, units.fOne, units.fOne, _colHUD);
-      DrawBorder(fCol + fAdv, fRow, units.fChar * 3, units.fOne, _colHUD);
+      DrawBorder(fCol, fRow, units.fOne, units.fOne, _colBorder);
+      DrawBorder(fCol + fAdv, fRow, units.fChar * 3, units.fOne, _colBorder);
       DrawString(fCol + fAdv, fRow, strValue, GetCurrentColor(fNormValue), 1.0f);
       DrawIcon(fCol, fRow, tex.toLives, _colIconStd, 0.0f, FALSE);
 
@@ -798,7 +798,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       const FLOAT tmOut = 0.5f;
       const FLOAT tmStay = 2.0f;
       FLOAT tmDelta = _pTimer->GetLerpedCurrentTick() - _penPlayer->m_tmAnimateInbox;
-      COLOR col = _colHUD;
+      COLOR colMessageBorder = _colBorder;
+      COLOR colMessageIcon = _colHUD;
 
       if (tmDelta > 0 && tmDelta < (tmIn + tmStay + tmOut) && eMode == E_GM_SP) {
         FLOAT fRatio = 1.0f;
@@ -812,13 +813,14 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 
         fCol -= units.fAdv * 15 * fRatio;
         fRow += units.fAdv * 5 * fRatio;
-        col = LerpColor(_colHUD, C_WHITE | CT_OPAQUE, fRatio);
+        colMessageBorder = LerpColor(colMessageBorder, C_WHITE | CT_OPAQUE, fRatio);
+        colMessageIcon = LerpColor(colMessageIcon, C_WHITE | CT_OPAQUE, fRatio);
       }
 
-      DrawBorder(fCol, fRow, units.fOne, units.fOne, col);
-      DrawBorder(fCol + fAdv, fRow, units.fChar * 4, units.fOne, col);
-      DrawString(fCol + fAdv, fRow, strValue, col, 1.0f);
-      DrawIcon(fCol, fRow, tex.toMessage, (_bTSETheme ? C_WHITE : col), 0.0f, TRUE);
+      DrawBorder(fCol, fRow, units.fOne, units.fOne, colMessageBorder);
+      DrawBorder(fCol + fAdv, fRow, units.fChar * 4, units.fOne, colMessageBorder);
+      DrawString(fCol + fAdv, fRow, strValue, colMessageIcon, 1.0f);
+      DrawIcon(fCol, fRow, tex.toMessage, (_bTSETheme ? C_WHITE : colMessageIcon), 0.0f, TRUE);
     }
   }
 };
