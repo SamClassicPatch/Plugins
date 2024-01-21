@@ -425,7 +425,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
   // Display details for PvE games
   const BOOL bCoopDetails = (eMode == E_GM_SP || eMode == E_GM_COOP);
   const BOOL bRev = (_psTheme.GetIndex() == E_HUD_SSR);
-  const COLOR colDefault = (bRev ? C_lGRAY : _colHUD);
+  const COLOR colDefault = COL_PlayerNames();
 
   COLOR colMana, colFrags, colDeaths, colHealth, colArmor;
   COLOR colScore = colDefault;

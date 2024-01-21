@@ -285,6 +285,7 @@ class CHud {
     // Base colors
     inline COLOR COL_Base(void);
     inline COLOR COL_Icon(void);
+    inline COLOR COL_PlayerNames(void);
     inline COLOR COL_SnoopingLight(void);
     inline COLOR COL_SnoopingDark(void);
     inline COLOR COL_AmmoSelected(void);

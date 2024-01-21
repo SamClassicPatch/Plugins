@@ -32,6 +32,15 @@ COLOR CHud::COL_Icon(void) {
   return pColorSet->colIcon;
 };
 
+COLOR CHud::COL_PlayerNames(void) {
+  // Revolution color
+  if (_psTheme.GetIndex() == E_HUD_SSR) {
+    return C_lGRAY;
+  }
+
+  return COL_Base();
+};
+
 COLOR CHud::COL_SnoopingLight(void) {
   // Swap color channels for TFE and custom colors
   if (!_bTSEColors || _psColorize.GetIndex()) {
