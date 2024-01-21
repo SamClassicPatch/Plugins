@@ -304,12 +304,13 @@ void CHud::RenderActiveArsenal(SIconTexture *ptoAmmo) {
     DrawBar(fCol + fBarPos, fRow, units.fOne * 0.2f, units.fOne - 2, E_BD_DOWN, GetCurrentColor(fNormValue), fNormValue);
 
     // Play sound if icon is flashing
-    if (fNormValue <= _cttHUD.ctt_fLowMedium * 0.5f) {
+    if (pPlayPowerUpSound_opt != NULL && fNormValue <= _cttHUD.ctt_fLowMedium * 0.5f)
+    {
       INDEX iLastTime = INDEX(_tmLast * 4);
       INDEX iCurrentTime = INDEX(_tmNow * 4);
 
       if (iCurrentTime & 1 && !(iLastTime & 1)) {
-        (_penPlayer->*pPlayPowerUpSound)();
+        (_penPlayer->*pPlayPowerUpSound_opt)();
       }
     }
 
@@ -324,7 +325,9 @@ void CHud::RenderBars(void) {
   BOOL bOxygenOnScreen = FALSE;
   FLOAT fValue = _penPlayer->en_tmMaxHoldBreath - (_pTimer->CurrentTick() - _penPlayer->en_tmLastBreathed);
 
-  if ((_penPlayer->*pIsConnected)() && _penPlayer->GetFlags() & ENF_ALIVE && fValue < 30.0f) { 
+  const BOOL bConnected = (pIsConnected_opt != NULL) ? (_penPlayer->*pIsConnected_opt)() : TRUE;
+
+  if (bConnected && _penPlayer->GetFlags() & ENF_ALIVE && fValue < 30.0f) { 
     FLOAT fCol = 320.0f + units.fHalf;
     FLOAT fRow = _vpixTL(2) + units.fOne + units.fNext;
 

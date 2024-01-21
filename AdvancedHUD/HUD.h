@@ -76,13 +76,13 @@ class CHud {
     typedef INDEX (CPlayerWeapons::*CGetMaxAmmoFunc)(void);
 
     static CGetPropsFunc     pGetSP;
-    static CPowerUpSoundFunc pPlayPowerUpSound;
-    static CIsConnectedFunc  pIsConnected;
-    static CWorldGlaringFunc pGetWorldGlaring;
-    static CParticlesFunc    pRenderChainsawParticles;
+    static CPowerUpSoundFunc pPlayPowerUpSound_opt;
+    static CIsConnectedFunc  pIsConnected_opt;
+    static CWorldGlaringFunc pGetWorldGlaring_opt;
+    static CParticlesFunc    pRenderChainsawParticles_opt;
     static CRenderHudFunc    pRenderHud;
-    static CRenderWeaponFunc pRenderWeaponModel;
-    static CRenderCrossFunc  pRenderCrosshair;
+    static CRenderWeaponFunc pRenderWeaponModel_opt;
+    static CRenderCrossFunc  pRenderCrosshair_opt;
     static CGetAmmoFunc      pGetAmmo;
     static CGetMaxAmmoFunc   pGetMaxAmmo;
 

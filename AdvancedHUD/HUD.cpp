@@ -22,13 +22,13 @@ CHud _HUD;
 
 // Define method hooks
 CHud::CGetPropsFunc     CHud::pGetSP = NULL;
-CHud::CPowerUpSoundFunc CHud::pPlayPowerUpSound = NULL;
-CHud::CIsConnectedFunc  CHud::pIsConnected = NULL;
-CHud::CWorldGlaringFunc CHud::pGetWorldGlaring = NULL;
-CHud::CParticlesFunc    CHud::pRenderChainsawParticles = NULL;
+CHud::CPowerUpSoundFunc CHud::pPlayPowerUpSound_opt = NULL;
+CHud::CIsConnectedFunc  CHud::pIsConnected_opt = NULL;
+CHud::CWorldGlaringFunc CHud::pGetWorldGlaring_opt = NULL;
+CHud::CParticlesFunc    CHud::pRenderChainsawParticles_opt = NULL;
 CHud::CRenderHudFunc    CHud::pRenderHud = NULL;
-CHud::CRenderWeaponFunc CHud::pRenderWeaponModel = NULL;
-CHud::CRenderCrossFunc  CHud::pRenderCrosshair = NULL;
+CHud::CRenderWeaponFunc CHud::pRenderWeaponModel_opt = NULL;
+CHud::CRenderCrossFunc  CHud::pRenderCrosshair_opt = NULL;
 CHud::CGetAmmoFunc      CHud::pGetAmmo = NULL;
 CHud::CGetMaxAmmoFunc   CHud::pGetMaxAmmo = NULL;
 
@@ -333,8 +333,9 @@ void CHud::Initialize(void) {
   StructPtr pFuncPtr;
 
   // Abort HUD initialization if some method can't be hooked
-  #define GET_SYMBOL(_Symbol) \
-    pFuncPtr = StructPtr(GetPatchAPI()->GetEntitiesSymbol(_Symbol)); \
+  #define GET_SYMBOL_OPT(_Symbol) pFuncPtr = StructPtr(GetPatchAPI()->GetEntitiesSymbol(_Symbol))
+
+  #define GET_SYMBOL(_Symbol) GET_SYMBOL_OPT(_Symbol); \
     if (pFuncPtr.iAddress == NULL) { \
       ASSERT(FALSE); \
       CPrintF(TRANS("Cannot hook '%s'!\nAborting HUD initialization...\n"), _Symbol); \
@@ -346,36 +347,36 @@ void CHud::Initialize(void) {
   pGetSP = pFuncPtr(CGetPropsFunc());
 
 #if SE1_GAME != SS_TFE
-  GET_SYMBOL("?PlayPowerUpSound@CPlayer@@QAEXXZ");
-  pPlayPowerUpSound = pFuncPtr(CPowerUpSoundFunc());
+  GET_SYMBOL_OPT("?PlayPowerUpSound@CPlayer@@QAEXXZ");
+  pPlayPowerUpSound_opt = pFuncPtr(CPowerUpSoundFunc());
 
-  GET_SYMBOL("?RenderChainsawParticles@CPlayer@@QAEXH@Z");
-  pRenderChainsawParticles = pFuncPtr(CParticlesFunc());
+  GET_SYMBOL_OPT("?RenderChainsawParticles@CPlayer@@QAEXH@Z");
+  pRenderChainsawParticles_opt = pFuncPtr(CParticlesFunc());
 #endif
 
-  GET_SYMBOL("?IsConnected@CPlayer@@QBEHXZ");
-  pIsConnected = pFuncPtr(CIsConnectedFunc());
+  GET_SYMBOL_OPT("?IsConnected@CPlayer@@QBEHXZ");
+  pIsConnected_opt = pFuncPtr(CIsConnectedFunc());
 
-  GET_SYMBOL("?GetWorldGlaring@CPlayer@@QAEKXZ");
-  pGetWorldGlaring = pFuncPtr(CWorldGlaringFunc());
+  GET_SYMBOL_OPT("?GetWorldGlaring@CPlayer@@QAEKXZ");
+  pGetWorldGlaring_opt = pFuncPtr(CWorldGlaringFunc());
 
 #if SE1_VER < SE1_107
   GET_SYMBOL("?RenderHUD@CPlayer@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKH@Z");
   pRenderHud = pFuncPtr(CRenderHudFunc());
 
-  GET_SYMBOL("?RenderWeaponModel@CPlayerWeapons@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKH@Z");
-  pRenderWeaponModel = pFuncPtr(CRenderWeaponFunc());
+  GET_SYMBOL_OPT("?RenderWeaponModel@CPlayerWeapons@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKH@Z");
+  pRenderWeaponModel_opt = pFuncPtr(CRenderWeaponFunc());
 
 #else
   GET_SYMBOL("?RenderHUD@CPlayer@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKHJ@Z");
   pRenderHud = pFuncPtr(CRenderHudFunc());
 
-  GET_SYMBOL("?RenderWeaponModel@CPlayerWeapons@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKHJ@Z");
-  pRenderWeaponModel = pFuncPtr(CRenderWeaponFunc());
+  GET_SYMBOL_OPT("?RenderWeaponModel@CPlayerWeapons@@QAEXAAVCPerspectiveProjection3D@@PAVCDrawPort@@V?$Vector@M$02@@KKHJ@Z");
+  pRenderWeaponModel_opt = pFuncPtr(CRenderWeaponFunc());
 #endif
 
-  GET_SYMBOL("?RenderCrosshair@CPlayerWeapons@@QAEXAAVCProjection3D@@PAVCDrawPort@@AAVCPlacement3D@@@Z");
-  pRenderCrosshair = pFuncPtr(CRenderCrossFunc());
+  GET_SYMBOL_OPT("?RenderCrosshair@CPlayerWeapons@@QAEXAAVCProjection3D@@PAVCDrawPort@@AAVCPlacement3D@@@Z");
+  pRenderCrosshair_opt = pFuncPtr(CRenderCrossFunc());
 
   GET_SYMBOL("?GetAmmo@CPlayerWeapons@@QAEJXZ");
   pGetAmmo = pFuncPtr(CGetAmmoFunc());
@@ -477,16 +478,18 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
 #endif
 
   // Don't render the weapon while sniping
-  if (pbShowWeapon.GetIndex() && pbRenderModels.GetIndex() && !bSniping) {
+  if (CHud::pRenderWeaponModel_opt != NULL && pbShowWeapon.GetIndex() && pbRenderModels.GetIndex() && !bSniping)
+  {
     #if SE1_VER < SE1_107
-      (enWeapons.*CHud::pRenderWeaponModel)(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon);
+      (enWeapons.*CHud::pRenderWeaponModel_opt)(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon);
     #else
-      (enWeapons.*CHud::pRenderWeaponModel)(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye);
+      (enWeapons.*CHud::pRenderWeaponModel_opt)(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye);
     #endif
   }
 
 #if SE1_GAME != SS_TFE
-  if (m_iViewState == PVT_PLAYEREYES) {
+  if (CHud::pRenderChainsawParticles_opt != NULL && m_iViewState == PVT_PLAYEREYES)
+  {
     prProjection.ViewerPlacementL() = plViewOld;
     prProjection.Prepare();
 
@@ -496,7 +499,7 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
 
     Particle_PrepareSystem(pdp, apr);
     Particle_PrepareEntity(2.0f, FALSE, FALSE, this);
-    (this->*CHud::pRenderChainsawParticles)(FALSE);
+    (this->*CHud::pRenderChainsawParticles_opt)(FALSE);
     Particle_EndSystem();
   }
 #endif
@@ -534,8 +537,9 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
   }
 
   // Render crosshair while not sniping
-  if (!bSniping) {
-    (enWeapons.*CHud::pRenderCrosshair)(prProjection, pdp, plView);
+  if (CHud::pRenderCrosshair_opt != NULL && !bSniping)
+  {
+    (enWeapons.*CHud::pRenderCrosshair_opt)(prProjection, pdp, plView);
   }
 
   // Toggleable red screen on damage
@@ -562,8 +566,9 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
   }
 
   // Add world glaring
+  if (CHud::pGetWorldGlaring_opt != NULL)
   {
-    COLOR colGlare = (this->*CHud::pGetWorldGlaring)();
+    COLOR colGlare = (this->*CHud::pGetWorldGlaring_opt)();
     UBYTE ubR, ubG, ubB, ubA;
     ColorToRGBA(colGlare, ubR, ubG, ubB, ubA);
 
