@@ -64,6 +64,7 @@ CPluginSymbol _psIconShake(SSF_PERSISTENT | SSF_USER, INDEX(1));
 #endif
 
 CPluginSymbol _psShowPlayerPing(SSF_PERSISTENT | SSF_USER, INDEX(0));
+CPluginSymbol _psDecoratedNames(SSF_PERSISTENT | SSF_USER, INDEX(1));
 CPluginSymbol _psShowAmmoRow(SSF_PERSISTENT | SSF_USER, INDEX(1));
 CPluginSymbol _psShowDepletedAmmo(SSF_PERSISTENT | SSF_USER, INDEX(1));
 CPluginSymbol _psShowHighScore(SSF_PERSISTENT | SSF_USER, INDEX(1));
@@ -107,6 +108,7 @@ MODULE_API void Module_Startup(void) {
   #endif
 
   _psShowPlayerPing.Register("ahud_iShowPlayerPing");
+  _psDecoratedNames.Register("ahud_bDecoratedNames");
   _psShowAmmoRow.Register("ahud_bShowAmmoRow");
   _psShowDepletedAmmo.Register("ahud_bShowDepletedAmmo");
   _psShowHighScore.Register("ahud_bShowHighScore");

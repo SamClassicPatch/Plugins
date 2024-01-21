@@ -38,6 +38,7 @@ extern CPluginSymbol _psIconShake;
 #endif
 
 extern CPluginSymbol _psShowPlayerPing;
+extern CPluginSymbol _psDecoratedNames;
 extern CPluginSymbol _psShowAmmoRow;
 extern CPluginSymbol _psShowDepletedAmmo;
 extern CPluginSymbol _psShowHighScore;

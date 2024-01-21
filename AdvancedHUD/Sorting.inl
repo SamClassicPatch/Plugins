@@ -18,8 +18,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 static int qsort_CompareNames(const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en0 = **(CPlayer **)ppPEN0;
   CPlayer &en1 = **(CPlayer **)ppPEN1;
-  CTString strName0 = en0.GetPlayerName();
-  CTString strName1 = en1.GetPlayerName();
+  CTString strName0 = en0.GetPlayerName().Undecorated();
+  CTString strName1 = en1.GetPlayerName().Undecorated();
 
   return strnicmp(strName0, strName1, 8);
 };

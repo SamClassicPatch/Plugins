@@ -483,7 +483,6 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       CPlayer *penPlayer = iten;
 
       // Get player stats as strings
-      const CTString strName = penPlayer->GetPlayerName();
       const INDEX iScore = penPlayer->m_psGameStats.ps_iScore;
       const INDEX iMana = penPlayer->m_iMana;
       const INDEX iFrags = penPlayer->m_psGameStats.ps_iKills;
@@ -613,6 +612,15 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         }
 
         #define PLAYER_INFO_X(Offset) (pixOffsetX * _vScaling(1) - Offset * pixCharW)
+
+        // Optionally undecorated name
+        CTString strName;
+
+        if (_psDecoratedNames.GetIndex()) {
+          strName = penPlayer->GetPlayerName();
+        } else {
+          strName = penPlayer->GetPlayerName().Undecorated();
+        }
 
         // Display player stats
         if (eMode == E_GM_COOP) {
