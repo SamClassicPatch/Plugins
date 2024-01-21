@@ -407,7 +407,7 @@ void CHud::RenderBars(void) {
   }
 };
 
-void CHud::RenderGameModeInfo(EGameMode eMode) {
+void CHud::RenderGameModeInfo(void) {
   static CSymbolPtr pbMessages("hud_bShowMessages");
   static CSymbolPtr piPlayers("hud_iShowPlayers");
   static CSymbolPtr piSort("hud_iSortPlayers");
@@ -426,6 +426,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
 #endif
 
   // Display details for PvE games
+  const EGameMode eMode = _eGameMode;
   const BOOL bCoopDetails = (eMode == E_GM_SP || eMode == E_GM_COOP);
   const BOOL bRev = (_psTheme.GetIndex() == E_HUD_SSR);
   const COLOR colDefault = COL_PlayerNames();
@@ -474,7 +475,8 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
       eKey = E_SK_NAME;
     }
 
-    SetAllPlayersStats(eKey);
+    CDynamicContainer<CPlayer> cenSorted;
+    SetAllPlayersStats(cenSorted, eKey);
 
     // Show ping next to player names
     const INDEX iShowPing = _psShowPlayerPing.GetIndex();
@@ -482,7 +484,7 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
     // Go through all players
     INDEX iPlayer = 0;
 
-    FOREACHINDYNAMICCONTAINER(_cenPlayers, CPlayer, iten) {
+    FOREACHINDYNAMICCONTAINER(cenSorted, CPlayer, iten) {
       CPlayer *penPlayer = iten;
 
       // Get player stats as strings
@@ -661,9 +663,6 @@ void CHud::RenderGameModeInfo(EGameMode eMode) {
         FLOAT fTimeLeft = ClampDn(pGetSP()->sp_iTimeLimit * 60.0f - _pNetwork->GetGameTime(), (TIME)0.0);
         strLimitsInfo.PrintF("%s^cFFFFFF%s: %s\n", strLimitsInfo, LOCALIZE("TIME LEFT"), TimeToString(fTimeLeft));
       }
-
-      // Sort player list by frags or score
-      SetAllPlayersStats(eMode == E_GM_FRAG ? E_SK_FRAGS : E_SK_SCORE);
 
       // Find maximum frags and score from players
       INDEX iMaxFrags = LowerLimit(INDEX(0));

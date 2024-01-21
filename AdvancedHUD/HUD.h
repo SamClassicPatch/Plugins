@@ -137,7 +137,7 @@ class CHud {
       FLOAT fHalf;
     } units;
 
-    // Array for pointers of all players
+    // Array of pointers to all players
     CDynamicContainer<CPlayer> _cenPlayers;
 
     // Information about color transitions
@@ -225,8 +225,11 @@ class CHud {
     // Get current color from local color transitions table
     COLOR GetCurrentColor(FLOAT fNormValue);
 
-    // Fill array with player statistics
-    void SetAllPlayersStats(INDEX iSortKey);
+    // Gather all players in the array
+    void GatherPlayers(void);
+
+    // Fill array with players sorted by a specific statistic
+    void SetAllPlayersStats(CDynamicContainer<CPlayer> &cen, INDEX iSortKey);
 
     // Update weapon and ammo tables with current info
     void UpdateWeaponArsenal(void);
@@ -274,13 +277,13 @@ class CHud {
       E_GM_COOP,
       E_GM_SCORE,
       E_GM_FRAG,
-    };
+    } _eGameMode;
 
     void RenderVitals(void);
     void RenderCurrentWeapon(SIconTexture **pptoWantedWeapon, SIconTexture **pptoCurrentAmmo);
     void RenderActiveArsenal(SIconTexture *ptoAmmo);
     void RenderBars(void);
-    void RenderGameModeInfo(EGameMode eMode);
+    void RenderGameModeInfo(void);
     void RenderCheats(void);
 
   // HUD colors

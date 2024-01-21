@@ -132,11 +132,12 @@ COLOR CHud::GetCurrentColor(FLOAT fNormValue)
   return (_cttHUD.ctt_colMedium & 0xFFFFFF00);
 };
 
-// Fill array with player statistics
-void CHud::SetAllPlayersStats(INDEX iSortKey) {
-  // Determine amount of players in this session
+// Gather all players in the array
+void CHud::GatherPlayers(void) {
   _cenPlayers.Clear();
 
+  // [Cecil] NOTE: Not using CEntity::GetPlayerEntity() in case there are
+  // other CPlayer entities that aren't real players (e.g. modded bots).
   FOREACHINDYNAMICCONTAINER(_penPlayer->GetWorld()->wo_cenEntities, CEntity, iten) {
     CEntity *pen = iten;
     if (!IsDerivedFromID(pen, CPlayer_ClassID)) continue;
@@ -150,7 +151,14 @@ void CHud::SetAllPlayersStats(INDEX iSortKey) {
     // Count this player
     _cenPlayers.Add((CPlayer *)pen);
   }
+};
 
+// Fill array with players sorted by a specific statistic
+void CHud::SetAllPlayersStats(CDynamicContainer<CPlayer> &cen, INDEX iSortKey) {
+  // Copy all players
+  cen.CopyArray(_cenPlayers);
+
+  // Pick sorting function
   typedef int (*CSortingFunc)(const void *, const void *);
 
   static CSortingFunc apFunctions[] = {
@@ -162,8 +170,9 @@ void CHud::SetAllPlayersStats(INDEX iSortKey) {
     &qsort_CompareDeaths,
   };
 
+  // Sort the array
   if (iSortKey >= 0 && iSortKey < 6) {
-    qsort(_cenPlayers.sa_Array, _cenPlayers.Count(), sizeof(CPlayer *), apFunctions[iSortKey]);
+    qsort(cen.sa_Array, cen.Count(), sizeof(CPlayer *), apFunctions[iSortKey]);
   }
 };
 

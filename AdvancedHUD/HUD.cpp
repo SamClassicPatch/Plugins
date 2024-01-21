@@ -154,6 +154,24 @@ void CHud::PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent)
 
   // Calculate relative scaling for the text font
   _fTextFontScale = (FLOAT)_pfdDisplayFont->GetHeight() / (FLOAT)_pfdCurrentText->GetHeight();
+
+  // Determine current gamemode
+  _eGameMode = E_GM_SP;
+
+  if (!pGetSP()->sp_bSinglePlayer) {
+    // Gather players for multiplayer
+    GatherPlayers();
+
+    if (pGetSP()->sp_bCooperative) {
+      _eGameMode = E_GM_COOP;
+
+    } else if (!pGetSP()->sp_bUseFrags) {
+      _eGameMode = E_GM_SCORE;
+
+    } else {
+      _eGameMode = E_GM_FRAG;
+    }
+  }
 };
 
 // Render entire interface
@@ -253,23 +271,8 @@ void CHud::DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *pen
   RenderBars();
   ResetScale(_fHudScaling);
 
-  // Determine current gamemode
-  EGameMode eGameMode = E_GM_SP;
-
-  if (!pGetSP()->sp_bSinglePlayer) {
-    if (pGetSP()->sp_bCooperative) {
-      eGameMode = E_GM_COOP;
-
-    } else if (!pGetSP()->sp_bUseFrags) {
-      eGameMode = E_GM_SCORE;
-
-    } else {
-      eGameMode = E_GM_FRAG;
-    }
-  }
-
   Rescale(0.6f);
-  RenderGameModeInfo(eGameMode);
+  RenderGameModeInfo();
   ResetScale(_fHudScaling);
 
   // Display local client latency
