@@ -142,11 +142,8 @@ void CHud::GatherPlayers(void) {
     CEntity *pen = iten;
     if (!IsDerivedFromID(pen, CPlayer_ClassID)) continue;
 
-    // Skip invalid players
-    if (pen == NULL || pen->GetFlags() & ENF_DELETED) continue;
-
-    // Skip predictors
-    if (pen->IsPredictor()) continue;
+    // Skip invalid players and predictors
+    if (pen->GetFlags() & ENF_DELETED || pen->IsPredictor()) continue;
 
     // Count this player
     _cenPlayers.Add((CPlayer *)pen);

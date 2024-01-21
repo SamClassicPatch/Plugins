@@ -325,6 +325,106 @@ void CHud::DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *pen
 #endif
 };
 
+// Display tags above players
+void CHud::RenderPlayerTags(CPlayer *penThis, CPerspectiveProjection3D &prProjection) {
+  const INDEX iPlayerTags = _psPlayerTags.GetIndex();
+  if (iPlayerTags <= 0) return;
+
+  // Set font
+  const FLOAT fScaling = HEIGHT_SCALING(_pdp);
+  const FLOAT fTextScale = fScaling * _fTextFontScale;
+  _pdp->SetFont(_pfdCurrentText);
+  _pdp->SetTextScaling(fTextScale);
+
+  // Render tags for each player
+  FOREACHINDYNAMICCONTAINER(_cenPlayers, CPlayer, iten) {
+    CPlayer *pen = iten;
+
+    // Skip this player (or a prediction of it)
+    if (pen == penThis->GetPredictionTail()) continue;
+
+    const BOOL bAlive = (pen->GetFlags() & ENF_ALIVE);
+    const FLOAT3D vPlayer = pen->GetLerpedPlacement().pl_PositionVector;
+
+    // Calculate tag position on screen
+    FLOAT3D vBoxCenter(0, 0.5f, 0);
+
+    if (bAlive) {
+      FLOATaabbox3D box;
+      pen->GetBoundingBox(box);
+
+      vBoxCenter = box.Center() - pen->GetPlacement().pl_PositionVector;
+      vBoxCenter(2) += vBoxCenter(2) + 0.1f; // Double it and offset a bit
+    }
+
+    FLOAT3D vTag(0, 0, 0);
+    prProjection.ProjectCoordinate(vPlayer + vBoxCenter * pen->GetRotationMatrix(), vTag);
+
+    if (vTag(3) >= 0.0f) continue;
+
+    vTag(2) = _vpixScreen(2) - vTag(2);
+
+    // Marker color based on health level (0..100 health = 0..2 ratio)
+    const FLOAT fHealthRatio = Clamp(pen->GetHealth() * 0.02f, 0.0f, 2.0f);
+    COLOR colTag;
+
+    if (fHealthRatio < 1.0f) {
+      colTag = LerpColor(C_RED, C_YELLOW, fHealthRatio);
+    } else {
+      colTag = LerpColor(C_YELLOW, C_GREEN, fHealthRatio - 1.0f);
+    }
+
+    // Alpha level based on relative distance (0..32 meters = 95..191 alpha)
+    const FLOAT fDist = (vPlayer - penThis->GetLerpedPlacement().pl_PositionVector).Length();
+    const FLOAT fDistRatio = Clamp(fDist * 0.03125f, 0.0f, 1.0f);
+    UBYTE ubAlpha = 0xBF - UBYTE(fDistRatio * 96.0f);
+
+    // Marker size based on relative distance
+    const FLOAT fMarkerSize = (6.0f - fDistRatio * 3.0f) * fScaling;
+
+    _pdp->InitTexture(&tex.toMarker);
+    _pdp->AddTexture(vTag(1) - fMarkerSize, vTag(2) - fMarkerSize * 2,
+                     vTag(1) + fMarkerSize, vTag(2), colTag | ubAlpha);
+    _pdp->FlushRenderingQueue();
+
+    // Only marker
+    if (iPlayerTags < 2) continue;
+
+    // Player name
+    CTString strPlayerName = pen->GetPlayerName();
+
+    INDEX iMaxChars = 30;
+    INDEX iMaxAllow = 32; // Two extra characters after the limit
+
+    // Names with decorations
+    if (_psDecoratedNames.GetIndex()) {
+      iMaxChars = IData::GetDecoratedChar(strPlayerName, iMaxChars);
+      iMaxAllow = IData::GetDecoratedChar(strPlayerName, iMaxAllow);
+
+    } else {
+      strPlayerName = strPlayerName.Undecorated();
+    }
+
+    // Limit length
+    if (strPlayerName.Length() > iMaxAllow) {
+      strPlayerName.TrimRight(iMaxChars);
+      strPlayerName += "^r...";
+    }
+
+    // Add distance
+    if (iPlayerTags > 2) {
+      strPlayerName.PrintF("%s^r (%dm)", strPlayerName, (INDEX)fDist);
+    }
+
+    // Alpha level based on relative distance (0..32 meters = 95..255 alpha)
+    ubAlpha = 0xFF - UBYTE(fDistRatio * 160.0f);
+    const COLOR colName = (bAlive ? COL_PlayerNames() : COL_ValueLow());
+
+    const PIX pixCharH = (_pfdCurrentText->GetHeight() - 2) * fTextScale;
+    _pdp->PutTextC(strPlayerName, vTag(1), vTag(2) - pixCharH - fMarkerSize * 2, colName | ubAlpha);
+  }
+};
+
 // Player function patch
 class CPlayerPatch : public CPlayer {
   public:
@@ -526,6 +626,13 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
   }
 
   _HUD.PrepareHUD(penHUDPlayer, pdp);
+
+  // Display tags above players in coop
+  if (GetSP()->sp_bCooperative) {
+    prProjection.ViewerPlacementL() = plViewOld;
+    prProjection.Prepare();
+    _HUD.RenderPlayerTags(this, prProjection);
+  }
 
   CPlacement3D plView;
 

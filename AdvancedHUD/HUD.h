@@ -240,6 +240,9 @@ class CHud {
     // Render entire interface
     void DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *penOwner);
 
+    // Display tags above players
+    void RenderPlayerTags(CPlayer *penThis, CPerspectiveProjection3D &prProjection);
+
     // Initialize everything for drawing the HUD
     void Initialize(void);
 

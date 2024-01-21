@@ -112,6 +112,9 @@ struct HudTextureSet {
   // Lives counter
   CTextureObject toLives;
 
+  // Player marker
+  CTextureObject toMarker;
+
   void LoadTextures(void);
 };
 

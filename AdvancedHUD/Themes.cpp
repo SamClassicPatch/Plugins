@@ -134,4 +134,8 @@ void HudTextureSet::LoadTextures(void) {
   // Lives counter
   toLives.SetData_t(CTFILENAME("TexturesPatch\\Interface\\ILives.tex"));
   ((CTextureData *)toLives.GetData())->Force(TEX_CONSTANT);
+
+  // Player marker
+  toMarker.SetData_t(CTFILENAME("TexturesPatch\\Interface\\IPlayerMarker.tex"));
+  ((CTextureData *)toMarker.GetData())->Force(TEX_CONSTANT);
 };
