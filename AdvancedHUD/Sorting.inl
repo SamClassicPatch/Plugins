@@ -29,14 +29,7 @@ static int qsort_CompareScores(const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en1 = **(CPlayer **)ppPEN1;
   SLONG sl0 = en0.m_psGameStats.ps_iScore;
   SLONG sl1 = en1.m_psGameStats.ps_iScore;
-
-  if (sl0 < sl1) {
-    return +1;
-  } else if (sl0 > sl1) {
-    return -1;
-  }
-
-  return  0;
+  return Sgn(sl1 - sl0);
 };
 
 static int qsort_CompareHealth(const void *ppPEN0, const void *ppPEN1) {
@@ -44,14 +37,7 @@ static int qsort_CompareHealth(const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en1 = **(CPlayer **)ppPEN1;
   SLONG sl0 = (SLONG)ceil(en0.GetHealth());
   SLONG sl1 = (SLONG)ceil(en1.GetHealth());
-
-  if (sl0 < sl1) {
-    return +1;
-  } else if (sl0 > sl1) {
-    return -1;
-  }
-
-  return  0;
+  return Sgn(sl1 - sl0);
 };
 
 static int qsort_CompareManas(const void *ppPEN0, const void *ppPEN1) {
@@ -59,14 +45,7 @@ static int qsort_CompareManas(const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en1 = **(CPlayer **)ppPEN1;
   SLONG sl0 = en0.m_iMana;
   SLONG sl1 = en1.m_iMana;
-
-  if (sl0 < sl1) {
-    return +1;
-  } else if (sl0 > sl1) {
-    return -1;
-  }
-
-  return  0;
+  return Sgn(sl1 - sl0);
 };
 
 static int qsort_CompareDeaths(const void *ppPEN0, const void *ppPEN1) {
@@ -74,14 +53,7 @@ static int qsort_CompareDeaths(const void *ppPEN0, const void *ppPEN1) {
   CPlayer &en1 = **(CPlayer **)ppPEN1;
   SLONG sl0 = en0.m_psGameStats.ps_iDeaths;
   SLONG sl1 = en1.m_psGameStats.ps_iDeaths;
-
-  if (sl0 < sl1) {
-    return +1;
-  } else if (sl0 > sl1) {
-    return -1;
-  }
-
-  return  0;
+  return Sgn(sl1 - sl0);
 };
 
 static int qsort_CompareFrags(const void *ppPEN0, const void *ppPEN1) {
