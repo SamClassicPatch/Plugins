@@ -96,6 +96,7 @@ class CHud {
     CDrawPort *_pdp;
     PIX2D _vpixScreen;
     FLOAT2D _vScaling; // Scaling factors taking aspect ratio in consideration
+    FLOAT _fHudScaling; // Current HUD scaling
     FLOAT _fWideAdjustment;
     FLOAT _fCustomScaling;
 
@@ -230,9 +231,12 @@ class CHud {
     // Update weapon and ammo tables with current info
     void UpdateWeaponArsenal(void);
 
+    // Prepare interface for rendering
+    void PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent);
+
     // Render entire interface
-    void DrawHUD(const CPlayer *penPlayerCurrent, CDrawPort *pdpCurrent, BOOL bSnooping, const CPlayer *penPlayerOwner);
-    
+    void DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *penOwner);
+
     // Initialize everything for drawing the HUD
     void Initialize(void);
 

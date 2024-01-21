@@ -76,25 +76,19 @@ void CHud::UpdateWeaponArsenal(void) {
   }
 };
 
-// Render entire interface
-void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnooping, const CPlayer *penOwner)
+// Prepare interface for rendering
+void CHud::PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent)
 {
-  static CSymbolPtr pbLatency("hud_bShowLatency");
   static CSymbolPtr pfOpacity("hud_fOpacity");
   static CSymbolPtr pfScaling("hud_fScaling");
-  static CSymbolPtr pfWeapons("hud_tmWeaponsOnScreen");
-
-  const FLOAT tmWeaponsOnScreen = pfWeapons.GetFloat();
-  const INDEX bShowLatency = pbLatency.GetIndex();
 
   // No player or no owner for snooping
-  if (penCurPl == NULL || penCurPl->GetFlags() & ENF_DELETED) return;
-  if (bSnooping && penOwner == NULL) return;
+  if (penCurrent == NULL || penCurrent->GetFlags() & ENF_DELETED) return;
 
   // Find last values in case of a predictor
-  _penLast = (CPlayer *)penCurPl;
+  _penLast = penCurrent;
 
-  if (penCurPl->IsPredictor()) {
+  if (penCurrent->IsPredictor()) {
     _penLast = (CPlayer *)_penLast->GetPredicted();
   }
 
@@ -103,21 +97,23 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   if (_penLast == NULL) return;
 
   // Player entities
-  _penPlayer = (CPlayer *)penCurPl;
+  _penPlayer = penCurrent;
   _penWeapons = (CPlayerWeapons *)&*_penPlayer->m_penWeapons;
 
   // Get drawport with its dimensions
   _pdp = pdpCurrent;
   _vpixScreen = PIX2D(_pdp->GetWidth(), _pdp->GetHeight());
 
+  // Update time
+  _tmLast = _tmNow;
   _tmNow = _pTimer->CurrentTick();
 
   // Limit scaling
-  FLOAT fHudScaling = Clamp(pfScaling.GetFloat(), 0.05f, 2.0f);
+  _fHudScaling = Clamp(pfScaling.GetFloat(), 0.05f, 2.0f);
 
   // Set wide adjustment dynamically and apply it to scaling
   _fWideAdjustment = ((FLOAT)_vpixScreen(2) / (FLOAT)_vpixScreen(1)) * (4.0f / 3.0f);
-  fHudScaling *= _fWideAdjustment;
+  _fHudScaling *= _fWideAdjustment;
 
   _vScaling(1) = (FLOAT)_vpixScreen(1) / 640.0f;
   _vScaling(2) = (FLOAT)_vpixScreen(2) / (480.0f * _fWideAdjustment);
@@ -152,6 +148,27 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
   _colMid = COL_ValueMid();
   _colLow = COL_ValueLow();
 
+  // Select current fonts
+  _pfdCurrentText = &_afdText[iCurrentTheme];
+  _pfdCurrentNumbers = &_afdNumbers[iCurrentTheme];
+
+  // Calculate relative scaling for the text font
+  _fTextFontScale = (FLOAT)_pfdDisplayFont->GetHeight() / (FLOAT)_pfdCurrentText->GetHeight();
+};
+
+// Render entire interface
+void CHud::DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *penOwner)
+{
+  static CSymbolPtr pfWeapons("hud_tmWeaponsOnScreen");
+  static CSymbolPtr pbLatency("hud_bShowLatency");
+
+  const FLOAT tmWeaponsOnScreen = pfWeapons.GetFloat();
+  const INDEX bShowLatency = pbLatency.GetIndex();
+
+  // No player or no owner for snooping
+  if (penCurrent == NULL || penCurrent->GetFlags() & ENF_DELETED) return;
+  if (bSnooping && penOwner == NULL) return;
+
   // Adjust border color during snooping
   if (bSnooping) {
     _colBorder = COL_SnoopingLight();
@@ -159,16 +176,9 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     // Darken flash and scale
     if (ULONG(_tmNow * 5) & 1) {
       _colBorder = COL_SnoopingDark();
-      fHudScaling *= 0.933f;
+      _fHudScaling *= 0.933f;
     }
   }
-
-  // Select current fonts
-  _pfdCurrentText = &_afdText[iCurrentTheme];
-  _pfdCurrentNumbers = &_afdNumbers[iCurrentTheme];
-
-  // Calculate relative scaling for the text font
-  _fTextFontScale = (FLOAT)_pfdDisplayFont->GetHeight() / (FLOAT)_pfdCurrentText->GetHeight();
 
 #if SE1_GAME != SS_TFE
   // Render sniper mask (even while snooping)
@@ -181,7 +191,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   // Set font and unit sizes
   _pdp->SetFont(_pfdCurrentNumbers);
-  ResetScale(fHudScaling);
+  ResetScale(_fHudScaling);
 
   // Render parts of the interface
   SIconTexture *ptoWantedWeapon = NULL;
@@ -192,7 +202,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   Rescale(0.8f);
   RenderActiveArsenal(ptoCurrentAmmo);
-  ResetScale(fHudScaling);
+  ResetScale(_fHudScaling);
 
   // If weapon change is in progress
   if (_tmNow - _penWeapons->m_tmWeaponChangeRequired < tmWeaponsOnScreen) {
@@ -241,7 +251,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   Rescale(0.5f / _fWideAdjustment);
   RenderBars();
-  ResetScale(fHudScaling);
+  ResetScale(_fHudScaling);
 
   // Determine current gamemode
   EGameMode eGameMode = E_GM_SP;
@@ -260,7 +270,7 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
 
   Rescale(0.6f);
   RenderGameModeInfo(eGameMode);
-  ResetScale(fHudScaling);
+  ResetScale(_fHudScaling);
 
   // Display local client latency
   if (bShowLatency) {
@@ -310,9 +320,6 @@ void CHud::DrawHUD(const CPlayer *penCurPl, CDrawPort *pdpCurrent, BOOL bSnoopin
     _pdp->PutTextR(strTime, _vpixScreen(1) - 3, 2, C_lYELLOW | CT_OPAQUE);
   }
 #endif
-
-  // Remember current time for the next frame
-  _tmLast = _tmNow;
 };
 
 // Player function patch
@@ -478,11 +485,11 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
     #endif
   }
 
+#if SE1_GAME != SS_TFE
   if (m_iViewState == PVT_PLAYEREYES) {
     prProjection.ViewerPlacementL() = plViewOld;
     prProjection.Prepare();
 
-  #if SE1_GAME != SS_TFE
     CAnyProjection3D apr;
     apr = prProjection;
     Stereo_AdjustProjection(*apr, iEye, 1);
@@ -491,8 +498,28 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
     Particle_PrepareEntity(2.0f, FALSE, FALSE, this);
     (this->*CHud::pRenderChainsawParticles)(FALSE);
     Particle_EndSystem();
-  #endif
   }
+#endif
+
+  // Prepare new HUD
+  BOOL bSnooping = FALSE;
+  CPlayer *penHUDPlayer = this;
+
+  if (penHUDPlayer->IsPredicted()) {
+    penHUDPlayer = (CPlayer *)penHUDPlayer->GetPredictor();
+  }
+
+  // Check if snooping is needed
+  const TIME tmDelta = _pTimer->CurrentTick() - enWeapons.m_tmSnoopingStarted;
+  const FLOAT tmSnooping = ptmSnoopingTime.Exists() ? ptmSnoopingTime.GetFloat() : 1.0f;
+
+  if (tmDelta < tmSnooping) {
+    ASSERT(enWeapons.m_penTargeting != NULL);
+    penHUDPlayer = (CPlayer *)&*enWeapons.m_penTargeting;
+    bSnooping = TRUE;
+  }
+
+  _HUD.PrepareHUD(penHUDPlayer, pdp);
 
   CPlacement3D plView;
 
@@ -551,29 +578,8 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
   // Do all queued screen blendings
   pdp->BlendScreen();
 
-  // Interface is hidden
-  if (!pbShowInterface.GetIndex()) return;
-
-  // Get snooping time
-  const FLOAT tmSnooping = ptmSnoopingTime.Exists() ? ptmSnoopingTime.GetFloat() : 1.0f;
-
-  // Get player or the predictor
-  BOOL bSnooping = FALSE;
-  CPlayer *penHUDPlayer = this;
-  CPlayer *penHUDOwner = this;
-
-  if (penHUDPlayer->IsPredicted()) {
-    penHUDPlayer = (CPlayer *)penHUDPlayer->GetPredictor();
+  // Draw new HUD
+  if (pbShowInterface.GetIndex()) {
+    _HUD.DrawHUD(penHUDPlayer, bSnooping, this);
   }
-
-  // Check if snooping is needed
-  TIME tmDelta = _pTimer->CurrentTick() - enWeapons.m_tmSnoopingStarted;
-
-  if (tmDelta < tmSnooping) {
-    ASSERT(enWeapons.m_penTargeting != NULL);
-    penHUDPlayer = (CPlayer *)&*enWeapons.m_penTargeting;
-    bSnooping = TRUE;
-  }
-
-  _HUD.DrawHUD(penHUDPlayer, pdp, bSnooping, penHUDOwner);
 };
