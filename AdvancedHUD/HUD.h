@@ -220,7 +220,7 @@ class CHud {
 
     // Calculate shake amount and color value depending on value change
     COLOR AddShaker(const PIX pixAmount, const INDEX iCurrentValue, INDEX &iLastValue,
-                    TIME &tmChanged, FLOAT &fMoverX, FLOAT &fMoverY);
+                    FLOAT &tmChanged, FLOAT &fMoverX, FLOAT &fMoverY);
 
     // Get current color from local color transitions table
     COLOR GetCurrentColor(FLOAT fNormValue);

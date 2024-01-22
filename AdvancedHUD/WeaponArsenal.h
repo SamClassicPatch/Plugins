@@ -26,7 +26,7 @@ struct HudAmmo {
   INDEX iAmmo;
   INDEX iMaxAmmo;
   INDEX iLastAmmo;
-  TIME tmAmmoChanged;
+  FLOAT tmAmmoChanged;
   BOOL bHasWeapon;
 
   HudAmmo() : ptoAmmo(NULL),

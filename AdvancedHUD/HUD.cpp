@@ -658,7 +658,11 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
   if (!pbRedScreen.Exists() || pbRedScreen.GetIndex()) {
     // Do screen blending for wounding
     CPlayer *pen = (CPlayer *)GetPredictionTail();
+  #if SE1_GAME != SS_REV
     ULONG ulA = pen->m_fDamageAmmount * 5.0f;
+  #else
+    ULONG ulA = pen->m_fDamageAmount * 5.0f;
+  #endif
 
     FLOAT tmSinceWounding = _pTimer->CurrentTick() - pen->m_tmWoundedTime;
 

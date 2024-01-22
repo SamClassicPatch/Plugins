@@ -34,7 +34,7 @@ void CHud::PrepareColorTransitions(COLOR colFine, COLOR colHigh, COLOR colMedium
 
 // Calculate shake amount and color value depending on value change
 COLOR CHud::AddShaker(const PIX pixAmount, const INDEX iCurrentValue, INDEX &iLastValue,
-                      TIME &tmChanged, FLOAT &fMoverX, FLOAT &fMoverY)
+                      FLOAT &tmChanged, FLOAT &fMoverX, FLOAT &fMoverY)
 {
   // Update shaking if needed
   fMoverX = 0.0f;
@@ -49,7 +49,7 @@ COLOR CHud::AddShaker(const PIX pixAmount, const INDEX iCurrentValue, INDEX &iLa
 
   } else {
     // In case of loading (timer got reset)
-    tmChanged = ClampUp(tmChanged, tmNow);
+    tmChanged = ClampUp((FLOAT)tmChanged, (FLOAT)tmNow);
   }
 
   const TIME tmDelta = tmNow - tmChanged;

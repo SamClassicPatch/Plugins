@@ -753,9 +753,18 @@ void CHud::RenderGameModeInfo(void) {
   // Singleplayer or cooperative
   } else if (bCoopDetails) {
     // Draw high score
-    if (_psShowHighScore.GetIndex()) {
-      strValue.PrintF("%d", Max(_penPlayer->m_iHighScore, _penPlayer->m_psGameStats.ps_iScore));
-      BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore > _penPlayer->m_iHighScore;
+    if (_psShowHighScore.GetIndex())
+    {
+    #if SE1_GAME != SS_REV
+      const INDEX iHighScore = _penPlayer->m_iHighScore;
+    #else
+      // [Cecil] TODO: Find out which stat from Revolution could be used as a high score
+      // Maybe it can read those "world stats" and retrieve the highest score per level?
+      const INDEX iHighScore = UpperLimit(INDEX(0));
+    #endif
+
+      strValue.PrintF("%d", Max(iHighScore, _penPlayer->m_psGameStats.ps_iScore));
+      BOOL bBeating = _penPlayer->m_psGameStats.ps_iScore > iHighScore;
 
       fCol = 320.0f + units.fHalf;
       fRow = _vpixTL(2) + units.fHalf;
