@@ -77,6 +77,7 @@ static CPluginSymbol _psColorPreset(SSF_PERSISTENT | SSF_USER, "");
 
 CPluginSymbol _psColorBase(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorIcon(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
+CPluginSymbol _psColorNames(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorWeapon(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorSelect(SSF_PERSISTENT | SSF_USER, INDEX(0xFFFFFF));
 CPluginSymbol _psColorMax(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
@@ -121,6 +122,7 @@ MODULE_API void Module_Startup(void) {
 
   _psColorBase.Register("ahud_iColorBase");
   _psColorIcon.Register("ahud_iColorIcon");
+  _psColorNames.Register("ahud_iColorNames");
   _psColorWeapon.Register("ahud_iColorWeapon");
   _psColorSelect.Register("ahud_iColorSelect");
   _psColorMax.Register("ahud_iColorMax");

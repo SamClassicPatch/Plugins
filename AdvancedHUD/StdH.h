@@ -48,6 +48,7 @@ extern CPluginSymbol _psPlayerTags;
 extern CPluginSymbol _psColorize;
 extern CPluginSymbol _psColorBase;
 extern CPluginSymbol _psColorIcon;
+extern CPluginSymbol _psColorNames;
 extern CPluginSymbol _psColorWeapon;
 extern CPluginSymbol _psColorSelect;
 extern CPluginSymbol _psColorMax;

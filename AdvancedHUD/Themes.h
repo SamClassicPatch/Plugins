@@ -123,6 +123,7 @@ struct HudColorSet {
   // Base colors
   COLOR colBase;
   COLOR colIcon;
+  COLOR colNames;
   COLOR colAmmoSelected;
   COLOR colAmmoDepleted;
 

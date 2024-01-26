@@ -33,12 +33,12 @@ COLOR CHud::COL_Icon(void) {
 };
 
 COLOR CHud::COL_PlayerNames(void) {
-  // Revolution color
-  if (_psTheme.GetIndex() == E_HUD_SSR) {
-    return C_lGRAY;
+  // Custom color
+  if (_psColorize.GetIndex()) {
+    return _psColorNames.GetIndex() << 8;
   }
 
-  return COL_Base();
+  return pColorSet->colNames;
 };
 
 COLOR CHud::COL_SnoopingLight(void) {

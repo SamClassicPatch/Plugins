@@ -19,28 +19,28 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Define color sets for themes
 const HudColorSet _hcolTFE = {
-  C_GREEN, C_GREEN, C_WHITE, C_GRAY, // Base
+  C_GREEN, C_GREEN, C_GREEN, C_WHITE, C_GRAY, // Base
   C_GREEN, C_GREEN, C_GREEN, C_RED, // Values
   C_mlGREEN, C_lGRAY, 0x44FF22BB, 0xFF4422DD, // Sniper scope
   C_GREEN, C_GREEN, C_dGRAY, C_WHITE, // Weapon selection
 };
 
 const HudColorSet _hcolWarped = {
-  0x4C80BB00, 0x4C80BB00, C_WHITE, C_mdGRAY, // Base
+  0x4C80BB00, 0x4C80BB00, 0x4C80BB00, C_WHITE, C_mdGRAY, // Base
   0x6CFF6C00, 0xFFD70000, 0xFF6B0000, C_RED, // Values
   0x64B4FF00, 0xFFCC3300, 0x44FF22BB, 0xFF4422DD, // Sniper scope
   0x4C80BB00, 0x4C80BB00, C_dGRAY, C_WHITE, // Weapon selection
 };
 
 const HudColorSet _hcolTSE = {
-  0x4C80BB00, C_WHITE, C_WHITE, C_mdGRAY, // Base
+  0x4C80BB00, C_WHITE, 0x4C80BB00, C_WHITE, C_mdGRAY, // Base
   0x6CFF6C00, 0xFFD70000, 0xFF6B0000, C_RED, // Values
   0x64B4FF00, 0xFFCC3300, 0x44FF22BB, 0xFF4422DD, // Sniper scope
   0x4C80BB00, 0xCCDDFF00, 0x22334400, 0xFFCC0000, // Weapon selection
 };
 
 const HudColorSet _hcolSSR = {
-  0x56596700, C_WHITE, C_WHITE, C_mdGRAY, // Base
+  0x56596700, C_WHITE, C_lGRAY, C_WHITE, C_mdGRAY, // Base
   0x6CFF6C00, 0xFFD70000, 0xFF6B0000, C_RED, // Values
   0x64B4FF00, 0xFFCC3300, 0x44FF22BB, 0xFF4422DD, // Sniper scope
   0x56596700, 0xCCDDFF00, 0x22334400, 0xFFBF5B00, // Weapon selection
