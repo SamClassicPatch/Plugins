@@ -346,19 +346,30 @@ void CHud::RenderPlayerTags(CPlayer *penThis, CPerspectiveProjection3D &prProjec
     const BOOL bAlive = (pen->GetFlags() & ENF_ALIVE);
     const FLOAT3D vPlayer = pen->GetLerpedPlacement().pl_PositionVector;
 
+    FLOATmatrix3D mThis;
+    MakeRotationMatrixFast(mThis, penThis->GetLerpedPlacement().pl_OrientationAngle);
+
     // Calculate tag position on screen
-    FLOAT3D vBoxCenter(0, 0.5f, 0);
+    FLOAT3D vBoxCenter(0, 0, 0);
+    FLOAT fBoxTop = 0.5f;
 
     if (bAlive) {
       FLOATaabbox3D box;
       pen->GetBoundingBox(box);
+      box -= pen->GetPlacement().pl_PositionVector;
 
-      vBoxCenter = box.Center() - pen->GetPlacement().pl_PositionVector;
-      vBoxCenter(2) += vBoxCenter(2) + 0.1f; // Double it and offset a bit
+      vBoxCenter = box.Center();
+
+      // Get half of the longest axis
+      const FLOAT3D vSize = box.Size();
+      fBoxTop = Max(Max(vSize(1), vSize(2)), vSize(3)) * 0.5f;
     }
 
+    const FLOAT3D vPlayerCenter = vPlayer + vBoxCenter; // Center of the target player
+    const FLOAT3D vTagOffset = FLOAT3D(0, fBoxTop, 0) * mThis; // Offset relative to the local rotation
+
     FLOAT3D vTag(0, 0, 0);
-    prProjection.ProjectCoordinate(vPlayer + vBoxCenter * pen->GetRotationMatrix(), vTag);
+    prProjection.ProjectCoordinate(vPlayerCenter + vTagOffset, vTag);
 
     if (vTag(3) >= 0.0f) continue;
 
