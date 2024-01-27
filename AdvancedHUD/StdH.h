@@ -44,6 +44,7 @@ extern CPluginSymbol _psShowDepletedAmmo;
 extern CPluginSymbol _psShowHighScore;
 extern CPluginSymbol _psShowLives;
 extern CPluginSymbol _psPlayerTags;
+extern CPluginSymbol _psTagsInDemos;
 
 extern CPluginSymbol _psColorize;
 extern CPluginSymbol _psColorBase;

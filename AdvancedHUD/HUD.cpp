@@ -638,8 +638,10 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
 
   _HUD.PrepareHUD(penHUDPlayer, pdp);
 
-  // Display tags above players in coop
-  if (GetSP()->sp_bCooperative) {
+  // Display tags above players in coop or in demos
+  const BOOL bDemo = (_pNetwork->IsPlayingDemo() && _psTagsInDemos.GetIndex());
+
+  if (CHud::pGetSP()->sp_bCooperative || bDemo) {
     prProjection.ViewerPlacementL() = plViewOld;
     prProjection.Prepare();
     _HUD.RenderPlayerTags(this, prProjection);
