@@ -235,7 +235,7 @@ class CHud {
     void UpdateWeaponArsenal(void);
 
     // Prepare interface for rendering
-    void PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent);
+    BOOL PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent);
 
     // Render entire interface
     void DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *penOwner);

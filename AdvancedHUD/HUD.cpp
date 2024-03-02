@@ -77,13 +77,17 @@ void CHud::UpdateWeaponArsenal(void) {
 };
 
 // Prepare interface for rendering
-void CHud::PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent)
+BOOL CHud::PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent)
 {
   static CSymbolPtr pfOpacity("hud_fOpacity");
   static CSymbolPtr pfScaling("hud_fScaling");
 
+  // Clear beforehand in case it can't reach GatherPlayers() call at the end
+  // Realistically it's not supposed to be used at all if HUD preparation fails
+  _cenPlayers.Clear();
+
   // No player or no owner for snooping
-  if (penCurrent == NULL || penCurrent->GetFlags() & ENF_DELETED) return;
+  if (penCurrent == NULL || penCurrent->GetFlags() & ENF_DELETED) return FALSE;
 
   // Find last values in case of a predictor
   _penLast = penCurrent;
@@ -94,7 +98,7 @@ void CHud::PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent)
 
   // Make sure there's an entity
   ASSERT(_penLast != NULL);
-  if (_penLast == NULL) return;
+  if (_penLast == NULL) return FALSE;
 
   // Player entities
   _penPlayer = penCurrent;
@@ -172,6 +176,8 @@ void CHud::PrepareHUD(CPlayer *penCurrent, CDrawPort *pdpCurrent)
       _eGameMode = E_GM_FRAG;
     }
   }
+
+  return TRUE;
 };
 
 // Render entire interface
@@ -327,8 +333,9 @@ void CHud::DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *pen
 
 // Display tags above players
 void CHud::RenderPlayerTags(CPlayer *penThis, CPerspectiveProjection3D &prProjection) {
+  // Tags are disabled or it's a singleplayer game
   const INDEX iPlayerTags = _psPlayerTags.GetIndex();
-  if (iPlayerTags <= 0) return;
+  if (iPlayerTags <= 0 || pGetSP()->sp_bSinglePlayer) return;
 
   // Set font
   const FLOAT fScaling = HEIGHT_SCALING(_pdp);
@@ -636,16 +643,19 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
     bSnooping = TRUE;
   }
 
-  _HUD.PrepareHUD(penHUDPlayer, pdp);
+  // Can't use the HUD if it can't be prepared
+  const BOOL bPrepared = _HUD.PrepareHUD(penHUDPlayer, pdp);
 
-  // Display tags above players in coop, in demos or while observing
-  const BOOL bDemo = (_psTagsInDemos.GetIndex() && _pNetwork->IsPlayingDemo());
-  const BOOL bObserving = (_psTagsForObservers.GetIndex() && _pNetwork->IsNetworkEnabled() && !IWorld::AnyLocalPlayers());
+  if (bPrepared) {
+    // Display tags above players in coop, in demos or while observing
+    const BOOL bDemo = (_psTagsInDemos.GetIndex() && _pNetwork->IsPlayingDemo());
+    const BOOL bObserving = (_psTagsForObservers.GetIndex() && _pNetwork->IsNetworkEnabled() && !IWorld::AnyLocalPlayers());
 
-  if (CHud::pGetSP()->sp_bCooperative || bDemo || bObserving) {
-    prProjection.ViewerPlacementL() = plViewOld;
-    prProjection.Prepare();
-    _HUD.RenderPlayerTags(this, prProjection);
+    if (CHud::pGetSP()->sp_bCooperative || bDemo || bObserving) {
+      prProjection.ViewerPlacementL() = plViewOld;
+      prProjection.Prepare();
+      _HUD.RenderPlayerTags(this, prProjection);
+    }
   }
 
   CPlacement3D plView;
@@ -712,7 +722,7 @@ void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLigh
   pdp->BlendScreen();
 
   // Draw new HUD
-  if (pbShowInterface.GetIndex()) {
+  if (bPrepared && pbShowInterface.GetIndex()) {
     _HUD.DrawHUD(penHUDPlayer, bSnooping, this);
   }
 };
