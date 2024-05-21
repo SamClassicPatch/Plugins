@@ -28,8 +28,10 @@ class CEntityPatch : public CEntity {
 // Patched function
 void CEntityPatch::P_PlaySound(CSoundObject &so, SLONG idSoundComponent, SLONG slPlayType)
 {
+  #define SOUND_INFO_COMPONENT ((0x191 << 8) + CHOOSE_FOR_GAME(174, 202, 202))
+
   // Sound component is SOUND_INFO from CPlayer and it's a prediction
-  if (_psFixSound.GetIndex() && idSoundComponent == ((0x191 << 8) + 202) && IsPredictor())
+  if (_psFixSound.GetIndex() && idSoundComponent == SOUND_INFO_COMPONENT && IsPredictor())
   {
     // Retrieve player properties for checking
     static CPropertyPtr pptrAnalyse(this); // CPlayer::m_tmAnalyseEnd
