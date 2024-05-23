@@ -18,3 +18,14 @@ extern CPluginSymbol _psAutoKillRange;
 
 // Container of local player entities
 extern CDynamicContainer<CPlayerEntity> _cenPlayers;
+
+// Iterate through each local player
+#define FOREACHPLAYER(_PlayerIter) \
+  _cenPlayers.Clear(); \
+  IWorld::GetLocalPlayers(_cenPlayers); \
+  FOREACHINDYNAMICCONTAINER(_cenPlayers, CPlayerEntity, _PlayerIter)
+
+// Protection against running commands on someone else's server
+#define SERVER_CLIENT_ONLY if (!_pNetwork->IsServer()) { \
+  CPutString(TRANS("Local cheats can only be used in single player or on locally hosted servers!\n")); return; \
+}

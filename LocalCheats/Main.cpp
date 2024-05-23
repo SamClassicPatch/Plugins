@@ -40,14 +40,10 @@ CPluginSymbol _psAutoKillRange(SSF_PERSISTENT | SSF_USER, 256.0f);
 // Container of local player entities
 CDynamicContainer<CPlayerEntity> _cenPlayers;
 
-// Iterate through each local player
-#define FOREACHPLAYER(_PlayerIter) \
-  _cenPlayers.Clear(); \
-  IWorld::GetLocalPlayers(_cenPlayers); \
-  FOREACHINDYNAMICCONTAINER(_cenPlayers, CPlayerEntity, _PlayerIter)
-
 // Walk on any solid polygon
 static void WallWalking(void) {
+  SERVER_CLIENT_ONLY;
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
 
@@ -65,6 +61,8 @@ static void WallWalking(void) {
 
 // Fly around the map
 static void Noclip(void) {
+  SERVER_CLIENT_ONLY;
+
   const ULONG ulWorldCollision = (((1UL << 0) | (1UL << 1)) << ECB_TEST);
   const ULONG ulPhysFlags = (EPF_TRANSLATEDBYGRAVITY | EPF_ORIENTEDBYGRAVITY);
 
@@ -91,6 +89,8 @@ static void Noclip(void) {
 // Set health for all local players
 static void SetHealth(SHELL_FUNC_ARGS) {
   BEGIN_SHELL_FUNC;
+  SERVER_CLIENT_ONLY;
+
   INDEX iHealth = NEXT_ARG(INDEX);
 
   FOREACHPLAYER(iten) {
@@ -103,6 +103,8 @@ static void SetHealth(SHELL_FUNC_ARGS) {
 
 // Trigger an entity at the crosshair position
 static void Trigger(void) {
+  SERVER_CLIENT_ONLY;
+
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
     CPlacement3D plView = IWorld::GetViewpoint(pen, FALSE);
@@ -154,6 +156,8 @@ static void CreateItem(CEntity *penPlayer, const CTString &strClass,
 // Create weapon entity
 static void CreateWeapon(SHELL_FUNC_ARGS) {
   BEGIN_SHELL_FUNC;
+  SERVER_CLIENT_ONLY;
+
   INDEX iType = NEXT_ARG(INDEX);
 
   FOREACHPLAYER(iten) {
@@ -165,6 +169,8 @@ static void CreateWeapon(SHELL_FUNC_ARGS) {
 // Create ammo entity
 static void CreateAmmo(SHELL_FUNC_ARGS) {
   BEGIN_SHELL_FUNC;
+  SERVER_CLIENT_ONLY;
+
   INDEX iType = NEXT_ARG(INDEX);
 
   FOREACHPLAYER(iten) {
@@ -176,6 +182,8 @@ static void CreateAmmo(SHELL_FUNC_ARGS) {
 // Create health entity
 static void CreateHealth(SHELL_FUNC_ARGS) {
   BEGIN_SHELL_FUNC;
+  SERVER_CLIENT_ONLY;
+
   INDEX iType = NEXT_ARG(INDEX);
 
   FOREACHPLAYER(iten) {
@@ -187,6 +195,8 @@ static void CreateHealth(SHELL_FUNC_ARGS) {
 // Create armor entity
 static void CreateArmor(SHELL_FUNC_ARGS) {
   BEGIN_SHELL_FUNC;
+  SERVER_CLIENT_ONLY;
+
   INDEX iType = NEXT_ARG(INDEX);
 
   FOREACHPLAYER(iten) {
@@ -198,6 +208,8 @@ static void CreateArmor(SHELL_FUNC_ARGS) {
 // Create powerup entity
 static void CreatePowerUp(SHELL_FUNC_ARGS) {
   BEGIN_SHELL_FUNC;
+  SERVER_CLIENT_ONLY;
+
   INDEX iType = NEXT_ARG(INDEX);
 
   FOREACHPLAYER(iten) {

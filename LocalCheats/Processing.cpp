@@ -19,6 +19,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 void IProcessingEvents::OnStep(void)
 {
+  // Only usable on a local server
+  if (!_pNetwork->IsServer()) return;
+
   _cenPlayers.Clear();
   IWorld::GetLocalPlayers(_cenPlayers);
 
