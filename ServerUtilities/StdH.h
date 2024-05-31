@@ -16,7 +16,5 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // Utilize Core
 #include <CoreLib/Core.h>
 
-#include <CoreLib/Interfaces/WorldFunctions.h>
-
 // Plugin headers
 #include "Commands.h"

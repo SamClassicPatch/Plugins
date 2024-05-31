@@ -15,8 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/Interfaces/PropertyFunctions.h>
-#include <CoreLib/Objects/PropertyPtr.h>
 #include <CoreLib/Networking/ExtPackets.h>
 
 // Notify about not being able to retrieve some entity property

@@ -15,8 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/Objects/PropertyPtr.h>
-
 // Fix player info sound
 static CPluginSymbol _psFixSound(SSF_PERSISTENT | SSF_USER, INDEX(1));
 

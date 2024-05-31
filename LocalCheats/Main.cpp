@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/Compatibility/VanillaEvents.h>
+#include <Extras/XGizmo/Vanilla/EntityEvents.h>
 
 // Define own pointer to the API
 CCoreAPI *_pCoreAPI = NULL;

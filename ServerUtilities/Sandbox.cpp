@@ -16,7 +16,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "StdH.h"
 
 #include "Sandbox.h"
-#include <CoreLib/Interfaces/PropertyFunctions.h>
 
 // Scheduled commands to be executed after the world loads
 CStringStack IServerSandbox::astrScheduled;

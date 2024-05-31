@@ -15,8 +15,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-#include <CoreLib/Objects/PropertyPtr.h>
-
 void IProcessingEvents::OnStep(void)
 {
   // Only usable on a local server

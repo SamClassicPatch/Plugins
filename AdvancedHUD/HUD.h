@@ -26,8 +26,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <EntitiesV/StdH/StdH.h>
 #include <EntitiesV/PlayerWeapons.h>
 
-#include <CoreLib/Objects/PropertyPtr.h>
-
 // Argument list for the RenderHUD() function
 #if SE1_VER < SE1_107
   #define RENDER_ARGS_RAW(_prProjection, _pdp, _vLightDir, _colLight, _colAmbient, _bRenderWeapon, _iEye) \
