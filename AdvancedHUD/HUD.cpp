@@ -306,7 +306,7 @@ void CHud::DrawHUD(const CPlayer *penCurrent, BOOL bSnooping, const CPlayer *pen
   // Display real time
   INDEX iClockMode = _psShowClock.GetIndex();
 
-  if (!GetAPI()->IsCustomModActive() && iClockMode) {
+  if (!ClassicsCore_IsCustomModActive() && iClockMode) {
     // Set font
     _pdp->SetFont(_pfdConsoleFont);
     _pdp->SetTextScaling(1.0f);
@@ -454,7 +454,7 @@ void CHud::Initialize(void) {
   StructPtr pFuncPtr;
 
   // Abort HUD initialization if some method can't be hooked
-  #define GET_SYMBOL_OPT(_Symbol) pFuncPtr = StructPtr(GetPatchAPI()->GetEntitiesSymbol(_Symbol))
+  #define GET_SYMBOL_OPT(_Symbol) pFuncPtr = StructPtr(ClassicsCore_GetEntitiesSymbol(_Symbol))
 
   #define GET_SYMBOL(_Symbol) GET_SYMBOL_OPT(_Symbol); \
     if (pFuncPtr.iAddress == NULL) { \
@@ -506,7 +506,7 @@ void CHud::Initialize(void) {
   pGetMaxAmmo = pFuncPtr(CGetMaxAmmoFunc());
 
   // Patch HUD rendering function
-  NewPluginPatch(pRenderHud, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
+  CreatePatch(pRenderHud, &CPlayerPatch::P_RenderHUD, "CPlayer::RenderHUD(...)");
 
   try {
     // Load fonts for each theme

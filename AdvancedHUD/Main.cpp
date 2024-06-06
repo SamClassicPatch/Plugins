@@ -17,27 +17,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "HUD.h"
 
+// Define plugin
+CLASSICSPATCH_DEFINE_PLUGIN(k_EPluginFlagGame | k_EPluginFlagEditor, CORE_PATCH_VERSION,
+  "Dreamy Cecil", "Advanced HUD", "Patches for the heads-up display with various improvements and expanded customization.");
+
 // Check if playing with modified entities
 BOOL _bModdedEntities = FALSE;
-
-// Retrieve module information
-MODULE_API void Module_GetInfo(CPluginInfo &info) {
-  // Check if standard entities are modified
-  if (_fnmMod != "" && GetPatchAPI()->IsEntitiesModded())
-  {
-    // Enabling "SameHook" means that it's safe to replace mod's HUD, so it counts as non-modified entities
-    _bModdedEntities = !info.props.GetBoolValue("", "SameHook", false);
-  }
-
-  // Utility flags
-  info.SetUtility(PLF_GAMEPLAY_LOGIC);
-
-  // Metadata
-  info.strAuthor = "Dreamy Cecil";
-  info.strName = "Advanced HUD";
-  info.strDescription = "Patches for the heads-up display with various improvements and expanded customization.";
-  info.ulVersion = CORE_PATCH_VERSION;
-};
 
 CPluginSymbol _psEnable(SSF_PERSISTENT | SSF_USER, INDEX(1));
 
@@ -89,9 +74,14 @@ CPluginSymbol _psColorMid(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorLow(SSF_PERSISTENT | SSF_USER, INDEX(0xFF0000));
 
 // Module entry point
-MODULE_API void Module_Startup(void) {
-  // Hook pointer to the API
-  HookSymbolAPI();
+CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props)
+{
+  // Check if standard entities are modified
+  if (_fnmMod != "" && ClassicsCore_IsEntitiesModded())
+  {
+    // Enabling "SameHook" means that it's safe to replace mod's HUD, so it counts as non-modified entities
+    _bModdedEntities = !props.GetBoolValue("", "SameHook", false);
+  }
 
   // Custom symbols
   _psEnable.Register("ahud_bEnable");
@@ -141,6 +131,6 @@ MODULE_API void Module_Startup(void) {
 };
 
 // Module cleanup
-MODULE_API void Module_Shutdown(void)
+CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
 {
 };

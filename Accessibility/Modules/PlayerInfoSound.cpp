@@ -61,7 +61,7 @@ void CEntityPatch::P_PlaySound(CSoundObject &so, SLONG idSoundComponent, SLONG s
 void InitPlayerInfoSound(void) {
   // Patch sound playing function
   void (CEntity::*pPlaySound)(CSoundObject &, SLONG, SLONG) = &CEntity::PlaySound;
-  NewPluginPatch(pPlaySound, &CEntityPatch::P_PlaySound, "CEntity::PlaySound(component)");
+  CreatePatch(pPlaySound, &CEntityPatch::P_PlaySound, "CEntity::PlaySound(component)");
 
   // Custom symbols
   _psFixSound.Register("axs_bFixPlayerInfoSound");

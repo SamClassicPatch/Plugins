@@ -17,21 +17,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "Sandbox.h"
 
+// Define plugin
+CLASSICSPATCH_DEFINE_PLUGIN(k_EPluginFlagGame | k_EPluginFlagServer, CORE_PATCH_VERSION,
+  "Dreamy Cecil", "Server Utilities", "A collection of commands for enhanced world manipulation for hosting custom game servers.");
+
 // Plugin event handlers
 static IGameEvents _evGame;
 static IPacketEvents _evPackets;
-
-// Retrieve module information
-MODULE_API void Module_GetInfo(CPluginInfo &info) {
-  // Utility flags
-  info.SetUtility(PLF_GAME | PLF_SERVER);
-
-  // Metadata
-  info.strAuthor = "Dreamy Cecil";
-  info.strName = "Server Utilities";
-  info.strDescription = "A collection of commands for enhanced world manipulation for hosting custom game servers.";
-  info.ulVersion = CORE_PATCH_VERSION;
-};
 
 // Non-persistent and invisible mode switch symbol (-100 = ignore)
 #define MSS CPluginSymbol(0, INDEX(-100))
@@ -103,7 +95,8 @@ CPluginSymbol _psReplaceHealth (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 CPluginSymbol _psReplaceArmor  (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 
 // Module entry point
-MODULE_API void Module_Startup(void) {
+CLASSICSPATCH_PLUGIN_STARTUP(void)
+{
   // Register plugin events
   _evGame.Register();
   _evPackets.Register();
@@ -168,7 +161,8 @@ MODULE_API void Module_Startup(void) {
 };
 
 // Module cleanup
-MODULE_API void Module_Shutdown(void) {
+CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
+{
   _evGame.Unregister();
   _evPackets.Unregister();
 };

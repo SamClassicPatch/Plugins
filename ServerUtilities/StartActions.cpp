@@ -37,7 +37,7 @@ static INDEX VerifyItemType(CEntity *pen, const CPropertyPtr &pptrType, INDEX iT
 
 // Destroy some entity
 static inline void DestroyEntity(CEntity *pen) {
-#if CLASSICSPATCH_EXT_PACKETS
+#if _PATCHCONFIG_EXT_PACKETS
   // Send packet to destroy the entity
   CExtEntityDelete pck;
   pck.ulEntity = pen->en_ulID;
@@ -52,7 +52,7 @@ static inline void DestroyEntity(CEntity *pen) {
 
 // Reinitialize some entity
 static inline void ReinitEntity(CEntity *pen) {
-#if CLASSICSPATCH_EXT_PACKETS
+#if _PATCHCONFIG_EXT_PACKETS
   // Send packet to reinitialize the entity
   CExtEntityInit pck;
   pck.ulEntity = pen->en_ulID;
@@ -67,7 +67,7 @@ static inline void ReinitEntity(CEntity *pen) {
 
 // Change property of some entity
 static inline void ChangeEntityProp(CEntity *pen, CPropertyPtr &pptr, DOUBLE fValue) {
-#if CLASSICSPATCH_EXT_PACKETS
+#if _PATCHCONFIG_EXT_PACKETS
   // Send packet to change the property
   CExtEntityProp pck;
   pck.ulEntity = pen->en_ulID;

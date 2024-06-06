@@ -15,26 +15,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-// Define own pointer to the API
-CCoreAPI *_pCoreAPI = NULL;
-
-// Retrieve module information
-MODULE_API void Module_GetInfo(CPluginInfo &info) {
-  // Utility flags
-  info.SetUtility(PLF_GAMEPLAY_LOGIC);
-
-  // Metadata
-  info.strAuthor = "Dreamy Cecil";
-  info.strName = "Accessibility";
-  info.strDescription = "Various toggleable options for enhanced accessibility.";
-  info.ulVersion = CORE_PATCH_VERSION;
-};
+// Define plugin
+CLASSICSPATCH_DEFINE_PLUGIN(k_EPluginFlagGame | k_EPluginFlagEditor, CORE_PATCH_VERSION,
+  "Dreamy Cecil", "Accessibility", "Various toggleable options for enhanced accessibility.");
 
 // Module entry point
-MODULE_API void Module_Startup(void) {
-  // Hook pointer to the API
-  HookSymbolAPI();
-
+CLASSICSPATCH_PLUGIN_STARTUP(void)
+{
   // Initialize accessibility modules
   InitPlayerInfoSound();
   InitRedScreen();

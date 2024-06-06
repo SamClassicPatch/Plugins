@@ -17,22 +17,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <Extras/XGizmo/Vanilla/EntityEvents.h>
 
-// Define own pointer to the API
-CCoreAPI *_pCoreAPI = NULL;
+// Define plugin
+CLASSICSPATCH_DEFINE_PLUGIN(k_EPluginFlagGame | k_EPluginFlagEditor, CORE_PATCH_VERSION,
+  "Dreamy Cecil", "Local Cheats",
+  "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!");
 
 static IProcessingEvents _evProcessing;
-
-// Retrieve module information
-MODULE_API void Module_GetInfo(CPluginInfo &info) {
-  // Utility flags
-  info.SetUtility(PLF_GAMEPLAY_LOGIC);
-
-  // Metadata
-  info.strAuthor = "Dreamy Cecil";
-  info.strName = "Local Cheats";
-  info.strDescription = "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!";
-  info.ulVersion = CORE_PATCH_VERSION;
-};
 
 CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));
 CPluginSymbol _psAutoKillRange(SSF_PERSISTENT | SSF_USER, 256.0f);
@@ -219,10 +209,8 @@ static void CreatePowerUp(SHELL_FUNC_ARGS) {
 };
 
 // Module entry point
-MODULE_API void Module_Startup(void) {
-  // Hook pointer to the API
-  HookSymbolAPI();
-
+CLASSICSPATCH_PLUGIN_STARTUP(void)
+{
   _evProcessing.Register();
 
   // Custom symbols
@@ -242,6 +230,7 @@ MODULE_API void Module_Startup(void) {
 };
 
 // Module cleanup
-MODULE_API void Module_Shutdown(void) {
+CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
+{
   _evProcessing.Unregister();
 };
