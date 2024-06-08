@@ -257,23 +257,20 @@ void AffectPlayerMarker(CEntity *pen) {
     ReportPropError(pen, "CPlayerMarker::m_iGiveWeapons");
 
   } else {
+    INDEX iSet = ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX);
+
     // Give out specific weapons
-    for (INDEX iWeapon = 0; iWeapon < CT_WEAPONS; iWeapon++)
-    {
+    for (INDEX iWeapon = 0; iWeapon < CT_WEAPONS; iWeapon++) {
       INDEX iGive = _apsGiveWeapons[iWeapon].GetIndex();
-      INDEX iSet = ENTITYPROPERTY(pen, pptrGive.Offset(), INDEX);
 
-      // Give weapon
       if (iGive == 1) {
-        iSet |= (1 << iWeapon);
-        ChangeEntityProp(pen, pptrGive, iSet);
-
-      // Take away the weapon
+        iSet |= (1 << iWeapon); // Give the weapon
       } else if (iGive == 0) {
-        iSet &= ~(1 << iWeapon);
-        ChangeEntityProp(pen, pptrGive, iSet);
+        iSet &= ~(1 << iWeapon); // Take away the weapon
       }
     }
+
+    ChangeEntityProp(pen, pptrGive, iSet);
   }
 
   // Retrieve CPlayerMarker::m_fMaxAmmoRatio
