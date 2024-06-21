@@ -40,9 +40,9 @@ static inline void DestroyEntity(CEntity *pen) {
 #if _PATCHCONFIG_EXT_PACKETS
   // Send packet to destroy the entity
   CExtEntityDelete pck;
-  pck.ulEntity = pen->en_ulID;
-  pck.bSameClass = FALSE;
-  pck.SendPacket();
+  pck("ulEntity", (int)pen->en_ulID);
+  pck("bSameClass", false);
+  pck.SendToClients();
 
 #else
   // Destroy entity immediately
@@ -55,9 +55,9 @@ static inline void ReinitEntity(CEntity *pen) {
 #if _PATCHCONFIG_EXT_PACKETS
   // Send packet to reinitialize the entity
   CExtEntityInit pck;
-  pck.ulEntity = pen->en_ulID;
+  pck("ulEntity", (int)pen->en_ulID);
   pck.SetEvent(EVoid(), sizeof(EVoid));
-  pck.SendPacket();
+  pck.SendToClients();
 
 #else
   // Reinitialize entity immediately
@@ -70,10 +70,10 @@ static inline void ChangeEntityProp(CEntity *pen, CPropertyPtr &pptr, DOUBLE fVa
 #if _PATCHCONFIG_EXT_PACKETS
   // Send packet to change the property
   CExtEntityProp pck;
-  pck.ulEntity = pen->en_ulID;
+  pck("ulEntity", (int)pen->en_ulID);
   pck.SetProperty(pptr._pep->ep_ulID);
   pck.SetValue(fValue);
-  pck.SendPacket();
+  pck.SendToClients();
 
 #else
   // Change values of float and index properties
