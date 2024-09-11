@@ -133,4 +133,6 @@ CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props)
 // Module cleanup
 CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
 {
+  // Clean up the HUD
+  _HUD.End();
 };

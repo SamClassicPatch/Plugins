@@ -244,6 +244,9 @@ class CHud {
     // Initialize everything for drawing the HUD
     void Initialize(void);
 
+    // Clean everything up before disabling the plugin
+    void End(void);
+
   // Drawing functions
   public:
 

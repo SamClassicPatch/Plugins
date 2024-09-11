@@ -571,6 +571,15 @@ void CHud::Initialize(void) {
   NEW_WEAPON(WEAPON_IRONCANNON, &tex.toWIronCannon, &aAmmo[7]);
 };
 
+// Clean everything up before disabling the plugin
+void CHud::End(void) {
+  _tmNow = -1.0f;
+  _tmLast = -1.0f;
+
+  GetAmmo().PopAll();
+  GetWeapons().PopAll();
+};
+
 void CPlayerPatch::P_RenderHUD(RENDER_ARGS(prProjection, pdp, vLightDir, colLight, colAmbient, bRenderWeapon, iEye))
 {
   // Replace HUD everywhere or only in vanilla if entities haven't been modified
