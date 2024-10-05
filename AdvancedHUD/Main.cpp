@@ -74,7 +74,7 @@ CPluginSymbol _psColorMid(SSF_PERSISTENT | SSF_USER, INDEX(0x00FF00));
 CPluginSymbol _psColorLow(SSF_PERSISTENT | SSF_USER, INDEX(0xFF0000));
 
 // Module entry point
-CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props)
+CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props, PluginEvents_t &events)
 {
   // Check if standard entities are modified
   if (_fnmMod != "" && ClassicsCore_IsEntitiesModded())
@@ -131,7 +131,7 @@ CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props)
 };
 
 // Module cleanup
-CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
+CLASSICSPATCH_PLUGIN_SHUTDOWN(CIniConfig &props)
 {
   // Clean up the HUD
   _HUD.End();

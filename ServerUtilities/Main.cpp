@@ -21,10 +21,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 CLASSICSPATCH_DEFINE_PLUGIN(k_EPluginFlagGame | k_EPluginFlagServer, CORE_PATCH_VERSION,
   "Dreamy Cecil", "Server Utilities", "A collection of commands for enhanced world manipulation for hosting custom game servers.");
 
-// Plugin event handlers
-static IGameEvents _evGame;
-static IPacketEvents _evPackets;
-
 // Non-persistent and invisible mode switch symbol (-100 = ignore)
 #define MSS CPluginSymbol(0, INDEX(-100))
 
@@ -95,11 +91,15 @@ CPluginSymbol _psReplaceHealth (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 CPluginSymbol _psReplaceArmor  (SSF_PERSISTENT | SSF_USER, INDEX(-1));
 
 // Module entry point
-CLASSICSPATCH_PLUGIN_STARTUP(void)
+CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props, PluginEvents_t &events)
 {
   // Register plugin events
-  _evGame.Register();
-  _evPackets.Register();
+  events.m_game->OnGameStart   = &IGameEvents_OnGameStart;
+  events.m_game->OnChangeLevel = &IGameEvents_OnChangeLevel;
+
+  events.m_packet->OnCharacterConnect = &IPacketEvents_OnCharacterConnect;
+  events.m_packet->OnCharacterChange  = &IPacketEvents_OnCharacterChange;
+  events.m_packet->OnPlayerAction     = &IPacketEvents_OnPlayerAction;
 
   // Custom symbols
   {
@@ -161,8 +161,6 @@ CLASSICSPATCH_PLUGIN_STARTUP(void)
 };
 
 // Module cleanup
-CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
+CLASSICSPATCH_PLUGIN_SHUTDOWN(CIniConfig &props)
 {
-  _evGame.Unregister();
-  _evPackets.Unregister();
 };

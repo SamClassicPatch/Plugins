@@ -15,7 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
-void IProcessingEvents::OnStep(void)
+void IProcessingEvents_OnStep(void)
 {
   // Only usable on a local server
   if (!_pNetwork->IsServer()) return;
@@ -92,8 +92,4 @@ void IProcessingEvents::OnStep(void)
       }
     }
   }
-};
-
-void IProcessingEvents::OnFrame(CDrawPort *pdp)
-{
 };

@@ -62,7 +62,7 @@ static void AffectEntities(void) {
   }
 };
 
-void IGameEvents::OnGameStart(void)
+void IGameEvents_OnGameStart(void)
 {
   AffectEntities();
 
@@ -82,7 +82,7 @@ void IGameEvents::OnGameStart(void)
   }
 };
 
-void IGameEvents::OnChangeLevel(void)
+void IGameEvents_OnChangeLevel(void)
 {
   // Affect entities on a new level (if singleplayer/split screen or patch-exclusive)
   const BOOL bLocal = !_pNetwork->IsNetworkEnabled();
@@ -91,16 +91,4 @@ void IGameEvents::OnChangeLevel(void)
   if (_pNetwork->IsServer() && (bLocal || bExclusive)) {
     AffectEntities();
   }
-};
-
-void IGameEvents::OnGameStop(void)
-{
-};
-
-void IGameEvents::OnGameSave(const CTFileName &fnmSave)
-{
-};
-
-void IGameEvents::OnGameLoad(const CTFileName &fnmSave)
-{
 };

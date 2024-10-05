@@ -33,18 +33,18 @@ static void HandleThirdPerson(INDEX iClient, CPlayerCharacter &pc)
   pps->ps_ulFlags &= ~PSF_PREFER3RDPERSON;
 };
 
-void IPacketEvents::OnCharacterConnect(INDEX iClient, CPlayerCharacter &pc)
+void IPacketEvents_OnCharacterConnect(INDEX iClient, CPlayerCharacter &pc)
 {
   HandleThirdPerson(iClient, pc);
 };
 
-BOOL IPacketEvents::OnCharacterChange(INDEX iClient, INDEX iPlayer, CPlayerCharacter &pc)
+BOOL IPacketEvents_OnCharacterChange(INDEX iClient, INDEX iPlayer, CPlayerCharacter &pc)
 {
   HandleThirdPerson(iClient, pc);
   return TRUE;
 };
 
-void IPacketEvents::OnPlayerAction(INDEX iClient, INDEX iPlayer, CPlayerAction &pa, INDEX iResent)
+void IPacketEvents_OnPlayerAction(INDEX iClient, INDEX iPlayer, CPlayerAction &pa, INDEX iResent)
 {
   // Lock disabled buttons
   pa.pa_ulButtons &= _psActionButtons.GetIndex();
@@ -62,9 +62,4 @@ void IPacketEvents::OnPlayerAction(INDEX iClient, INDEX iPlayer, CPlayerAction &
 
     pa.pa_ulButtons &= ~iBit;
   }
-};
-
-BOOL IPacketEvents::OnChatMessage(INDEX iClient, ULONG ulFrom, ULONG ulTo, CTString &strMessage)
-{
-  return TRUE;
 };

@@ -22,8 +22,6 @@ CLASSICSPATCH_DEFINE_PLUGIN(k_EPluginFlagGame | k_EPluginFlagEditor, CORE_PATCH_
   "Dreamy Cecil", "Local Cheats",
   "Local client cheats such as noclip and weapon creation that can be used regardless of gamemode or mod. Not multiplayer synchronized!");
 
-static IProcessingEvents _evProcessing;
-
 CPluginSymbol _psAutoKill(SSF_USER, INDEX(0));
 CPluginSymbol _psAutoKillRange(SSF_PERSISTENT | SSF_USER, 256.0f);
 
@@ -209,9 +207,10 @@ static void CreatePowerUp(SHELL_FUNC_ARGS) {
 };
 
 // Module entry point
-CLASSICSPATCH_PLUGIN_STARTUP(void)
+CLASSICSPATCH_PLUGIN_STARTUP(CIniConfig &props, PluginEvents_t &events)
 {
-  _evProcessing.Register();
+  // Register plugin events
+  events.m_processing->OnStep = &IProcessingEvents_OnStep;
 
   // Custom symbols
   _psAutoKill.Register("cht_iAutoKill");
@@ -230,7 +229,6 @@ CLASSICSPATCH_PLUGIN_STARTUP(void)
 };
 
 // Module cleanup
-CLASSICSPATCH_PLUGIN_SHUTDOWN(void)
+CLASSICSPATCH_PLUGIN_SHUTDOWN(CIniConfig &props)
 {
-  _evProcessing.Unregister();
 };
