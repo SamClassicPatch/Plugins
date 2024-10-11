@@ -456,9 +456,10 @@ void CHud::Initialize(void) {
   // Abort HUD initialization if some method can't be hooked
   #define GET_SYMBOL_OPT(_Symbol) pFuncPtr = StructPtr(ClassicsCore_GetEntitiesSymbol(_Symbol))
 
+  // Display an assertion only if entities aren't supposed to be modded
   #define GET_SYMBOL(_Symbol) GET_SYMBOL_OPT(_Symbol); \
     if (pFuncPtr.iAddress == NULL) { \
-      ASSERT(FALSE); \
+      if (!_bModdedEntities) { ASSERTALWAYS("Cannot hook '" #_Symbol "' for Advanced HUD!"); } \
       CPrintF(TRANS("Cannot hook '%s'!\nAborting HUD initialization...\n"), _Symbol); \
       return; \
     }
