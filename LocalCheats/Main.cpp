@@ -15,6 +15,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "StdH.h"
 
+#include <CoreLib/Networking/ExtPackets.h>
 #include <Extras/XGizmo/Vanilla/EntityEvents.h>
 
 // Define plugin
@@ -35,13 +36,21 @@ static void WallWalking(void) {
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
 
-    BOOL bDisable = pen->GetPhysicsFlags() & EPF_STICKYFEET;
+    const BOOL bDisable = !!(pen->GetPhysicsFlags() & EPF_STICKYFEET);
 
+  #if _PATCHCONFIG_EXT_PACKETS
+    CExtEntityFlags pck;
+    pck("ulEntity", (int)pen->en_ulID);
+    pck.PhysicalFlags(EPF_STICKYFEET, bDisable);
+    pck.SendToClients();
+
+  #else
     if (bDisable) {
       pen->SetPhysicsFlags(pen->GetPhysicsFlags() & ~EPF_STICKYFEET);
     } else {
       pen->SetPhysicsFlags(pen->GetPhysicsFlags() | EPF_STICKYFEET);
     }
+  #endif
 
     CPrintF(TRANS("%s^r - wall walking: %s\n"), pen->GetName(), (bDisable ? "^cff0000OFF" : "^c00ff00ON"));
   }
@@ -57,7 +66,7 @@ static void Noclip(void) {
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
 
-    BOOL bDisable = !(pen->GetCollisionFlags() & ulWorldCollision);
+    const BOOL bDisable = !(pen->GetCollisionFlags() & ulWorldCollision);
 
     if (bDisable) {
       pen->SetCollisionFlags(pen->GetCollisionFlags() | ulWorldCollision);
@@ -84,7 +93,15 @@ static void SetHealth(SHELL_FUNC_ARGS) {
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
 
+  #if _PATCHCONFIG_EXT_PACKETS
+    CExtEntityHealth pck;
+    pck("ulEntity", (int)pen->en_ulID);
+    pck("fHealth", (FLOAT)iHealth);
+    pck.SendToClients();
+  #else
     pen->SetHealth(iHealth);
+  #endif
+
     CPrintF(TRANS("Set %s^r health to %d\n"), pen->GetName(), iHealth);
   }
 };
@@ -92,6 +109,8 @@ static void SetHealth(SHELL_FUNC_ARGS) {
 // Trigger an entity at the crosshair position
 static void Trigger(void) {
   SERVER_CLIENT_ONLY;
+
+  VNL_ETrigger eTrigger;
 
   FOREACHPLAYER(iten) {
     CPlayerEntity *pen = iten;
@@ -104,18 +123,56 @@ static void Trigger(void) {
 
     IWorld::GetWorld()->CastRay(crRay);
 
-    if (crRay.cr_penHit != NULL) {
-      VNL_ETrigger eTrigger;
-      eTrigger.penCaused = pen;
+    if (crRay.cr_penHit == NULL) continue;
 
-      crRay.cr_penHit->SendEvent(eTrigger);
-    }
+  #if _PATCHCONFIG_EXT_PACKETS
+    (ULONG &)eTrigger.penCaused = pen->en_ulID;
+
+    CExtEntityEvent pck;
+    pck("ulEntity", (int)crRay.cr_penHit->en_ulID);
+    pck.SetEvent(eTrigger, sizeof(eTrigger));
+    pck.SendToClients();
+
+    (ULONG &)eTrigger.penCaused = NULL;
+  #else
+    eTrigger.penCaused = pen;
+    crRay.cr_penHit->SendEvent(eTrigger);
+  #endif
   }
 };
 
 // Create specific item of a specific type
 static void CreateItem(CEntity *penPlayer, const CTString &strClass,
                        const CTString &strPropName, INDEX iPropID, INDEX iType) {
+#if _PATCHCONFIG_EXT_PACKETS
+  // Send packet to create the entity
+  CExtEntityCreate pckCreate;
+  pckCreate("fnmClass", strClass);
+  pckCreate("plPos", penPlayer->GetPlacement());
+  pckCreate.SendToClients();
+
+  // Send packet to change the property
+  CExtEntityProp pckProp;
+  pckProp("ulEntity", (int)0);
+  if (strPropName != "") {
+    pckProp.SetProperty(strPropName);
+  } else {
+    pckProp.SetProperty(iPropID);
+  }
+  pckProp.SetValue(iType);
+  pckProp.SendToClients();
+
+  // Send packet to initialize the entity
+  CExtEntityInit pckInit;
+  pckInit("ulEntity", (int)0);
+  pckInit.SetEvent(EVoid(), sizeof(EVoid));
+  pckInit.SendToClients();
+
+  // Report entity name with the type ID instead of the type name with an entity ID
+  CTString strClassName = ((const CTFileName &)strClass).FileName();
+  CPrintF(TRANS("%s^r created '%s' item (%u)\n"), penPlayer->GetName(), strClassName, iType);
+
+#else
   // Create weapon item
   CEntity *penWeapon = IWorld::GetWorld()->CreateEntity_t(penPlayer->GetPlacement(), strClass);
 
@@ -127,7 +184,7 @@ static void CreateItem(CEntity *penPlayer, const CTString &strClass,
   if (pep != NULL) {
     strItem = pep->ep_pepetEnumType->NameForValue(iType);
   }
-    
+
   // Unknown item type
   if (strItem == "") {
     strItem = TRANS("<unknown>");
@@ -139,6 +196,7 @@ static void CreateItem(CEntity *penPlayer, const CTString &strClass,
   penWeapon->Initialize();
 
   CPrintF(TRANS("%s^r created '%s' item (%u)\n"), penPlayer->GetName(), strItem, penWeapon->en_ulID);
+#endif
 };
 
 // Create weapon entity
